@@ -16,7 +16,7 @@
   "main": "dist/commonjs/index.js",
   "repository": {
     "type": "git",
-    "url": "git://github.com/aurelia/history-browser"
+    "url": "http://github.com/aurelia/history-browser"
   },
   "jspm": {
     "main": "amd/index",
@@ -24,7 +24,7 @@
       "lib": "dist"
     },
     "dependencies": {
-      "aurelia-history": "github:aurelia/history@^0.0.1"
+      "aurelia-history": "github:aurelia/history@^0.1.0"
     }
   },
   "devDependencies": {

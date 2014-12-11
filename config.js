@@ -7,7 +7,7 @@ System.config({
 
 System.config({
   "map": {
-    "aurelia-history": "github:aurelia/history@0.0.1"
+    "aurelia-history": "github:aurelia/history@0.1.0"
   }
 });
 
