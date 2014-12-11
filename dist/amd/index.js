@@ -68,7 +68,7 @@ define(["exports", "aurelia-history"], function (exports, _aureliaHistory) {
     };
 
     BrowserHistory.prototype.getFragment = function (fragment, forcePushState) {
-      if (fragment === null) {
+      if (!fragment) {
         if (this._hasPushState || !this._wantsHashChange || forcePushState) {
           fragment = this.location.pathname + this.location.search;
           var root = this.root.replace(trailingSlash, "");
