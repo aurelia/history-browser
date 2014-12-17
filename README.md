@@ -8,6 +8,10 @@ This library is part of the [Aurelia](http://www.aurelia.io/) platform and conta
 
 * [aurelia-history](https://github.com/aurelia/history)
 
+## Used By
+
+* [aurelia-bootstrapper](https://github.com/aurelia/bootstrapper)
+
 ## Platform Support
 
 This library can be used in the **browser** only.

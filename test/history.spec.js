@@ -1,4 +1,4 @@
-import {BrowserHistory} from '../lib/index';
+import {BrowserHistory} from '../src/index';
 
 describe('browser history', () => {
   it('should have some tests', () => {
