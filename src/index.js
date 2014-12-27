@@ -40,7 +40,7 @@ function extend(obj) {
   return obj;
 }
 
-export class BrowserHistory extends History {
+class BrowserHistory extends History {
   constructor(){
     this.interval = 50;
     this.active = false;
@@ -239,3 +239,12 @@ export class BrowserHistory extends History {
     this.history.back();
   }
 }
+
+function install(aurelia){
+  aurelia.withSingleton(History, BrowserHistory);
+}
+
+export {
+  BrowserHistory,
+  install
+};
