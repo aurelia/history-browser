@@ -24,23 +24,6 @@ function updateHash(location, fragment, replace) {
   }
 }
 
-function extend(obj) {
-  var rest = Array.prototype.slice.call(arguments, 1),
-      i, source, prop;
-
-  for (i = 0, length = rest.length; i < length; ++i) {
-    source = rest[i];
-
-    if (source) {
-      for (prop in source) {
-        obj[prop] = source[prop];
-      }
-    }
-  }
-
-  return obj;
-}
-
 class BrowserHistory extends History {
   constructor(){
     this.interval = 50;
@@ -86,7 +69,7 @@ class BrowserHistory extends History {
 
     // Figure out the initial configuration. Do we need an iframe?
     // Is pushState desired ... is it available?
-    this.options = extend({}, { root: '/' }, this.options, options);
+    this.options = Object.assign({}, { root: '/' }, this.options, options);
     this.root = this.options.root;
     this._wantsHashChange = this.options.hashChange !== false;
     this._wantsPushState = !!this.options.pushState;
