@@ -25,13 +25,14 @@ function updateHash(location, fragment, replace) {
 }
 
 function extend(obj) {
-  var rest = Array.prototype.slice.call(arguments, 1);
+  var rest = Array.prototype.slice.call(arguments, 1),
+      i, source, prop;
 
-  for (var i = 0, length = rest.length; i < length; i++) {
-    var source = rest[i];
+  for (i = 0, length = rest.length; i < length; ++i) {
+    source = rest[i];
 
     if (source) {
-      for (var prop in source) {
+      for (prop in source) {
         obj[prop] = source[prop];
       }
     }
@@ -59,10 +60,12 @@ class BrowserHistory extends History {
   }
 
   getFragment(fragment, forcePushState) {
+    var root;
+
     if (!fragment) {
       if (this._hasPushState || !this._wantsHashChange || forcePushState) {
         fragment = this.location.pathname + this.location.search;
-        var root = this.root.replace(trailingSlash, '');
+        root = this.root.replace(trailingSlash, '');
         if (!fragment.indexOf(root)) {
           fragment = fragment.substr(root.length);
         }
