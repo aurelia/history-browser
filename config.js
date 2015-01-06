@@ -1,14 +1,22 @@
 System.config({
   "paths": {
     "*": "*.js",
-    "github:*": "jspm_packages/github/*.js"
+    "github:*": "jspm_packages/github/*.js",
+    "aurelia-history-browser/*": "dist/*.js",
+    "npm:*": "jspm_packages/npm/*.js"
   }
 });
 
 System.config({
   "map": {
-    "aurelia-history": "github:aurelia/history@0.1.1",
-    "es6-shim": "github:paulmillr/es6-shim@0.22.1"
+    "aurelia-history": "github:aurelia/history@0.2.0",
+    "core-js": "npm:core-js@0.4.1",
+    "github:jspm/nodelibs-process@0.1.0": {
+      "process": "npm:process@0.10.0"
+    },
+    "npm:core-js@0.4.1": {
+      "process": "github:jspm/nodelibs-process@0.1.0"
+    }
   }
 });
 
