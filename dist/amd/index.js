@@ -1,8 +1,11 @@
 define(["exports", "aurelia-history"], function (exports, _aureliaHistory) {
   "use strict";
 
-  var _extends = function (child, parent) {
-    child.prototype = Object.create(parent.prototype, {
+  var _inherits = function (child, parent) {
+    if (typeof parent !== "function" && parent !== null) {
+      throw new TypeError("Super expression must either be null or a function, not " + typeof parent);
+    }
+    child.prototype = Object.create(parent && parent.prototype, {
       constructor: {
         value: child,
         enumerable: false,
@@ -10,7 +13,7 @@ define(["exports", "aurelia-history"], function (exports, _aureliaHistory) {
         configurable: true
       }
     });
-    child.__proto__ = parent;
+    if (parent) child.__proto__ = parent;
   };
 
   var History = _aureliaHistory.History;
@@ -31,23 +34,8 @@ define(["exports", "aurelia-history"], function (exports, _aureliaHistory) {
     }
   }
 
-  function extend(obj) {
-    var rest = Array.prototype.slice.call(arguments, 1);
-
-    for (var i = 0, length = rest.length; i < length; i++) {
-      var source = rest[i];
-
-      if (source) {
-        for (var prop in source) {
-          obj[prop] = source[prop];
-        }
-      }
-    }
-
-    return obj;
-  }
-
-  var BrowserHistory = (function (History) {
+  var BrowserHistory = (function () {
+    var _History = History;
     var BrowserHistory = function BrowserHistory() {
       this.interval = 50;
       this.active = false;
@@ -60,7 +48,7 @@ define(["exports", "aurelia-history"], function (exports, _aureliaHistory) {
       }
     };
 
-    _extends(BrowserHistory, History);
+    _inherits(BrowserHistory, _History);
 
     BrowserHistory.prototype.getHash = function (window) {
       var match = (window || this).location.href.match(/#(.*)$/);
@@ -68,10 +56,12 @@ define(["exports", "aurelia-history"], function (exports, _aureliaHistory) {
     };
 
     BrowserHistory.prototype.getFragment = function (fragment, forcePushState) {
+      var root;
+
       if (!fragment) {
         if (this._hasPushState || !this._wantsHashChange || forcePushState) {
           fragment = this.location.pathname + this.location.search;
-          var root = this.root.replace(trailingSlash, "");
+          root = this.root.replace(trailingSlash, "");
           if (!fragment.indexOf(root)) {
             fragment = fragment.substr(root.length);
           }
@@ -90,7 +80,7 @@ define(["exports", "aurelia-history"], function (exports, _aureliaHistory) {
 
       this.active = true;
 
-      this.options = extend({}, { root: "/" }, this.options, options);
+      this.options = Object.assign({}, { root: "/" }, this.options, options);
       this.root = this.options.root;
       this._wantsHashChange = this.options.hashChange !== false;
       this._wantsPushState = !!this.options.pushState;
@@ -102,7 +92,7 @@ define(["exports", "aurelia-history"], function (exports, _aureliaHistory) {
 
       if (this._hasPushState) {
         window.onpopstate = this._checkUrlCallback;
-      } else if (this._wantsHashChange && ("onhashchange" in window)) {
+      } else if (this._wantsHashChange && "onhashchange" in window) {
         window.addEventListener("hashchange", this._checkUrlCallback);
       } else if (this._wantsHashChange) {
         this._checkUrlInterval = setInterval(this._checkUrlCallback, this.interval);
@@ -199,7 +189,7 @@ define(["exports", "aurelia-history"], function (exports, _aureliaHistory) {
       } else if (this._wantsHashChange) {
         updateHash(this.location, fragment, options.replace);
 
-        if (this.iframe && (fragment !== this.getFragment(this.getHash(this.iframe)))) {
+        if (this.iframe && fragment !== this.getFragment(this.getHash(this.iframe))) {
           if (!options.replace) {
             this.iframe.document.open().close();
           }
@@ -222,7 +212,12 @@ define(["exports", "aurelia-history"], function (exports, _aureliaHistory) {
     };
 
     return BrowserHistory;
-  })(History);
+  })();
+
+  function install(aurelia) {
+    aurelia.withSingleton(History, BrowserHistory);
+  }
 
   exports.BrowserHistory = BrowserHistory;
+  exports.install = install;
 });

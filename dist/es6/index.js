@@ -24,23 +24,7 @@ function updateHash(location, fragment, replace) {
   }
 }
 
-function extend(obj) {
-  var rest = Array.prototype.slice.call(arguments, 1);
-
-  for (var i = 0, length = rest.length; i < length; i++) {
-    var source = rest[i];
-
-    if (source) {
-      for (var prop in source) {
-        obj[prop] = source[prop];
-      }
-    }
-  }
-
-  return obj;
-}
-
-export class BrowserHistory extends History {
+class BrowserHistory extends History {
   constructor(){
     this.interval = 50;
     this.active = false;
@@ -59,10 +43,12 @@ export class BrowserHistory extends History {
   }
 
   getFragment(fragment, forcePushState) {
+    var root;
+
     if (!fragment) {
       if (this._hasPushState || !this._wantsHashChange || forcePushState) {
         fragment = this.location.pathname + this.location.search;
-        var root = this.root.replace(trailingSlash, '');
+        root = this.root.replace(trailingSlash, '');
         if (!fragment.indexOf(root)) {
           fragment = fragment.substr(root.length);
         }
@@ -83,7 +69,7 @@ export class BrowserHistory extends History {
 
     // Figure out the initial configuration. Do we need an iframe?
     // Is pushState desired ... is it available?
-    this.options = extend({}, { root: '/' }, this.options, options);
+    this.options = Object.assign({}, { root: '/' }, this.options, options);
     this.root = this.options.root;
     this._wantsHashChange = this.options.hashChange !== false;
     this._wantsPushState = !!this.options.pushState;
@@ -239,3 +225,12 @@ export class BrowserHistory extends History {
     this.history.back();
   }
 }
+
+function install(aurelia){
+  aurelia.withSingleton(History, BrowserHistory);
+}
+
+export {
+  BrowserHistory,
+  install
+};
