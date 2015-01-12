@@ -25,7 +25,7 @@
       "lib": "dist"
     },
     "dependencies": {
-      "aurelia-history": "^0.2.0",
+      "aurelia-history": "^0.2.1",
       "core-js": "npm:core-js@^0.4.1"
     }
   },
