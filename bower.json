@@ -1,6 +1,6 @@
 {
   "name": "aurelia-history-browser",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "An implementation of the Aurelia history interface based on standard browser hash change and push state mechanisms.",
   "keywords": [
     "aurelia",
