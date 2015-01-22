@@ -1,3 +1,11 @@
+### 0.2.2 (2015-01-22)
+
+
+#### Bug Fixes
+
+* **package:** update dependencies ([0f9bc51a](http://github.com/aurelia/history-browser/commit/0f9bc51aa77e2441b6ad6c2454bdb79601e35c14))
+
+
 ### 0.2.1 (2015-01-12)
 
 

@@ -6,19 +6,19 @@ define(["exports", "aurelia-history"], function (exports, _aureliaHistory) {
     if (instanceProps) Object.defineProperties(child.prototype, instanceProps);
   };
 
-  var _inherits = function (child, parent) {
-    if (typeof parent !== "function" && parent !== null) {
-      throw new TypeError("Super expression must either be null or a function, not " + typeof parent);
+  var _inherits = function (subClass, superClass) {
+    if (typeof superClass !== "function" && superClass !== null) {
+      throw new TypeError("Super expression must either be null or a function, not " + typeof superClass);
     }
-    child.prototype = Object.create(parent && parent.prototype, {
+    subClass.prototype = Object.create(superClass && superClass.prototype, {
       constructor: {
-        value: child,
+        value: subClass,
         enumerable: false,
         writable: true,
         configurable: true
       }
     });
-    if (parent) child.__proto__ = parent;
+    if (superClass) subClass.__proto__ = superClass;
   };
 
   var History = _aureliaHistory.History;
@@ -40,7 +40,7 @@ define(["exports", "aurelia-history"], function (exports, _aureliaHistory) {
   }
 
   var BrowserHistory = (function (History) {
-    var BrowserHistory = function BrowserHistory() {
+    function BrowserHistory() {
       this.interval = 50;
       this.active = false;
       this.previousFragment = "";
@@ -50,13 +50,13 @@ define(["exports", "aurelia-history"], function (exports, _aureliaHistory) {
         this.location = window.location;
         this.history = window.history;
       }
-    };
+    }
 
     _inherits(BrowserHistory, History);
 
     _prototypeProperties(BrowserHistory, null, {
       getHash: {
-        value: function (window) {
+        value: function getHash(window) {
           var match = (window || this).location.href.match(/#(.*)$/);
           return match ? match[1] : "";
         },
@@ -65,7 +65,7 @@ define(["exports", "aurelia-history"], function (exports, _aureliaHistory) {
         configurable: true
       },
       getFragment: {
-        value: function (fragment, forcePushState) {
+        value: function getFragment(fragment, forcePushState) {
           var root;
 
           if (!fragment) {
@@ -87,7 +87,7 @@ define(["exports", "aurelia-history"], function (exports, _aureliaHistory) {
         configurable: true
       },
       activate: {
-        value: function (options) {
+        value: function activate(options) {
           if (this.active) {
             throw new Error("History has already been activated.");
           }
@@ -137,7 +137,7 @@ define(["exports", "aurelia-history"], function (exports, _aureliaHistory) {
         configurable: true
       },
       deactivate: {
-        value: function () {
+        value: function deactivate() {
           window.onpopstate = null;
           window.removeEventListener("hashchange", this._checkUrlCallback);
           clearInterval(this._checkUrlInterval);
@@ -148,7 +148,7 @@ define(["exports", "aurelia-history"], function (exports, _aureliaHistory) {
         configurable: true
       },
       checkUrl: {
-        value: function () {
+        value: function checkUrl() {
           var current = this.getFragment();
 
           if (current === this.fragment && this.iframe) {
@@ -170,7 +170,7 @@ define(["exports", "aurelia-history"], function (exports, _aureliaHistory) {
         configurable: true
       },
       loadUrl: {
-        value: function (fragmentOverride) {
+        value: function loadUrl(fragmentOverride) {
           var fragment = this.fragment = this.getFragment(fragmentOverride);
 
           return this.options.routeHandler ? this.options.routeHandler(fragment) : false;
@@ -180,7 +180,7 @@ define(["exports", "aurelia-history"], function (exports, _aureliaHistory) {
         configurable: true
       },
       navigate: {
-        value: function (fragment, options) {
+        value: function navigate(fragment, options) {
           if (fragment && fragment.indexOf("://") != -1) {
             window.location.href = fragment;
             return true;
@@ -241,7 +241,7 @@ define(["exports", "aurelia-history"], function (exports, _aureliaHistory) {
         configurable: true
       },
       navigateBack: {
-        value: function () {
+        value: function navigateBack() {
           this.history.back();
         },
         writable: true,
