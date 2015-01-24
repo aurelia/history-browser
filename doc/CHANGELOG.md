@@ -1,3 +1,11 @@
+### 0.2.3 (2015-01-24)
+
+
+#### Bug Fixes
+
+* **bower:** correct semver ranges ([9c7f33f5](http://github.com/aurelia/history-browser/commit/9c7f33f59c82075dcd505afbc8936e613685ab30))
+
+
 ### 0.2.2 (2015-01-22)
 
 
