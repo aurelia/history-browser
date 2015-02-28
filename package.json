@@ -19,13 +19,13 @@
     "url": "http://github.com/aurelia/history-browser"
   },
   "jspm": {
-    "main": "system/index",
+    "main": "index",
     "format": "register",
     "directories": {
-      "lib": "dist"
+      "lib": "dist/system"
     },
     "dependencies": {
-      "aurelia-history": "github:aurelia/history@^0.2.3",
+      "aurelia-history": "github:aurelia/history@^0.2.4",
       "core-js": "npm:core-js@^0.4.1"
     }
   },
