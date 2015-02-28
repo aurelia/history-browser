@@ -1,3 +1,11 @@
+### 0.2.5 (2015-02-28)
+
+
+#### Bug Fixes
+
+* **package:** change jspm directories ([2b161b23](http://github.com/aurelia/history-browser/commit/2b161b23a0a1cac8b1a9e6eb5d69ee54fe148675))
+
+
 ### 0.2.4 (2015-02-27)
 
 
