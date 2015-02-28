@@ -1,45 +1,41 @@
 "use strict";
 
-var _prototypeProperties = function (child, staticProps, instanceProps) {
-  if (staticProps) Object.defineProperties(child, staticProps);
-  if (instanceProps) Object.defineProperties(child.prototype, instanceProps);
-};
+var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
 
-var _inherits = function (subClass, superClass) {
-  if (typeof superClass !== "function" && superClass !== null) {
-    throw new TypeError("Super expression must either be null or a function, not " + typeof superClass);
-  }
-  subClass.prototype = Object.create(superClass && superClass.prototype, {
-    constructor: {
-      value: subClass,
-      enumerable: false,
-      writable: true,
-      configurable: true
-    }
-  });
-  if (superClass) subClass.__proto__ = superClass;
-};
+var _inherits = function (subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
+
+var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
 
 var History = require("aurelia-history").History;
+
+// Cached regex for stripping a leading hash/slash and trailing space.
 var routeStripper = /^[#\/]|\s+$/g;
 
+// Cached regex for stripping leading and trailing slashes.
 var rootStripper = /^\/+|\/+$/g;
 
+// Cached regex for detecting MSIE.
 var isExplorer = /msie [\w.]+/;
 
+// Cached regex for removing a trailing slash.
 var trailingSlash = /\/$/;
 
+// Update the hash location, either replacing the current entry, or adding
+// a new one to the browser history.
 function updateHash(location, fragment, replace) {
   if (replace) {
     var href = location.href.replace(/(javascript:|#).*$/, "");
     location.replace(href + "#" + fragment);
   } else {
+    // Some browsers require that `hash` contains a leading #.
     location.hash = "#" + fragment;
   }
 }
 
 var BrowserHistory = (function (History) {
   function BrowserHistory() {
+    _classCallCheck(this, BrowserHistory);
+
     this.interval = 50;
     this.active = false;
     this.previousFragment = "";
@@ -60,7 +56,6 @@ var BrowserHistory = (function (History) {
         return match ? match[1] : "";
       },
       writable: true,
-      enumerable: true,
       configurable: true
     },
     getFragment: {
@@ -82,7 +77,6 @@ var BrowserHistory = (function (History) {
         return fragment.replace(routeStripper, "");
       },
       writable: true,
-      enumerable: true,
       configurable: true
     },
     activate: {
@@ -93,6 +87,8 @@ var BrowserHistory = (function (History) {
 
         this.active = true;
 
+        // Figure out the initial configuration. Do we need an iframe?
+        // Is pushState desired ... is it available?
         this.options = Object.assign({}, { root: "/" }, this.options, options);
         this.root = this.options.root;
         this._wantsHashChange = this.options.hashChange !== false;
@@ -101,8 +97,11 @@ var BrowserHistory = (function (History) {
 
         var fragment = this.getFragment();
 
+        // Normalize root to always include a leading and trailing slash.
         this.root = ("/" + this.root + "/").replace(rootStripper, "/");
 
+        // Depending on whether we're using pushState or hashes, and whether
+        // 'onhashchange' is supported, determine how we check the URL state.
         if (this._hasPushState) {
           window.onpopstate = this._checkUrlCallback;
         } else if (this._wantsHashChange && "onhashchange" in window) {
@@ -111,16 +110,25 @@ var BrowserHistory = (function (History) {
           this._checkUrlInterval = setInterval(this._checkUrlCallback, this.interval);
         }
 
+        // Determine if we need to change the base url, for a pushState link
+        // opened by a non-pushState browser.
         this.fragment = fragment;
 
         var loc = this.location;
         var atRoot = loc.pathname.replace(/[^\/]$/, "$&/") === this.root;
 
+        // Transition from hashChange to pushState or vice versa if both are requested.
         if (this._wantsHashChange && this._wantsPushState) {
+          // If we've started off with a route from a `pushState`-enabled
+          // browser, but we're currently in a browser that doesn't support it...
           if (!this._hasPushState && !atRoot) {
             this.fragment = this.getFragment(null, true);
             this.location.replace(this.root + this.location.search + "#" + this.fragment);
+            // Return immediately as browser will do redirect to new url
             return true;
+
+            // Or if we've started out with a hash-based route, but we're currently
+            // in a browser where it could be `pushState`-based instead...
           } else if (this._hasPushState && atRoot && loc.hash) {
             this.fragment = this.getHash().replace(routeStripper, "");
             this["this"].replaceState({}, document.title, this.root + this.fragment + loc.search);
@@ -132,7 +140,6 @@ var BrowserHistory = (function (History) {
         }
       },
       writable: true,
-      enumerable: true,
       configurable: true
     },
     deactivate: {
@@ -143,7 +150,6 @@ var BrowserHistory = (function (History) {
         this.active = false;
       },
       writable: true,
-      enumerable: true,
       configurable: true
     },
     checkUrl: {
@@ -165,7 +171,6 @@ var BrowserHistory = (function (History) {
         this.loadUrl();
       },
       writable: true,
-      enumerable: true,
       configurable: true
     },
     loadUrl: {
@@ -175,7 +180,6 @@ var BrowserHistory = (function (History) {
         return this.options.routeHandler ? this.options.routeHandler(fragment) : false;
       },
       writable: true,
-      enumerable: true,
       configurable: true
     },
     navigate: {
@@ -209,22 +213,33 @@ var BrowserHistory = (function (History) {
 
         var url = this.root + fragment;
 
+        // Don't include a trailing slash on the root.
         if (fragment === "" && url !== "/") {
           url = url.slice(0, -1);
         }
 
+        // If pushState is available, we use it to set the fragment as a real URL.
         if (this._hasPushState) {
           this.history[options.replace ? "replaceState" : "pushState"]({}, document.title, url);
+
+          // If hash changes haven't been explicitly disabled, update the hash
+          // fragment to store history.
         } else if (this._wantsHashChange) {
           updateHash(this.location, fragment, options.replace);
 
           if (this.iframe && fragment !== this.getFragment(this.getHash(this.iframe))) {
+            // Opening and closing the iframe tricks IE7 and earlier to push a
+            // history entry on hash-tag change.  When replace is true, we don't
+            // want history.
             if (!options.replace) {
               this.iframe.document.open().close();
             }
 
             updateHash(this.iframe.location, fragment, options.replace);
           }
+
+          // If you've told us that you explicitly don't want fallback hashchange-
+          // based history, then `navigate` becomes a page refresh.
         } else {
           return this.location.assign(url);
         }
@@ -236,7 +251,6 @@ var BrowserHistory = (function (History) {
         }
       },
       writable: true,
-      enumerable: true,
       configurable: true
     },
     navigateBack: {
@@ -244,7 +258,6 @@ var BrowserHistory = (function (History) {
         this.history.back();
       },
       writable: true,
-      enumerable: true,
       configurable: true
     }
   });
@@ -258,3 +271,6 @@ function install(aurelia) {
 
 exports.BrowserHistory = BrowserHistory;
 exports.install = install;
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});

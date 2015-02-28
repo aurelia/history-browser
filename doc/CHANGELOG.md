@@ -1,3 +1,12 @@
+### 0.2.4 (2015-02-27)
+
+
+#### Bug Fixes
+
+* **build:** add missing bower bump ([5b4cc6f3](http://github.com/aurelia/history-browser/commit/5b4cc6f3ee303221f27efa2e4470c2f9acd9bb0e))
+* **package:** update dependencies ([d56c60df](http://github.com/aurelia/history-browser/commit/d56c60dfa51cf129575cc0f31d9d78e06642029e))
+
+
 ### 0.2.3 (2015-01-24)
 
 
