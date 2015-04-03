@@ -111,7 +111,7 @@ class BrowserHistory extends History {
         // in a browser where it could be `pushState`-based instead...
       } else if (this._hasPushState && atRoot && loc.hash) {
         this.fragment = this.getHash().replace(routeStripper, '');
-        this.this.replaceState({}, document.title, this.root + this.fragment + loc.search);
+        this.history.replaceState({}, document.title, this.root + this.fragment + loc.search);
       }
     }
 
