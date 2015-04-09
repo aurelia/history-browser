@@ -1,3 +1,4 @@
+import core from 'core-js';
 import {History} from 'aurelia-history';
 
 // Cached regex for stripping a leading hash/slash and trailing space.
@@ -24,8 +25,10 @@ function updateHash(location, fragment, replace) {
   }
 }
 
-class BrowserHistory extends History {
+export class BrowserHistory extends History {
   constructor(){
+    super();
+
     this.interval = 50;
     this.active = false;
     this.previousFragment = '';
@@ -111,7 +114,7 @@ class BrowserHistory extends History {
         // in a browser where it could be `pushState`-based instead...
       } else if (this._hasPushState && atRoot && loc.hash) {
         this.fragment = this.getHash().replace(routeStripper, '');
-        this.this.replaceState({}, document.title, this.root + this.fragment + loc.search);
+        this.history.replaceState({}, document.title, this.root + this.fragment + loc.search);
       }
     }
 
@@ -226,11 +229,6 @@ class BrowserHistory extends History {
   }
 }
 
-function install(aurelia){
+export function install(aurelia){
   aurelia.withSingleton(History, BrowserHistory);
 }
-
-export {
-  BrowserHistory,
-  install
-};

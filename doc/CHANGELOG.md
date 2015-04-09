@@ -1,3 +1,11 @@
+## 0.3.0 (2015-04-09)
+
+
+#### Bug Fixes
+
+* **all:** update compiler ([6be59964](http://github.com/aurelia/history-browser/commit/6be5996499d6a4668bfe58ba316462d612b61766))
+
+
 ### 0.2.5 (2015-02-28)
 
 
