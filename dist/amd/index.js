@@ -103,7 +103,7 @@ define(['exports', 'core-js', 'aurelia-history'], function (exports, _coreJs, _a
         } else if (this._wantsHashChange && 'onhashchange' in window) {
           window.addEventListener('hashchange', this._checkUrlCallback);
         } else if (this._wantsHashChange) {
-          this._checkUrlInterval = setInterval(this._checkUrlCallback, this.interval);
+          this._checkUrlTimer = setTimeout(this._checkUrlCallback, this.interval);
         }
 
         this.fragment = fragment;
@@ -132,13 +132,18 @@ define(['exports', 'core-js', 'aurelia-history'], function (exports, _coreJs, _a
       value: function deactivate() {
         window.onpopstate = null;
         window.removeEventListener('hashchange', this._checkUrlCallback);
-        clearInterval(this._checkUrlInterval);
+        clearTimeout(this._checkUrlTimer);
         this.active = false;
       }
     }, {
       key: 'checkUrl',
       value: function checkUrl() {
         var current = this.getFragment();
+
+        if (this._checkUrlTimer) {
+          clearTimeout(this._checkUrlTimer);
+          this._checkUrlTimer = setTimeout(this._checkUrlCallback, this.interval);
+        }
 
         if (current === this.fragment && this.iframe) {
           current = this.getFragment(this.getHash(this.iframe));

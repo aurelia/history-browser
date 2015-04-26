@@ -1,6 +1,6 @@
 'use strict';
 
-var _interopRequireWildcard = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
+var _interopRequireDefault = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
 
 var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } };
 
@@ -17,7 +17,7 @@ exports.install = install;
 
 var _core = require('core-js');
 
-var _core2 = _interopRequireWildcard(_core);
+var _core2 = _interopRequireDefault(_core);
 
 var _History2 = require('aurelia-history');
 
@@ -106,7 +106,7 @@ var BrowserHistory = (function (_History) {
       } else if (this._wantsHashChange && 'onhashchange' in window) {
         window.addEventListener('hashchange', this._checkUrlCallback);
       } else if (this._wantsHashChange) {
-        this._checkUrlInterval = setInterval(this._checkUrlCallback, this.interval);
+        this._checkUrlTimer = setTimeout(this._checkUrlCallback, this.interval);
       }
 
       this.fragment = fragment;
@@ -135,13 +135,18 @@ var BrowserHistory = (function (_History) {
     value: function deactivate() {
       window.onpopstate = null;
       window.removeEventListener('hashchange', this._checkUrlCallback);
-      clearInterval(this._checkUrlInterval);
+      clearTimeout(this._checkUrlTimer);
       this.active = false;
     }
   }, {
     key: 'checkUrl',
     value: function checkUrl() {
       var current = this.getFragment();
+
+      if (this._checkUrlTimer) {
+        clearTimeout(this._checkUrlTimer);
+        this._checkUrlTimer = setTimeout(this._checkUrlCallback, this.interval);
+      }
 
       if (current === this.fragment && this.iframe) {
         current = this.getFragment(this.getHash(this.iframe));

@@ -90,7 +90,7 @@ export class BrowserHistory extends History {
     } else if (this._wantsHashChange && ('onhashchange' in window)) {
       window.addEventListener('hashchange', this._checkUrlCallback);
     } else if (this._wantsHashChange) {
-      this._checkUrlInterval = setInterval(this._checkUrlCallback, this.interval);
+      this._checkUrlTimer = setTimeout(this._checkUrlCallback, this.interval);
     }
 
     // Determine if we need to change the base url, for a pushState link
@@ -126,12 +126,17 @@ export class BrowserHistory extends History {
   deactivate() {
     window.onpopstate = null;
     window.removeEventListener('hashchange', this._checkUrlCallback);
-    clearInterval(this._checkUrlInterval);
+    clearTimeout(this._checkUrlTimer);
     this.active = false;
   }
 
   checkUrl() {
     var current = this.getFragment();
+    
+    if (this._checkUrlTimer) {
+        clearTimeout(this._checkUrlTimer);
+        this._checkUrlTimer = setTimeout(this._checkUrlCallback, this.interval);
+    }
 
     if (current === this.fragment && this.iframe) {
       current = this.getFragment(this.getHash(this.iframe));
