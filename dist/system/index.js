@@ -1,7 +1,7 @@
 System.register(['core-js', 'aurelia-history'], function (_export) {
-  var core, History, _classCallCheck, _createClass, _get, _inherits, routeStripper, rootStripper, isExplorer, trailingSlash, BrowserHistory;
+  var core, History, _classCallCheck, _inherits, routeStripper, rootStripper, isExplorer, trailingSlash, BrowserHistory;
 
-  _export('install', install);
+  _export('configure', configure);
 
   function updateHash(location, fragment, replace) {
     if (replace) {
@@ -12,7 +12,7 @@ System.register(['core-js', 'aurelia-history'], function (_export) {
     }
   }
 
-  function install(aurelia) {
+  function configure(aurelia) {
     aurelia.withSingleton(History, BrowserHistory);
   }
 
@@ -27,10 +27,6 @@ System.register(['core-js', 'aurelia-history'], function (_export) {
 
       _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } };
 
-      _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-      _get = function get(object, property, receiver) { var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
-
       _inherits = function (subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
 
       routeStripper = /^[#\/]|\s+$/g;
@@ -42,7 +38,7 @@ System.register(['core-js', 'aurelia-history'], function (_export) {
         function BrowserHistory() {
           _classCallCheck(this, BrowserHistory);
 
-          _get(Object.getPrototypeOf(BrowserHistory.prototype), 'constructor', this).call(this);
+          _History.call(this);
 
           this.interval = 50;
           this.active = false;
@@ -57,182 +53,172 @@ System.register(['core-js', 'aurelia-history'], function (_export) {
 
         _inherits(BrowserHistory, _History);
 
-        _createClass(BrowserHistory, [{
-          key: 'getHash',
-          value: function getHash(window) {
-            var match = (window || this).location.href.match(/#(.*)$/);
-            return match ? match[1] : '';
-          }
-        }, {
-          key: 'getFragment',
-          value: function getFragment(fragment, forcePushState) {
-            var root;
+        BrowserHistory.prototype.getHash = function getHash(window) {
+          var match = (window || this).location.href.match(/#(.*)$/);
+          return match ? match[1] : '';
+        };
 
-            if (!fragment) {
-              if (this._hasPushState || !this._wantsHashChange || forcePushState) {
-                fragment = this.location.pathname + this.location.search;
-                root = this.root.replace(trailingSlash, '');
-                if (!fragment.indexOf(root)) {
-                  fragment = fragment.substr(root.length);
-                }
-              } else {
-                fragment = this.getHash();
+        BrowserHistory.prototype.getFragment = function getFragment(fragment, forcePushState) {
+          var root;
+
+          if (!fragment) {
+            if (this._hasPushState || !this._wantsHashChange || forcePushState) {
+              fragment = this.location.pathname + this.location.search;
+              root = this.root.replace(trailingSlash, '');
+              if (!fragment.indexOf(root)) {
+                fragment = fragment.substr(root.length);
               }
-            }
-
-            return fragment.replace(routeStripper, '');
-          }
-        }, {
-          key: 'activate',
-          value: function activate(options) {
-            if (this.active) {
-              throw new Error('History has already been activated.');
-            }
-
-            this.active = true;
-
-            this.options = Object.assign({}, { root: '/' }, this.options, options);
-            this.root = this.options.root;
-            this._wantsHashChange = this.options.hashChange !== false;
-            this._wantsPushState = !!this.options.pushState;
-            this._hasPushState = !!(this.options.pushState && this.history && this.history.pushState);
-
-            var fragment = this.getFragment();
-
-            this.root = ('/' + this.root + '/').replace(rootStripper, '/');
-
-            if (this._hasPushState) {
-              window.onpopstate = this._checkUrlCallback;
-            } else if (this._wantsHashChange && 'onhashchange' in window) {
-              window.addEventListener('hashchange', this._checkUrlCallback);
-            } else if (this._wantsHashChange) {
-              this._checkUrlTimer = setTimeout(this._checkUrlCallback, this.interval);
-            }
-
-            this.fragment = fragment;
-
-            var loc = this.location;
-            var atRoot = loc.pathname.replace(/[^\/]$/, '$&/') === this.root;
-
-            if (this._wantsHashChange && this._wantsPushState) {
-              if (!this._hasPushState && !atRoot) {
-                this.fragment = this.getFragment(null, true);
-                this.location.replace(this.root + this.location.search + '#' + this.fragment);
-
-                return true;
-              } else if (this._hasPushState && atRoot && loc.hash) {
-                this.fragment = this.getHash().replace(routeStripper, '');
-                this.history.replaceState({}, document.title, this.root + this.fragment + loc.search);
-              }
-            }
-
-            if (!this.options.silent) {
-              return this.loadUrl();
+            } else {
+              fragment = this.getHash();
             }
           }
-        }, {
-          key: 'deactivate',
-          value: function deactivate() {
-            window.onpopstate = null;
-            window.removeEventListener('hashchange', this._checkUrlCallback);
-            clearTimeout(this._checkUrlTimer);
-            this.active = false;
+
+          return fragment.replace(routeStripper, '');
+        };
+
+        BrowserHistory.prototype.activate = function activate(options) {
+          if (this.active) {
+            throw new Error('History has already been activated.');
           }
-        }, {
-          key: 'checkUrl',
-          value: function checkUrl() {
-            var current = this.getFragment();
 
-            if (this._checkUrlTimer) {
-              clearTimeout(this._checkUrlTimer);
-              this._checkUrlTimer = setTimeout(this._checkUrlCallback, this.interval);
-            }
+          this.active = true;
 
-            if (current === this.fragment && this.iframe) {
-              current = this.getFragment(this.getHash(this.iframe));
-            }
+          this.options = Object.assign({}, { root: '/' }, this.options, options);
+          this.root = this.options.root;
+          this._wantsHashChange = this.options.hashChange !== false;
+          this._wantsPushState = !!this.options.pushState;
+          this._hasPushState = !!(this.options.pushState && this.history && this.history.pushState);
 
-            if (current === this.fragment) {
-              return false;
-            }
+          var fragment = this.getFragment();
 
-            if (this.iframe) {
-              this.navigate(current, false);
-            }
+          this.root = ('/' + this.root + '/').replace(rootStripper, '/');
 
-            this.loadUrl();
+          if (this._hasPushState) {
+            window.onpopstate = this._checkUrlCallback;
+          } else if (this._wantsHashChange && 'onhashchange' in window) {
+            window.addEventListener('hashchange', this._checkUrlCallback);
+          } else if (this._wantsHashChange) {
+            this._checkUrlTimer = setTimeout(this._checkUrlCallback, this.interval);
           }
-        }, {
-          key: 'loadUrl',
-          value: function loadUrl(fragmentOverride) {
-            var fragment = this.fragment = this.getFragment(fragmentOverride);
 
-            return this.options.routeHandler ? this.options.routeHandler(fragment) : false;
-          }
-        }, {
-          key: 'navigate',
-          value: function navigate(fragment, options) {
-            if (fragment && fragment.indexOf('://') != -1) {
-              window.location.href = fragment;
+          this.fragment = fragment;
+
+          var loc = this.location;
+          var atRoot = loc.pathname.replace(/[^\/]$/, '$&/') === this.root;
+
+          if (this._wantsHashChange && this._wantsPushState) {
+            if (!this._hasPushState && !atRoot) {
+              this.fragment = this.getFragment(null, true);
+              this.location.replace(this.root + this.location.search + '#' + this.fragment);
+
               return true;
+            } else if (this._hasPushState && atRoot && loc.hash) {
+              this.fragment = this.getHash().replace(routeStripper, '');
+              this.history.replaceState({}, document.title, this.root + this.fragment + loc.search);
             }
+          }
 
-            if (!this.active) {
-              return false;
-            }
+          if (!this.options.silent) {
+            return this.loadUrl();
+          }
+        };
 
-            if (options === undefined) {
-              options = {
-                trigger: true
-              };
-            } else if (typeof options === 'boolean') {
-              options = {
-                trigger: options
-              };
-            }
+        BrowserHistory.prototype.deactivate = function deactivate() {
+          window.onpopstate = null;
+          window.removeEventListener('hashchange', this._checkUrlCallback);
+          clearTimeout(this._checkUrlTimer);
+          this.active = false;
+        };
 
-            fragment = this.getFragment(fragment || '');
+        BrowserHistory.prototype.checkUrl = function checkUrl() {
+          var current = this.getFragment();
 
-            if (this.fragment === fragment) {
-              return;
-            }
+          if (this._checkUrlTimer) {
+            clearTimeout(this._checkUrlTimer);
+            this._checkUrlTimer = setTimeout(this._checkUrlCallback, this.interval);
+          }
 
-            this.fragment = fragment;
+          if (current === this.fragment && this.iframe) {
+            current = this.getFragment(this.getHash(this.iframe));
+          }
 
-            var url = this.root + fragment;
+          if (current === this.fragment) {
+            return false;
+          }
 
-            if (fragment === '' && url !== '/') {
-              url = url.slice(0, -1);
-            }
+          if (this.iframe) {
+            this.navigate(current, false);
+          }
 
-            if (this._hasPushState) {
-              this.history[options.replace ? 'replaceState' : 'pushState']({}, document.title, url);
-            } else if (this._wantsHashChange) {
-              updateHash(this.location, fragment, options.replace);
+          this.loadUrl();
+        };
 
-              if (this.iframe && fragment !== this.getFragment(this.getHash(this.iframe))) {
-                if (!options.replace) {
-                  this.iframe.document.open().close();
-                }
+        BrowserHistory.prototype.loadUrl = function loadUrl(fragmentOverride) {
+          var fragment = this.fragment = this.getFragment(fragmentOverride);
 
-                updateHash(this.iframe.location, fragment, options.replace);
+          return this.options.routeHandler ? this.options.routeHandler(fragment) : false;
+        };
+
+        BrowserHistory.prototype.navigate = function navigate(fragment, options) {
+          if (fragment && fragment.indexOf('://') != -1) {
+            window.location.href = fragment;
+            return true;
+          }
+
+          if (!this.active) {
+            return false;
+          }
+
+          if (options === undefined) {
+            options = {
+              trigger: true
+            };
+          } else if (typeof options === 'boolean') {
+            options = {
+              trigger: options
+            };
+          }
+
+          fragment = this.getFragment(fragment || '');
+
+          if (this.fragment === fragment) {
+            return;
+          }
+
+          this.fragment = fragment;
+
+          var url = this.root + fragment;
+
+          if (fragment === '' && url !== '/') {
+            url = url.slice(0, -1);
+          }
+
+          if (this._hasPushState) {
+            this.history[options.replace ? 'replaceState' : 'pushState']({}, document.title, url);
+          } else if (this._wantsHashChange) {
+            updateHash(this.location, fragment, options.replace);
+
+            if (this.iframe && fragment !== this.getFragment(this.getHash(this.iframe))) {
+              if (!options.replace) {
+                this.iframe.document.open().close();
               }
-            } else {
-              return this.location.assign(url);
-            }
 
-            if (options.trigger) {
-              return this.loadUrl(fragment);
-            } else {
-              this.previousFragment = fragment;
+              updateHash(this.iframe.location, fragment, options.replace);
             }
+          } else {
+            return this.location.assign(url);
           }
-        }, {
-          key: 'navigateBack',
-          value: function navigateBack() {
-            this.history.back();
+
+          if (options.trigger) {
+            return this.loadUrl(fragment);
+          } else {
+            this.previousFragment = fragment;
           }
-        }]);
+        };
+
+        BrowserHistory.prototype.navigateBack = function navigateBack() {
+          this.history.back();
+        };
 
         return BrowserHistory;
       })(History);

@@ -132,7 +132,7 @@ export class BrowserHistory extends History {
 
   checkUrl() {
     var current = this.getFragment();
-    
+
     if (this._checkUrlTimer) {
         clearTimeout(this._checkUrlTimer);
         this._checkUrlTimer = setTimeout(this._checkUrlCallback, this.interval);
@@ -234,6 +234,6 @@ export class BrowserHistory extends History {
   }
 }
 
-export function install(aurelia){
+export function configure(aurelia){
   aurelia.withSingleton(History, BrowserHistory);
 }

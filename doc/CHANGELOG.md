@@ -1,3 +1,11 @@
+## 0.4.0 (2015-04-30)
+
+
+#### Bug Fixes
+
+* **all:** update to latest plugin api ([85418be2](http://github.com/aurelia/history-browser/commit/85418be278701aa3dd9c4947c2ed92d7ce1a54ef))
+
+
 ## 0.3.0 (2015-04-09)
 
 
