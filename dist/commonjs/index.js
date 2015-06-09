@@ -1,27 +1,29 @@
 'use strict';
 
-var _interopRequireDefault = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
-
-var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } };
-
-var _inherits = function (subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
-
 exports.__esModule = true;
 exports.configure = configure;
 
-var _core = require('core-js');
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-var _core2 = _interopRequireDefault(_core);
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-var _History2 = require('aurelia-history');
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
 
-var routeStripper = /^[#\/]|\s+$/g;
+var _coreJs = require('core-js');
+
+var _coreJs2 = _interopRequireDefault(_coreJs);
+
+var _aureliaHistory = require('aurelia-history');
+
+var routeStripper = /^#?\/*|\s+$/g;
 
 var rootStripper = /^\/+|\/+$/g;
 
 var isExplorer = /msie [\w.]+/;
 
 var trailingSlash = /\/$/;
+
+var absoluteUrl = /^([a-z][a-z0-9+\-.]*:)?\/\//i;
 
 function updateHash(location, fragment, replace) {
   if (replace) {
@@ -158,7 +160,7 @@ var BrowserHistory = (function (_History) {
   };
 
   BrowserHistory.prototype.navigate = function navigate(fragment, options) {
-    if (fragment && fragment.indexOf('://') != -1) {
+    if (fragment && absoluteUrl.test(fragment)) {
       window.location.href = fragment;
       return true;
     }
@@ -219,10 +221,10 @@ var BrowserHistory = (function (_History) {
   };
 
   return BrowserHistory;
-})(_History2.History);
+})(_aureliaHistory.History);
 
 exports.BrowserHistory = BrowserHistory;
 
 function configure(aurelia) {
-  aurelia.withSingleton(_History2.History, BrowserHistory);
+  aurelia.withSingleton(_aureliaHistory.History, BrowserHistory);
 }

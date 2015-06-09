@@ -1,24 +1,26 @@
 define(['exports', 'core-js', 'aurelia-history'], function (exports, _coreJs, _aureliaHistory) {
   'use strict';
 
-  var _interopRequire = function (obj) { return obj && obj.__esModule ? obj['default'] : obj; };
-
-  var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } };
-
-  var _inherits = function (subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
-
   exports.__esModule = true;
   exports.configure = configure;
 
-  var _core = _interopRequire(_coreJs);
+  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-  var routeStripper = /^[#\/]|\s+$/g;
+  function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+  function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+
+  var _core = _interopRequireDefault(_coreJs);
+
+  var routeStripper = /^#?\/*|\s+$/g;
 
   var rootStripper = /^\/+|\/+$/g;
 
   var isExplorer = /msie [\w.]+/;
 
   var trailingSlash = /\/$/;
+
+  var absoluteUrl = /^([a-z][a-z0-9+\-.]*:)?\/\//i;
 
   function updateHash(location, fragment, replace) {
     if (replace) {
@@ -155,7 +157,7 @@ define(['exports', 'core-js', 'aurelia-history'], function (exports, _coreJs, _a
     };
 
     BrowserHistory.prototype.navigate = function navigate(fragment, options) {
-      if (fragment && fragment.indexOf('://') != -1) {
+      if (fragment && absoluteUrl.test(fragment)) {
         window.location.href = fragment;
         return true;
       }

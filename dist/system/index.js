@@ -1,7 +1,13 @@
 System.register(['core-js', 'aurelia-history'], function (_export) {
-  var core, History, _classCallCheck, _inherits, routeStripper, rootStripper, isExplorer, trailingSlash, BrowserHistory;
+  'use strict';
+
+  var core, History, routeStripper, rootStripper, isExplorer, trailingSlash, absoluteUrl, BrowserHistory;
 
   _export('configure', configure);
+
+  function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+  function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
 
   function updateHash(location, fragment, replace) {
     if (replace) {
@@ -23,16 +29,11 @@ System.register(['core-js', 'aurelia-history'], function (_export) {
       History = _aureliaHistory.History;
     }],
     execute: function () {
-      'use strict';
-
-      _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } };
-
-      _inherits = function (subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
-
-      routeStripper = /^[#\/]|\s+$/g;
+      routeStripper = /^#?\/*|\s+$/g;
       rootStripper = /^\/+|\/+$/g;
       isExplorer = /msie [\w.]+/;
       trailingSlash = /\/$/;
+      absoluteUrl = /^([a-z][a-z0-9+\-.]*:)?\/\//i;
 
       BrowserHistory = (function (_History) {
         function BrowserHistory() {
@@ -160,7 +161,7 @@ System.register(['core-js', 'aurelia-history'], function (_export) {
         };
 
         BrowserHistory.prototype.navigate = function navigate(fragment, options) {
-          if (fragment && fragment.indexOf('://') != -1) {
+          if (fragment && absoluteUrl.test(fragment)) {
             window.location.href = fragment;
             return true;
           }

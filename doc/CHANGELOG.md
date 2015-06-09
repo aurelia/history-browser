@@ -1,3 +1,12 @@
+## 0.5.0 (2015-06-08)
+
+
+#### Bug Fixes
+
+* **history-browser:** support scheme-relative URLs in BrowserHistory.navigate() ([16fcfdd7](http://github.com/aurelia/history-browser/commit/16fcfdd71656e0ed72d98ca6bd4e2cb6a6654517))
+* **normalize-fragment:** fix getFragment() to return normalized values ([5cb9bf30](http://github.com/aurelia/history-browser/commit/5cb9bf30689558d12a9ffb05088e2206fac4777f))
+
+
 ## 0.4.0 (2015-04-30)
 
 

@@ -2,7 +2,7 @@ import core from 'core-js';
 import {History} from 'aurelia-history';
 
 // Cached regex for stripping a leading hash/slash and trailing space.
-var routeStripper = /^[#\/]|\s+$/g;
+var routeStripper = /^#?\/*|\s+$/g;
 
 // Cached regex for stripping leading and trailing slashes.
 var rootStripper = /^\/+|\/+$/g;
@@ -12,6 +12,11 @@ var isExplorer = /msie [\w.]+/;
 
 // Cached regex for removing a trailing slash.
 var trailingSlash = /\/$/;
+
+// Cached regex for detecting if a URL is absolute,
+// i.e., starts with a scheme or is scheme-relative.
+// See http://www.ietf.org/rfc/rfc2396.txt section 3.1 for valid scheme format
+const absoluteUrl = /^([a-z][a-z0-9+\-.]*:)?\/\//i;
 
 // Update the hash location, either replacing the current entry, or adding
 // a new one to the browser history.
@@ -162,7 +167,7 @@ export class BrowserHistory extends History {
   }
 
   navigate(fragment, options) {
-    if (fragment && fragment.indexOf('://') != -1) {
+    if (fragment && absoluteUrl.test(fragment)) {
       window.location.href = fragment;
       return true;
     }
