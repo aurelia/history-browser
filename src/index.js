@@ -65,7 +65,7 @@ export class BrowserHistory extends History {
       }
     }
 
-    return fragment.replace(routeStripper, '');
+    return '/' + fragment.replace(routeStripper, '');
   }
 
   activate(options) {

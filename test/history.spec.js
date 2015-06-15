@@ -9,7 +9,7 @@ describe('browser history', () => {
   describe('getFragment()', () => {
 
     it('should normalize fragment', () => {
-      var expected = 'admin/user/123';
+      var expected = '/admin/user/123';
       var bh = new BrowserHistory();
 
       expect(bh.getFragment('admin/user/123')).toBe(expected);
