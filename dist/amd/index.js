@@ -70,7 +70,7 @@ define(['exports', 'core-js', 'aurelia-history'], function (exports, _coreJs, _a
         }
       }
 
-      return fragment.replace(routeStripper, '');
+      return '/' + fragment.replace(routeStripper, '');
     };
 
     BrowserHistory.prototype.activate = function activate(options) {

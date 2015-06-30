@@ -73,7 +73,7 @@ var BrowserHistory = (function (_History) {
       }
     }
 
-    return fragment.replace(routeStripper, '');
+    return '/' + fragment.replace(routeStripper, '');
   };
 
   BrowserHistory.prototype.activate = function activate(options) {

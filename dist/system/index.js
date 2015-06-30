@@ -74,7 +74,7 @@ System.register(['core-js', 'aurelia-history'], function (_export) {
             }
           }
 
-          return fragment.replace(routeStripper, '');
+          return '/' + fragment.replace(routeStripper, '');
         };
 
         BrowserHistory.prototype.activate = function activate(options) {
