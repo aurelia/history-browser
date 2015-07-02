@@ -1,3 +1,12 @@
+## 0.6.0 (2015-07-01)
+
+
+#### Bug Fixes
+
+* **history:** normalize fragments with a leading slash ([66998d87](http://github.com/aurelia/history-browser/commit/66998d873140c32fc2f78ce21b19356f96d8eba2))
+* **package:** update aurelia tools and dts generator ([ee59abbc](http://github.com/aurelia/history-browser/commit/ee59abbc9465107644fef1ea6f3748c9f9e32859))
+
+
 ## 0.5.0 (2015-06-08)
 
 
