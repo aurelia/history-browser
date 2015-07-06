@@ -64,6 +64,11 @@ export class BrowserHistory extends History {
         fragment = this.getHash();
       }
     }
+    
+    // If fragment is already prefixed with a slash, don't add another
+    if (fragment.charAt(0) === '/') {
+      return fragment.replace(routeStripper, '');
+    }
 
     return '/' + fragment.replace(routeStripper, '');
   }
