@@ -194,6 +194,7 @@ var BrowserHistory = (function (_History) {
     }
 
     if (this._hasPushState) {
+      url = url.replace('//', '/');
       this.history[options.replace ? 'replaceState' : 'pushState']({}, document.title, url);
     } else if (this._wantsHashChange) {
       updateHash(this.location, fragment, options.replace);

@@ -195,6 +195,7 @@ System.register(['core-js', 'aurelia-history'], function (_export) {
           }
 
           if (this._hasPushState) {
+            url = url.replace('//', '/');
             this.history[options.replace ? 'replaceState' : 'pushState']({}, document.title, url);
           } else if (this._wantsHashChange) {
             updateHash(this.location, fragment, options.replace);

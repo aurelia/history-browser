@@ -203,6 +203,7 @@ export class BrowserHistory extends History {
 
     // If pushState is available, we use it to set the fragment as a real URL.
     if (this._hasPushState) {
+      url = url.replace('//', '/');
       this.history[options.replace ? 'replaceState' : 'pushState']({}, document.title, url);
 
       // If hash changes haven't been explicitly disabled, update the hash

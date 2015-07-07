@@ -1,3 +1,13 @@
+### 0.6.1 (2015-07-07)
+
+
+#### Bug Fixes
+
+* **history:**
+  * Improved previous pushState security fix by only fixing up double slashes in fra ([9d7565a1](http://github.com/aurelia/history-browser/commit/9d7565a16fe1765eff7d677c22321643c91b3890))
+  * fixed regression issue which added double slashes to the pushState fragment ([57983341](http://github.com/aurelia/history-browser/commit/579833415f55372def76ccbf5fbbd1ebd939ae7b))
+
+
 ## 0.6.0 (2015-07-01)
 
 
