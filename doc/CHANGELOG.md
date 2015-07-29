@@ -1,3 +1,7 @@
+### 0.6.2 (2015-07-29)
+
+* improve output file name
+
 ### 0.6.1 (2015-07-07)
 
 
@@ -111,4 +115,3 @@
 #### Bug Fixes
 
 * **history:** fix incorrect falsey check in getFragment ([34cb8224](http://github.com/aurelia/history-browser/commit/34cb8224e24cb1761042668bb96d6c5d42e0c7cf))
-
