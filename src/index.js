@@ -240,6 +240,6 @@ export class BrowserHistory extends History {
   }
 }
 
-export function configure(aurelia:Object):void{
-  aurelia.withSingleton(History, BrowserHistory);
+export function configure(config:Object):void{
+  config.singleton(History, BrowserHistory);
 }
