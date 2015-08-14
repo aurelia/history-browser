@@ -188,9 +188,10 @@ export class BrowserHistory extends History {
 
     fragment = this.getFragment(fragment || '');
 
-    if (this.fragment === fragment) {
-      return;
-    }
+    //removed. router.reset not routing to new url
+    //if (this.fragment === fragment) {
+    //  return;
+    //}
 
     this.fragment = fragment;
 
