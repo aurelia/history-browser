@@ -7,7 +7,7 @@ System.register(['core-js', 'aurelia-history'], function (_export) {
 
   function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-  function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+  function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
   function updateHash(location, fragment, replace) {
     if (replace) {
@@ -18,13 +18,13 @@ System.register(['core-js', 'aurelia-history'], function (_export) {
     }
   }
 
-  function configure(aurelia) {
-    aurelia.withSingleton(History, BrowserHistory);
+  function configure(config) {
+    config.singleton(History, BrowserHistory);
   }
 
   return {
     setters: [function (_coreJs) {
-      core = _coreJs['default'];
+      core = _coreJs;
     }, function (_aureliaHistory) {
       History = _aureliaHistory.History;
     }],
@@ -36,6 +36,8 @@ System.register(['core-js', 'aurelia-history'], function (_export) {
       absoluteUrl = /^([a-z][a-z0-9+\-.]*:)?\/\//i;
 
       BrowserHistory = (function (_History) {
+        _inherits(BrowserHistory, _History);
+
         function BrowserHistory() {
           _classCallCheck(this, BrowserHistory);
 
@@ -51,8 +53,6 @@ System.register(['core-js', 'aurelia-history'], function (_export) {
             this.history = window.history;
           }
         }
-
-        _inherits(BrowserHistory, _History);
 
         BrowserHistory.prototype.getHash = function getHash(window) {
           var match = (window || this).location.href.match(/#(.*)$/);
@@ -79,7 +79,7 @@ System.register(['core-js', 'aurelia-history'], function (_export) {
 
         BrowserHistory.prototype.activate = function activate(options) {
           if (this.active) {
-            throw new Error('History has already been activated.');
+            throw new Error("History has already been activated.");
           }
 
           this.active = true;
@@ -114,9 +114,9 @@ System.register(['core-js', 'aurelia-history'], function (_export) {
 
               return true;
             } else if (this._hasPushState && atRoot && loc.hash) {
-              this.fragment = this.getHash().replace(routeStripper, '');
-              this.history.replaceState({}, document.title, this.root + this.fragment + loc.search);
-            }
+                this.fragment = this.getHash().replace(routeStripper, '');
+                this.history.replaceState({}, document.title, this.root + this.fragment + loc.search);
+              }
           }
 
           if (!this.options.silent) {
@@ -174,7 +174,7 @@ System.register(['core-js', 'aurelia-history'], function (_export) {
             options = {
               trigger: true
             };
-          } else if (typeof options === 'boolean') {
+          } else if (typeof options === "boolean") {
             options = {
               trigger: options
             };
@@ -198,18 +198,18 @@ System.register(['core-js', 'aurelia-history'], function (_export) {
             url = url.replace('//', '/');
             this.history[options.replace ? 'replaceState' : 'pushState']({}, document.title, url);
           } else if (this._wantsHashChange) {
-            updateHash(this.location, fragment, options.replace);
+              updateHash(this.location, fragment, options.replace);
 
-            if (this.iframe && fragment !== this.getFragment(this.getHash(this.iframe))) {
-              if (!options.replace) {
-                this.iframe.document.open().close();
+              if (this.iframe && fragment !== this.getFragment(this.getHash(this.iframe))) {
+                if (!options.replace) {
+                  this.iframe.document.open().close();
+                }
+
+                updateHash(this.iframe.location, fragment, options.replace);
               }
-
-              updateHash(this.iframe.location, fragment, options.replace);
-            }
-          } else {
-            return this.location.assign(url);
-          }
+            } else {
+                return this.location.assign(url);
+              }
 
           if (options.trigger) {
             return this.loadUrl(fragment);

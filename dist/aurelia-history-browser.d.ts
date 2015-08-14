@@ -1,5 +1,5 @@
 declare module 'aurelia-history-browser' {
-  import core from 'core-js';
+  import * as core from 'core-js';
   import { History }  from 'aurelia-history';
   export class BrowserHistory extends History {
     constructor();
@@ -12,5 +12,5 @@ declare module 'aurelia-history-browser' {
     navigate(fragment?: string, options?: Object): boolean;
     navigateBack(): void;
   }
-  export function configure(aurelia: Object): void;
+  export function configure(config: Object): void;
 }

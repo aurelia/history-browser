@@ -1,4 +1,4 @@
-import core from 'core-js';
+import * as core from 'core-js';
 import {History} from 'aurelia-history';
 
 // Cached regex for stripping a leading hash/slash and trailing space.
@@ -45,12 +45,12 @@ export class BrowserHistory extends History {
     }
   }
 
-  getHash(window?:Window):string {
+  getHash(window? : Window) : string {
     var match = (window || this).location.href.match(/#(.*)$/);
     return match ? match[1] : '';
   }
 
-  getFragment(fragment:string, forcePushState?:boolean):string {
+  getFragment(fragment : string, forcePushState? : boolean) : string {
     var root;
 
     if (!fragment) {
@@ -68,7 +68,7 @@ export class BrowserHistory extends History {
     return '/' + fragment.replace(routeStripper, '');
   }
 
-  activate(options?:Object):boolean {
+  activate(options? : Object) : boolean {
     if (this.active) {
       throw new Error("History has already been activated.");
     }
@@ -128,14 +128,14 @@ export class BrowserHistory extends History {
     }
   }
 
-  deactivate():void {
+  deactivate() : void {
     window.onpopstate = null;
     window.removeEventListener('hashchange', this._checkUrlCallback);
     clearTimeout(this._checkUrlTimer);
     this.active = false;
   }
 
-  checkUrl():boolean {
+  checkUrl() : boolean {
     var current = this.getFragment();
 
     if (this._checkUrlTimer) {
@@ -158,7 +158,7 @@ export class BrowserHistory extends History {
     this.loadUrl();
   }
 
-  loadUrl(fragmentOverride:string):boolean {
+  loadUrl(fragmentOverride : string) : boolean {
     var fragment = this.fragment = this.getFragment(fragmentOverride);
 
     return this.options.routeHandler ?
@@ -166,7 +166,7 @@ export class BrowserHistory extends History {
       false;
   }
 
-  navigate(fragment?:string, options?:Object):boolean {
+  navigate(fragment? : string, options? : Object) : boolean {
     if (fragment && absoluteUrl.test(fragment)) {
       window.location.href = fragment;
       return true;
@@ -235,11 +235,11 @@ export class BrowserHistory extends History {
     }
   }
 
-  navigateBack():void {
+  navigateBack() : void {
     this.history.back();
   }
 }
 
-export function configure(aurelia:Object):void{
-  aurelia.withSingleton(History, BrowserHistory);
+export function configure(config : Object) : void {
+  config.singleton(History, BrowserHistory);
 }

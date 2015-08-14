@@ -1,3 +1,12 @@
+## 0.7.0 (2015-08-14)
+
+
+#### Bug Fixes
+
+* **history-browser:** Use correct import for core-js We were previously using `import core from core-j ([45d51c8c](http://github.com/aurelia/history-browser/commit/45d51c8cb525b410731300d1b70945b0f3ad4146))
+* **index:** update to latest configuration api ([a3681cfb](http://github.com/aurelia/history-browser/commit/a3681cfb52f58b9a8dffa37911c1eed5b15f81cc))
+
+
 ### 0.6.2 (2015-07-29)
 
 * improve output file name

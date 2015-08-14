@@ -3,15 +3,15 @@
 exports.__esModule = true;
 exports.configure = configure;
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj['default'] = obj; return newObj; } }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var _coreJs = require('core-js');
 
-var _coreJs2 = _interopRequireDefault(_coreJs);
+var core = _interopRequireWildcard(_coreJs);
 
 var _aureliaHistory = require('aurelia-history');
 
@@ -35,6 +35,8 @@ function updateHash(location, fragment, replace) {
 }
 
 var BrowserHistory = (function (_History) {
+  _inherits(BrowserHistory, _History);
+
   function BrowserHistory() {
     _classCallCheck(this, BrowserHistory);
 
@@ -50,8 +52,6 @@ var BrowserHistory = (function (_History) {
       this.history = window.history;
     }
   }
-
-  _inherits(BrowserHistory, _History);
 
   BrowserHistory.prototype.getHash = function getHash(window) {
     var match = (window || this).location.href.match(/#(.*)$/);
@@ -78,7 +78,7 @@ var BrowserHistory = (function (_History) {
 
   BrowserHistory.prototype.activate = function activate(options) {
     if (this.active) {
-      throw new Error('History has already been activated.');
+      throw new Error("History has already been activated.");
     }
 
     this.active = true;
@@ -113,9 +113,9 @@ var BrowserHistory = (function (_History) {
 
         return true;
       } else if (this._hasPushState && atRoot && loc.hash) {
-        this.fragment = this.getHash().replace(routeStripper, '');
-        this.history.replaceState({}, document.title, this.root + this.fragment + loc.search);
-      }
+          this.fragment = this.getHash().replace(routeStripper, '');
+          this.history.replaceState({}, document.title, this.root + this.fragment + loc.search);
+        }
     }
 
     if (!this.options.silent) {
@@ -173,7 +173,7 @@ var BrowserHistory = (function (_History) {
       options = {
         trigger: true
       };
-    } else if (typeof options === 'boolean') {
+    } else if (typeof options === "boolean") {
       options = {
         trigger: options
       };
@@ -197,18 +197,18 @@ var BrowserHistory = (function (_History) {
       url = url.replace('//', '/');
       this.history[options.replace ? 'replaceState' : 'pushState']({}, document.title, url);
     } else if (this._wantsHashChange) {
-      updateHash(this.location, fragment, options.replace);
+        updateHash(this.location, fragment, options.replace);
 
-      if (this.iframe && fragment !== this.getFragment(this.getHash(this.iframe))) {
-        if (!options.replace) {
-          this.iframe.document.open().close();
+        if (this.iframe && fragment !== this.getFragment(this.getHash(this.iframe))) {
+          if (!options.replace) {
+            this.iframe.document.open().close();
+          }
+
+          updateHash(this.iframe.location, fragment, options.replace);
         }
-
-        updateHash(this.iframe.location, fragment, options.replace);
-      }
-    } else {
-      return this.location.assign(url);
-    }
+      } else {
+          return this.location.assign(url);
+        }
 
     if (options.trigger) {
       return this.loadUrl(fragment);
@@ -226,6 +226,6 @@ var BrowserHistory = (function (_History) {
 
 exports.BrowserHistory = BrowserHistory;
 
-function configure(aurelia) {
-  aurelia.withSingleton(_aureliaHistory.History, BrowserHistory);
+function configure(config) {
+  config.singleton(_aureliaHistory.History, BrowserHistory);
 }
