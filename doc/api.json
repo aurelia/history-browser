@@ -1,1 +1,438 @@
-{"classes":[],"methods":[],"properties":[],"events":[]}
+{
+  "id": 2,
+  "name": "\"aurelia-history-browser\"",
+  "kind": 2,
+  "kindString": "Module",
+  "flags": {},
+  "children": [
+    {
+      "id": 3,
+      "name": "BrowserHistory",
+      "kind": 128,
+      "kindString": "Class",
+      "flags": {
+        "isExported": true
+      },
+      "children": [
+        {
+          "id": 4,
+          "name": "constructor",
+          "kind": 512,
+          "kindString": "Constructor",
+          "flags": {
+            "isExported": true
+          },
+          "signatures": [
+            {
+              "id": 5,
+              "name": "new BrowserHistory",
+              "kind": 16384,
+              "kindString": "Constructor signature",
+              "flags": {},
+              "type": {
+                "type": "reference",
+                "name": "BrowserHistory",
+                "id": 3,
+                "moduleName": "\"aurelia-history-browser\""
+              }
+            }
+          ]
+        },
+        {
+          "id": 13,
+          "name": "activate",
+          "kind": 2048,
+          "kindString": "Method",
+          "flags": {
+            "isExported": true
+          },
+          "signatures": [
+            {
+              "id": 14,
+              "name": "activate",
+              "kind": 4096,
+              "kindString": "Call signature",
+              "flags": {},
+              "parameters": [
+                {
+                  "id": 15,
+                  "name": "options",
+                  "kind": 32768,
+                  "kindString": "Parameter",
+                  "flags": {
+                    "isOptional": true
+                  },
+                  "type": {
+                    "type": "reference",
+                    "name": "Object"
+                  }
+                }
+              ],
+              "type": {
+                "type": "instrinct",
+                "name": "boolean"
+              },
+              "overwrites": {
+                "type": "reference",
+                "name": "History.activate",
+                "id": 38
+              }
+            }
+          ],
+          "overwrites": {
+            "type": "reference",
+            "name": "History.activate",
+            "id": 38
+          }
+        },
+        {
+          "id": 18,
+          "name": "checkUrl",
+          "kind": 2048,
+          "kindString": "Method",
+          "flags": {
+            "isExported": true
+          },
+          "signatures": [
+            {
+              "id": 19,
+              "name": "checkUrl",
+              "kind": 4096,
+              "kindString": "Call signature",
+              "flags": {},
+              "type": {
+                "type": "instrinct",
+                "name": "boolean"
+              }
+            }
+          ]
+        },
+        {
+          "id": 16,
+          "name": "deactivate",
+          "kind": 2048,
+          "kindString": "Method",
+          "flags": {
+            "isExported": true
+          },
+          "signatures": [
+            {
+              "id": 17,
+              "name": "deactivate",
+              "kind": 4096,
+              "kindString": "Call signature",
+              "flags": {},
+              "type": {
+                "type": "instrinct",
+                "name": "void"
+              },
+              "overwrites": {
+                "type": "reference",
+                "name": "History.deactivate",
+                "id": 41
+              }
+            }
+          ],
+          "overwrites": {
+            "type": "reference",
+            "name": "History.deactivate",
+            "id": 41
+          }
+        },
+        {
+          "id": 9,
+          "name": "getFragment",
+          "kind": 2048,
+          "kindString": "Method",
+          "flags": {
+            "isExported": true
+          },
+          "signatures": [
+            {
+              "id": 10,
+              "name": "getFragment",
+              "kind": 4096,
+              "kindString": "Call signature",
+              "flags": {},
+              "parameters": [
+                {
+                  "id": 11,
+                  "name": "fragment",
+                  "kind": 32768,
+                  "kindString": "Parameter",
+                  "flags": {},
+                  "type": {
+                    "type": "instrinct",
+                    "name": "string"
+                  }
+                },
+                {
+                  "id": 12,
+                  "name": "forcePushState",
+                  "kind": 32768,
+                  "kindString": "Parameter",
+                  "flags": {
+                    "isOptional": true
+                  },
+                  "type": {
+                    "type": "instrinct",
+                    "name": "boolean"
+                  }
+                }
+              ],
+              "type": {
+                "type": "instrinct",
+                "name": "string"
+              }
+            }
+          ]
+        },
+        {
+          "id": 6,
+          "name": "getHash",
+          "kind": 2048,
+          "kindString": "Method",
+          "flags": {
+            "isExported": true
+          },
+          "signatures": [
+            {
+              "id": 7,
+              "name": "getHash",
+              "kind": 4096,
+              "kindString": "Call signature",
+              "flags": {},
+              "parameters": [
+                {
+                  "id": 8,
+                  "name": "window",
+                  "kind": 32768,
+                  "kindString": "Parameter",
+                  "flags": {
+                    "isOptional": true
+                  },
+                  "type": {
+                    "type": "reference",
+                    "name": "Window"
+                  }
+                }
+              ],
+              "type": {
+                "type": "instrinct",
+                "name": "string"
+              }
+            }
+          ]
+        },
+        {
+          "id": 20,
+          "name": "loadUrl",
+          "kind": 2048,
+          "kindString": "Method",
+          "flags": {
+            "isExported": true
+          },
+          "signatures": [
+            {
+              "id": 21,
+              "name": "loadUrl",
+              "kind": 4096,
+              "kindString": "Call signature",
+              "flags": {},
+              "parameters": [
+                {
+                  "id": 22,
+                  "name": "fragmentOverride",
+                  "kind": 32768,
+                  "kindString": "Parameter",
+                  "flags": {},
+                  "type": {
+                    "type": "instrinct",
+                    "name": "string"
+                  }
+                }
+              ],
+              "type": {
+                "type": "instrinct",
+                "name": "boolean"
+              }
+            }
+          ]
+        },
+        {
+          "id": 23,
+          "name": "navigate",
+          "kind": 2048,
+          "kindString": "Method",
+          "flags": {
+            "isExported": true
+          },
+          "signatures": [
+            {
+              "id": 24,
+              "name": "navigate",
+              "kind": 4096,
+              "kindString": "Call signature",
+              "flags": {},
+              "parameters": [
+                {
+                  "id": 25,
+                  "name": "fragment",
+                  "kind": 32768,
+                  "kindString": "Parameter",
+                  "flags": {
+                    "isOptional": true
+                  },
+                  "type": {
+                    "type": "instrinct",
+                    "name": "string"
+                  }
+                },
+                {
+                  "id": 26,
+                  "name": "options",
+                  "kind": 32768,
+                  "kindString": "Parameter",
+                  "flags": {
+                    "isOptional": true
+                  },
+                  "type": {
+                    "type": "reference",
+                    "name": "Object"
+                  }
+                }
+              ],
+              "type": {
+                "type": "instrinct",
+                "name": "boolean"
+              },
+              "overwrites": {
+                "type": "reference",
+                "name": "History.navigate",
+                "id": 43
+              }
+            }
+          ],
+          "overwrites": {
+            "type": "reference",
+            "name": "History.navigate",
+            "id": 43
+          }
+        },
+        {
+          "id": 27,
+          "name": "navigateBack",
+          "kind": 2048,
+          "kindString": "Method",
+          "flags": {
+            "isExported": true
+          },
+          "signatures": [
+            {
+              "id": 28,
+              "name": "navigateBack",
+              "kind": 4096,
+              "kindString": "Call signature",
+              "flags": {},
+              "type": {
+                "type": "instrinct",
+                "name": "void"
+              },
+              "overwrites": {
+                "type": "reference",
+                "name": "History.navigateBack",
+                "id": 47
+              }
+            }
+          ],
+          "overwrites": {
+            "type": "reference",
+            "name": "History.navigateBack",
+            "id": 47
+          }
+        }
+      ],
+      "groups": [
+        {
+          "title": "Constructors",
+          "kind": 512,
+          "children": [
+            4
+          ]
+        },
+        {
+          "title": "Methods",
+          "kind": 2048,
+          "children": [
+            13,
+            18,
+            16,
+            9,
+            6,
+            20,
+            23,
+            27
+          ]
+        }
+      ],
+      "extendedTypes": [
+        {
+          "type": "reference",
+          "name": "History",
+          "id": 37
+        }
+      ]
+    },
+    {
+      "id": 29,
+      "name": "configure",
+      "kind": 64,
+      "kindString": "Function",
+      "flags": {
+        "isExported": true
+      },
+      "signatures": [
+        {
+          "id": 30,
+          "name": "configure",
+          "kind": 4096,
+          "kindString": "Call signature",
+          "flags": {},
+          "parameters": [
+            {
+              "id": 31,
+              "name": "config",
+              "kind": 32768,
+              "kindString": "Parameter",
+              "flags": {},
+              "type": {
+                "type": "reference",
+                "name": "Object"
+              }
+            }
+          ],
+          "type": {
+            "type": "instrinct",
+            "name": "void"
+          }
+        }
+      ]
+    }
+  ],
+  "groups": [
+    {
+      "title": "Classes",
+      "kind": 128,
+      "children": [
+        3
+      ]
+    },
+    {
+      "title": "Functions",
+      "kind": 64,
+      "children": [
+        29
+      ]
+    }
+  ]
+}
