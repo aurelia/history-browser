@@ -1,17 +1,14 @@
 import * as core from 'core-js';
-import {History} from 'aurelia-history';
+import { History } from 'aurelia-history';
 
 // Cached regex for stripping a leading hash/slash and trailing space.
-var routeStripper = /^#?\/*|\s+$/g;
+let routeStripper = /^#?\/*|\s+$/g;
 
 // Cached regex for stripping leading and trailing slashes.
-var rootStripper = /^\/+|\/+$/g;
-
-// Cached regex for detecting MSIE.
-var isExplorer = /msie [\w.]+/;
+let rootStripper = /^\/+|\/+$/g;
 
 // Cached regex for removing a trailing slash.
-var trailingSlash = /\/$/;
+let trailingSlash = /\/$/;
 
 // Cached regex for detecting if a URL is absolute,
 // i.e., starts with a scheme or is scheme-relative.
@@ -22,7 +19,7 @@ const absoluteUrl = /^([a-z][a-z0-9+\-.]*:)?\/\//i;
 // a new one to the browser history.
 function updateHash(location, fragment, replace) {
   if (replace) {
-    var href = location.href.replace(/(javascript:|#).*$/, '');
+    let href = location.href.replace(/(javascript:|#).*$/, '');
     location.replace(href + '#' + fragment);
   } else {
     // Some browsers require that `hash` contains a leading #.
@@ -30,8 +27,14 @@ function updateHash(location, fragment, replace) {
   }
 }
 
+/**
+ * An implementation of the basic history api.
+ */
 export class BrowserHistory extends History {
-  constructor(){
+  /**
+   * Creates an instance of BrowserHistory.
+   */
+  constructor() {
     super();
 
     this.interval = 50;
@@ -45,13 +48,13 @@ export class BrowserHistory extends History {
     }
   }
 
-  getHash(window? : Window) : string {
-    var match = (window || this).location.href.match(/#(.*)$/);
+  getHash(window?: Window): string {
+    let match = (window || this).location.href.match(/#(.*)$/);
     return match ? match[1] : '';
   }
 
-  getFragment(fragment : string, forcePushState? : boolean) : string {
-    var root;
+  getFragment(fragment: string, forcePushState?: boolean): string {
+    let root;
 
     if (!fragment) {
       if (this._hasPushState || !this._wantsHashChange || forcePushState) {
@@ -68,9 +71,13 @@ export class BrowserHistory extends History {
     return '/' + fragment.replace(routeStripper, '');
   }
 
-  activate(options? : Object) : boolean {
+  /**
+   * Activates the history object.
+   * @param options The set of options to activate history with.
+   */
+  activate(options?: Object): boolean {
     if (this.active) {
-      throw new Error("History has already been activated.");
+      throw new Error('History has already been activated.');
     }
 
     this.active = true;
@@ -83,7 +90,7 @@ export class BrowserHistory extends History {
     this._wantsPushState = !!this.options.pushState;
     this._hasPushState = !!(this.options.pushState && this.history && this.history.pushState);
 
-    var fragment = this.getFragment();
+    let fragment = this.getFragment();
 
     // Normalize root to always include a leading and trailing slash.
     this.root = ('/' + this.root + '/').replace(rootStripper, '/');
@@ -102,8 +109,8 @@ export class BrowserHistory extends History {
     // opened by a non-pushState browser.
     this.fragment = fragment;
 
-    var loc = this.location;
-    var atRoot = loc.pathname.replace(/[^\/]$/, '$&/') === this.root;
+    let loc = this.location;
+    let atRoot = loc.pathname.replace(/[^\/]$/, '$&/') === this.root;
 
     // Transition from hashChange to pushState or vice versa if both are requested.
     if (this._wantsHashChange && this._wantsPushState) {
@@ -128,19 +135,22 @@ export class BrowserHistory extends History {
     }
   }
 
-  deactivate() : void {
+  /**
+   * Deactivates the history object.
+   */
+  deactivate(): void {
     window.onpopstate = null;
     window.removeEventListener('hashchange', this._checkUrlCallback);
     clearTimeout(this._checkUrlTimer);
     this.active = false;
   }
 
-  checkUrl() : boolean {
-    var current = this.getFragment();
+  checkUrl(): boolean {
+    let current = this.getFragment();
 
     if (this._checkUrlTimer) {
-        clearTimeout(this._checkUrlTimer);
-        this._checkUrlTimer = setTimeout(this._checkUrlCallback, this.interval);
+      clearTimeout(this._checkUrlTimer);
+      this._checkUrlTimer = setTimeout(this._checkUrlCallback, this.interval);
     }
 
     if (current === this.fragment && this.iframe) {
@@ -158,15 +168,20 @@ export class BrowserHistory extends History {
     this.loadUrl();
   }
 
-  loadUrl(fragmentOverride : string) : boolean {
-    var fragment = this.fragment = this.getFragment(fragmentOverride);
+  loadUrl(fragmentOverride: string): boolean {
+    let fragment = this.fragment = this.getFragment(fragmentOverride);
 
     return this.options.routeHandler ?
       this.options.routeHandler(fragment) :
       false;
   }
 
-  navigate(fragment? : string, options? : Object) : boolean {
+  /**
+   * Causes a history navigation to occur.
+   * @param fragment The history fragment to navigate to.
+   * @param options The set of options that specify how the navigation should occur.
+   */
+  navigate(fragment?: string, options?: Object): boolean {
     if (fragment && absoluteUrl.test(fragment)) {
       window.location.href = fragment;
       return true;
@@ -180,7 +195,7 @@ export class BrowserHistory extends History {
       options = {
         trigger: true
       };
-    } else if (typeof options === "boolean") {
+    } else if (typeof options === 'boolean') {
       options = {
         trigger: options
       };
@@ -189,12 +204,12 @@ export class BrowserHistory extends History {
     fragment = this.getFragment(fragment || '');
 
     if (this.fragment === fragment) {
-      return;
+      return false;
     }
 
     this.fragment = fragment;
 
-    var url = this.root + fragment;
+    let url = this.root + fragment;
 
     // Don't include a trailing slash on the root.
     if (fragment === '' && url !== '/') {
@@ -216,7 +231,7 @@ export class BrowserHistory extends History {
         // history entry on hash-tag change.  When replace is true, we don't
         // want history.
         if (!options.replace) {
-            this.iframe.document.open().close();
+          this.iframe.document.open().close();
         }
 
         updateHash(this.iframe.location, fragment, options.replace);
@@ -230,16 +245,22 @@ export class BrowserHistory extends History {
 
     if (options.trigger) {
       return this.loadUrl(fragment);
-    } else {
-      this.previousFragment = fragment;
     }
+
+    this.previousFragment = fragment;
   }
 
-  navigateBack() : void {
+  /**
+   * Causes the history state to navigate back.
+   */
+  navigateBack(): void {
     this.history.back();
   }
 }
 
-export function configure(config : Object) : void {
+/**
+ * Configures the plugin by registering BrowserHistory as the implementor of History in the DI container.
+ */
+export function configure(config: Object): void {
   config.singleton(History, BrowserHistory);
 }
