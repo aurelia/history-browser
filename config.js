@@ -14,7 +14,7 @@ System.config({
   },
 
   map: {
-    "aurelia-history": "github:aurelia/history@0.6.1",
+    "aurelia-history": "github:aurelia/history@0.7.0",
     "babel": "npm:babel-core@5.1.13",
     "babel-runtime": "npm:babel-runtime@5.1.13",
     "core-js": "npm:core-js@1.1.3",

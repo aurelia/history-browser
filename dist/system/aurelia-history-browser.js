@@ -1,7 +1,7 @@
 System.register(['core-js', 'aurelia-history'], function (_export) {
   'use strict';
 
-  var core, History, routeStripper, rootStripper, isExplorer, trailingSlash, absoluteUrl, BrowserHistory;
+  var core, History, routeStripper, rootStripper, trailingSlash, absoluteUrl, BrowserHistory;
 
   _export('configure', configure);
 
@@ -31,7 +31,6 @@ System.register(['core-js', 'aurelia-history'], function (_export) {
     execute: function () {
       routeStripper = /^#?\/*|\s+$/g;
       rootStripper = /^\/+|\/+$/g;
-      isExplorer = /msie [\w.]+/;
       trailingSlash = /\/$/;
       absoluteUrl = /^([a-z][a-z0-9+\-.]*:)?\/\//i;
 
@@ -60,7 +59,7 @@ System.register(['core-js', 'aurelia-history'], function (_export) {
         };
 
         BrowserHistory.prototype.getFragment = function getFragment(fragment, forcePushState) {
-          var root;
+          var root = undefined;
 
           if (!fragment) {
             if (this._hasPushState || !this._wantsHashChange || forcePushState) {
@@ -79,7 +78,7 @@ System.register(['core-js', 'aurelia-history'], function (_export) {
 
         BrowserHistory.prototype.activate = function activate(options) {
           if (this.active) {
-            throw new Error("History has already been activated.");
+            throw new Error('History has already been activated.');
           }
 
           this.active = true;
@@ -174,7 +173,7 @@ System.register(['core-js', 'aurelia-history'], function (_export) {
             options = {
               trigger: true
             };
-          } else if (typeof options === "boolean") {
+          } else if (typeof options === 'boolean') {
             options = {
               trigger: options
             };
@@ -183,7 +182,7 @@ System.register(['core-js', 'aurelia-history'], function (_export) {
           fragment = this.getFragment(fragment || '');
 
           if (this.fragment === fragment) {
-            return;
+            return false;
           }
 
           this.fragment = fragment;
@@ -213,9 +212,9 @@ System.register(['core-js', 'aurelia-history'], function (_export) {
 
           if (options.trigger) {
             return this.loadUrl(fragment);
-          } else {
-            this.previousFragment = fragment;
           }
+
+          this.previousFragment = fragment;
         };
 
         BrowserHistory.prototype.navigateBack = function navigateBack() {

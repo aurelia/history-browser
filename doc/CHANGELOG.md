@@ -1,3 +1,16 @@
+## 0.8.0 (2015-09-04)
+
+
+#### Bug Fixes
+
+* **build:** update linting, testing and tools ([9ad076d6](http://github.com/aurelia/history-browser/commit/9ad076d6ded8b0ca607b742f69a00c76f3d3946e))
+
+
+#### Features
+
+* **docs:** generate api.json from .d.ts file ([80fd2e30](http://github.com/aurelia/history-browser/commit/80fd2e30a68c9bf4200be831887c49de766a6939))
+
+
 ## 0.7.0 (2015-08-14)
 
 

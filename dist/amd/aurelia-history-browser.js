@@ -12,8 +12,6 @@ define(['exports', 'core-js', 'aurelia-history'], function (exports, _coreJs, _a
 
   var rootStripper = /^\/+|\/+$/g;
 
-  var isExplorer = /msie [\w.]+/;
-
   var trailingSlash = /\/$/;
 
   var absoluteUrl = /^([a-z][a-z0-9+\-.]*:)?\/\//i;
@@ -52,7 +50,7 @@ define(['exports', 'core-js', 'aurelia-history'], function (exports, _coreJs, _a
     };
 
     BrowserHistory.prototype.getFragment = function getFragment(fragment, forcePushState) {
-      var root;
+      var root = undefined;
 
       if (!fragment) {
         if (this._hasPushState || !this._wantsHashChange || forcePushState) {
@@ -71,7 +69,7 @@ define(['exports', 'core-js', 'aurelia-history'], function (exports, _coreJs, _a
 
     BrowserHistory.prototype.activate = function activate(options) {
       if (this.active) {
-        throw new Error("History has already been activated.");
+        throw new Error('History has already been activated.');
       }
 
       this.active = true;
@@ -166,7 +164,7 @@ define(['exports', 'core-js', 'aurelia-history'], function (exports, _coreJs, _a
         options = {
           trigger: true
         };
-      } else if (typeof options === "boolean") {
+      } else if (typeof options === 'boolean') {
         options = {
           trigger: options
         };
@@ -175,7 +173,7 @@ define(['exports', 'core-js', 'aurelia-history'], function (exports, _coreJs, _a
       fragment = this.getFragment(fragment || '');
 
       if (this.fragment === fragment) {
-        return;
+        return false;
       }
 
       this.fragment = fragment;
@@ -205,9 +203,9 @@ define(['exports', 'core-js', 'aurelia-history'], function (exports, _coreJs, _a
 
       if (options.trigger) {
         return this.loadUrl(fragment);
-      } else {
-        this.previousFragment = fragment;
       }
+
+      this.previousFragment = fragment;
     };
 
     BrowserHistory.prototype.navigateBack = function navigateBack() {
