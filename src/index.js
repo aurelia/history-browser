@@ -13,15 +13,17 @@ export function configure(config: Object): void {
  */
 export class BrowserHistory extends History {
   constructor() {
+    if (typeof window === 'undefined') {
+      throw new Error('BrowserHistory requires a window context.');
+    }
+
     super();
 
     this._isActive = false;
     this._checkUrlCallback = this._checkUrl.bind(this);
 
-    if (typeof window !== 'undefined') {
-      this.location = window.location;
-      this.history = window.history;
-    }
+    this.location = window.location;
+    this.history = window.history;
   }
 
   /**
