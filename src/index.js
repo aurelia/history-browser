@@ -159,9 +159,8 @@ export class BrowserHistory extends History {
     this.history.back();
   }
 
-  _getHash(window?: Window): string {
-    let match = (window || this).location.href.match(/#(.*)$/);
-    return match ? match[1] : '';
+  _getHash(): string {
+    return this.location.hash.substr(1);
   }
 
   _getFragment(fragment: string, forcePushState?: boolean): string {
