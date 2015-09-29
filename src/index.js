@@ -46,13 +46,15 @@ export class BrowserHistory extends History {
     this._wantsHashChange = this.options.hashChange !== false;
     this._hasPushState = !!(this.options.pushState && this.history && this.history.pushState);
 
-    // Depending on whether we're using pushState or hashes, and whether
-    // 'onhashchange' is supported, determine how we check the URL state.
+    // Determine how we check the URL state.
+    let eventName;
     if (this._hasPushState) {
-      window.onpopstate = this._checkUrlCallback;
+      eventName = 'popstate';
     } else if (this._wantsHashChange) {
-      window.addEventListener('hashchange', this._checkUrlCallback);
+      eventName = 'hashchange';
     }
+
+    window.addEventListener(eventName, this._checkUrlCallback);
 
     // Determine if we need to change the base url, for a pushState link
     // opened by a non-pushState browser.
@@ -90,7 +92,7 @@ export class BrowserHistory extends History {
    * Deactivates the history object.
    */
   deactivate(): void {
-    window.onpopstate = null;
+    window.removeEventListener('popstate', this._checkUrlCallback);
     window.removeEventListener('hashchange', this._checkUrlCallback);
     this._isActive = false;
   }
