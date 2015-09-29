@@ -1,14 +1,14 @@
 import 'core-js';
-import { History } from 'aurelia-history';
+import {History} from 'aurelia-history';
 
 // Cached regex for stripping a leading hash/slash and trailing space.
-let routeStripper = /^#?\/*|\s+$/g;
+const routeStripper = /^#?\/*|\s+$/g;
 
 // Cached regex for stripping leading and trailing slashes.
-let rootStripper = /^\/+|\/+$/g;
+const rootStripper = /^\/+|\/+$/g;
 
 // Cached regex for removing a trailing slash.
-let trailingSlash = /\/$/;
+const trailingSlash = /\/$/;
 
 // Cached regex for detecting if a URL is absolute,
 // i.e., starts with a scheme or is scheme-relative.
@@ -37,7 +37,6 @@ export class BrowserHistory extends History {
   constructor() {
     super();
 
-    this.interval = 50;
     this.active = false;
     this.previousFragment = '';
     this._checkUrlCallback = this.checkUrl.bind(this);
@@ -80,40 +79,32 @@ export class BrowserHistory extends History {
       throw new Error('History has already been activated.');
     }
 
+    let wantsPushState = !!options.pushState;
+
     this.active = true;
-
-    // Figure out the initial configuration. Do we need an iframe?
-    // Is pushState desired ... is it available?
     this.options = Object.assign({}, { root: '/' }, this.options, options);
-    this.root = this.options.root;
-    this._wantsHashChange = this.options.hashChange !== false;
-    this._wantsPushState = !!this.options.pushState;
-    this._hasPushState = !!(this.options.pushState && this.history && this.history.pushState);
-
-    let fragment = this.getFragment();
 
     // Normalize root to always include a leading and trailing slash.
-    this.root = ('/' + this.root + '/').replace(rootStripper, '/');
+    this.root = ('/' + this.options.root + '/').replace(rootStripper, '/');
+
+    this._wantsHashChange = this.options.hashChange !== false;
+    this._hasPushState = !!(this.options.pushState && this.history && this.history.pushState);
 
     // Depending on whether we're using pushState or hashes, and whether
     // 'onhashchange' is supported, determine how we check the URL state.
     if (this._hasPushState) {
       window.onpopstate = this._checkUrlCallback;
-    } else if (this._wantsHashChange && ('onhashchange' in window)) {
-      window.addEventListener('hashchange', this._checkUrlCallback);
     } else if (this._wantsHashChange) {
-      this._checkUrlTimer = setTimeout(this._checkUrlCallback, this.interval);
+      window.addEventListener('hashchange', this._checkUrlCallback);
     }
 
     // Determine if we need to change the base url, for a pushState link
     // opened by a non-pushState browser.
-    this.fragment = fragment;
+    if (this._wantsHashChange && wantsPushState) {
+      // Transition from hashChange to pushState or vice versa if both are requested.
+      let loc = this.location;
+      let atRoot = loc.pathname.replace(/[^\/]$/, '$&/') === this.root;
 
-    let loc = this.location;
-    let atRoot = loc.pathname.replace(/[^\/]$/, '$&/') === this.root;
-
-    // Transition from hashChange to pushState or vice versa if both are requested.
-    if (this._wantsHashChange && this._wantsPushState) {
       // If we've started off with a route from a `pushState`-enabled
       // browser, but we're currently in a browser that doesn't support it...
       if (!this._hasPushState && !atRoot) {
@@ -130,6 +121,10 @@ export class BrowserHistory extends History {
       }
     }
 
+    if (!this.fragment) {
+      this.fragment = this.getFragment();
+    }
+
     if (!this.options.silent) {
       return this.loadUrl();
     }
@@ -141,31 +136,14 @@ export class BrowserHistory extends History {
   deactivate(): void {
     window.onpopstate = null;
     window.removeEventListener('hashchange', this._checkUrlCallback);
-    clearTimeout(this._checkUrlTimer);
     this.active = false;
   }
 
   checkUrl(): boolean {
     let current = this.getFragment();
-
-    if (this._checkUrlTimer) {
-      clearTimeout(this._checkUrlTimer);
-      this._checkUrlTimer = setTimeout(this._checkUrlCallback, this.interval);
+    if (current !== this.fragment) {
+      this.loadUrl();
     }
-
-    if (current === this.fragment && this.iframe) {
-      current = this.getFragment(this.getHash(this.iframe));
-    }
-
-    if (current === this.fragment) {
-      return false;
-    }
-
-    if (this.iframe) {
-      this.navigate(current, false);
-    }
-
-    this.loadUrl();
   }
 
   loadUrl(fragmentOverride: string): boolean {
@@ -220,26 +198,13 @@ export class BrowserHistory extends History {
     if (this._hasPushState) {
       url = url.replace('//', '/');
       this.history[options.replace ? 'replaceState' : 'pushState']({}, document.title, url);
-
+    } else if (this._wantsHashChange) {
       // If hash changes haven't been explicitly disabled, update the hash
       // fragment to store history.
-    } else if (this._wantsHashChange) {
       updateHash(this.location, fragment, options.replace);
-
-      if (this.iframe && (fragment !== this.getFragment(this.getHash(this.iframe)))) {
-        // Opening and closing the iframe tricks IE7 and earlier to push a
-        // history entry on hash-tag change.  When replace is true, we don't
-        // want history.
-        if (!options.replace) {
-          this.iframe.document.open().close();
-        }
-
-        updateHash(this.iframe.location, fragment, options.replace);
-      }
-
+    } else {
       // If you've told us that you explicitly don't want fallback hashchange-
       // based history, then `navigate` becomes a page refresh.
-    } else {
       return this.location.assign(url);
     }
 
