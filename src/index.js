@@ -1,45 +1,22 @@
 import 'core-js';
 import {History} from 'aurelia-history';
 
-// Cached regex for stripping a leading hash/slash and trailing space.
-const routeStripper = /^#?\/*|\s+$/g;
-
-// Cached regex for stripping leading and trailing slashes.
-const rootStripper = /^\/+|\/+$/g;
-
-// Cached regex for removing a trailing slash.
-const trailingSlash = /\/$/;
-
-// Cached regex for detecting if a URL is absolute,
-// i.e., starts with a scheme or is scheme-relative.
-// See http://www.ietf.org/rfc/rfc2396.txt section 3.1 for valid scheme format
-const absoluteUrl = /^([a-z][a-z0-9+\-.]*:)?\/\//i;
-
-// Update the hash location, either replacing the current entry, or adding
-// a new one to the browser history.
-function updateHash(location, fragment, replace) {
-  if (replace) {
-    let href = location.href.replace(/(javascript:|#).*$/, '');
-    location.replace(href + '#' + fragment);
-  } else {
-    // Some browsers require that `hash` contains a leading #.
-    location.hash = '#' + fragment;
-  }
+/**
+ * Configures the plugin by registering BrowserHistory as the implementation of History in the DI container.
+ */
+export function configure(config: Object): void {
+  config.singleton(History, BrowserHistory);
 }
 
 /**
- * An implementation of the basic history api.
+ * An implementation of the basic history API.
  */
 export class BrowserHistory extends History {
-  /**
-   * Creates an instance of BrowserHistory.
-   */
   constructor() {
     super();
 
-    this.active = false;
-    this.previousFragment = '';
-    this._checkUrlCallback = this.checkUrl.bind(this);
+    this._isActive = false;
+    this._checkUrlCallback = this._checkUrl.bind(this);
 
     if (typeof window !== 'undefined') {
       this.location = window.location;
@@ -47,41 +24,18 @@ export class BrowserHistory extends History {
     }
   }
 
-  getHash(window?: Window): string {
-    let match = (window || this).location.href.match(/#(.*)$/);
-    return match ? match[1] : '';
-  }
-
-  getFragment(fragment: string, forcePushState?: boolean): string {
-    let root;
-
-    if (!fragment) {
-      if (this._hasPushState || !this._wantsHashChange || forcePushState) {
-        fragment = this.location.pathname + this.location.search;
-        root = this.root.replace(trailingSlash, '');
-        if (!fragment.indexOf(root)) {
-          fragment = fragment.substr(root.length);
-        }
-      } else {
-        fragment = this.getHash();
-      }
-    }
-
-    return '/' + fragment.replace(routeStripper, '');
-  }
-
   /**
    * Activates the history object.
    * @param options The set of options to activate history with.
    */
   activate(options?: Object): boolean {
-    if (this.active) {
+    if (this._isActive) {
       throw new Error('History has already been activated.');
     }
 
     let wantsPushState = !!options.pushState;
 
-    this.active = true;
+    this._isActive = true;
     this.options = Object.assign({}, { root: '/' }, this.options, options);
 
     // Normalize root to always include a leading and trailing slash.
@@ -108,7 +62,7 @@ export class BrowserHistory extends History {
       // If we've started off with a route from a `pushState`-enabled
       // browser, but we're currently in a browser that doesn't support it...
       if (!this._hasPushState && !atRoot) {
-        this.fragment = this.getFragment(null, true);
+        this.fragment = this._getFragment(null, true);
         this.location.replace(this.root + this.location.search + '#' + this.fragment);
         // Return immediately as browser will do redirect to new url
         return true;
@@ -116,17 +70,17 @@ export class BrowserHistory extends History {
         // Or if we've started out with a hash-based route, but we're currently
         // in a browser where it could be `pushState`-based instead...
       } else if (this._hasPushState && atRoot && loc.hash) {
-        this.fragment = this.getHash().replace(routeStripper, '');
+        this.fragment = this._getHash().replace(routeStripper, '');
         this.history.replaceState({}, document.title, this.root + this.fragment + loc.search);
       }
     }
 
     if (!this.fragment) {
-      this.fragment = this.getFragment();
+      this.fragment = this._getFragment();
     }
 
     if (!this.options.silent) {
-      return this.loadUrl();
+      return this._loadUrl();
     }
   }
 
@@ -136,22 +90,7 @@ export class BrowserHistory extends History {
   deactivate(): void {
     window.onpopstate = null;
     window.removeEventListener('hashchange', this._checkUrlCallback);
-    this.active = false;
-  }
-
-  checkUrl(): boolean {
-    let current = this.getFragment();
-    if (current !== this.fragment) {
-      this.loadUrl();
-    }
-  }
-
-  loadUrl(fragmentOverride: string): boolean {
-    let fragment = this.fragment = this.getFragment(fragmentOverride);
-
-    return this.options.routeHandler ?
-      this.options.routeHandler(fragment) :
-      false;
+    this._isActive = false;
   }
 
   /**
@@ -165,7 +104,7 @@ export class BrowserHistory extends History {
       return true;
     }
 
-    if (!this.active) {
+    if (!this._isActive) {
       return false;
     }
 
@@ -179,7 +118,7 @@ export class BrowserHistory extends History {
       };
     }
 
-    fragment = this.getFragment(fragment || '');
+    fragment = this._getFragment(fragment || '');
 
     if (this.fragment === fragment) {
       return false;
@@ -209,10 +148,8 @@ export class BrowserHistory extends History {
     }
 
     if (options.trigger) {
-      return this.loadUrl(fragment);
+      return this._loadUrl(fragment);
     }
-
-    this.previousFragment = fragment;
   }
 
   /**
@@ -221,11 +158,68 @@ export class BrowserHistory extends History {
   navigateBack(): void {
     this.history.back();
   }
+
+  _getHash(window?: Window): string {
+    let match = (window || this).location.href.match(/#(.*)$/);
+    return match ? match[1] : '';
+  }
+
+  _getFragment(fragment: string, forcePushState?: boolean): string {
+    let root;
+
+    if (!fragment) {
+      if (this._hasPushState || !this._wantsHashChange || forcePushState) {
+        fragment = this.location.pathname + this.location.search;
+        root = this.root.replace(trailingSlash, '');
+        if (!fragment.indexOf(root)) {
+          fragment = fragment.substr(root.length);
+        }
+      } else {
+        fragment = this._getHash();
+      }
+    }
+
+    return '/' + fragment.replace(routeStripper, '');
+  }
+
+  _checkUrl(): boolean {
+    let current = this._getFragment();
+    if (current !== this.fragment) {
+      this._loadUrl();
+    }
+  }
+
+  _loadUrl(fragmentOverride: string): boolean {
+    let fragment = this.fragment = this._getFragment(fragmentOverride);
+
+    return this.options.routeHandler ?
+      this.options.routeHandler(fragment) :
+      false;
+  }
 }
 
-/**
- * Configures the plugin by registering BrowserHistory as the implementor of History in the DI container.
- */
-export function configure(config: Object): void {
-  config.singleton(History, BrowserHistory);
+// Cached regex for stripping a leading hash/slash and trailing space.
+const routeStripper = /^#?\/*|\s+$/g;
+
+// Cached regex for stripping leading and trailing slashes.
+const rootStripper = /^\/+|\/+$/g;
+
+// Cached regex for removing a trailing slash.
+const trailingSlash = /\/$/;
+
+// Cached regex for detecting if a URL is absolute,
+// i.e., starts with a scheme or is scheme-relative.
+// See http://www.ietf.org/rfc/rfc2396.txt section 3.1 for valid scheme format
+const absoluteUrl = /^([a-z][a-z0-9+\-.]*:)?\/\//i;
+
+// Update the hash location, either replacing the current entry, or adding
+// a new one to the browser history.
+function updateHash(location, fragment, replace) {
+  if (replace) {
+    let href = location.href.replace(/(javascript:|#).*$/, '');
+    location.replace(href + '#' + fragment);
+  } else {
+    // Some browsers require that `hash` contains a leading #.
+    location.hash = '#' + fragment;
+  }
 }
