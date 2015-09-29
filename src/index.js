@@ -1,4 +1,4 @@
-import * as core from 'core-js';
+import 'core-js';
 import { History } from 'aurelia-history';
 
 // Cached regex for stripping a leading hash/slash and trailing space.
