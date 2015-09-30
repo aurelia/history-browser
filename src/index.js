@@ -102,7 +102,7 @@ export class BrowserHistory extends History {
    * @param fragment The history fragment to navigate to.
    * @param options The set of options that specify how the navigation should occur.
    */
-  navigate(fragment?: string, options?: Object): boolean {
+  navigate(fragment?: string, {trigger = true, replace = false} = {}): boolean {
     if (fragment && absoluteUrl.test(fragment)) {
       window.location.href = fragment;
       return true;
@@ -112,19 +112,9 @@ export class BrowserHistory extends History {
       return false;
     }
 
-    if (options === undefined) {
-      options = {
-        trigger: true
-      };
-    } else if (typeof options === 'boolean') {
-      options = {
-        trigger: options
-      };
-    }
-
     fragment = this._getFragment(fragment || '');
 
-    if (this.fragment === fragment && !options.replace) {
+    if (this.fragment === fragment && !replace) {
       return false;
     }
 
@@ -140,18 +130,18 @@ export class BrowserHistory extends History {
     // If pushState is available, we use it to set the fragment as a real URL.
     if (this._hasPushState) {
       url = url.replace('//', '/');
-      this.history[options.replace ? 'replaceState' : 'pushState']({}, document.title, url);
+      this.history[replace ? 'replaceState' : 'pushState']({}, document.title, url);
     } else if (this._wantsHashChange) {
       // If hash changes haven't been explicitly disabled, update the hash
       // fragment to store history.
-      updateHash(this.location, fragment, options.replace);
+      updateHash(this.location, fragment, replace);
     } else {
       // If you've told us that you explicitly don't want fallback hashchange-
       // based history, then `navigate` becomes a page refresh.
       return this.location.assign(url);
     }
 
-    if (options.trigger) {
+    if (trigger) {
       return this._loadUrl(fragment);
     }
   }
