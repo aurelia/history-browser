@@ -124,7 +124,7 @@ export class BrowserHistory extends History {
 
     fragment = this._getFragment(fragment || '');
 
-    if (this.fragment === fragment) {
+    if (this.fragment === fragment && !options.replace) {
       return false;
     }
 
