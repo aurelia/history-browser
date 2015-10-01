@@ -1,18 +1,25 @@
 import 'core-js';
 import {History} from 'aurelia-history';
+import {LinkHandler, DefaultLinkHandler} from './link-handler';
 
 /**
  * Configures the plugin by registering BrowserHistory as the implementation of History in the DI container.
  */
 export function configure(config: Object): void {
   config.singleton(History, BrowserHistory);
+
+  if (!config.container.hasHandler(LinkHandler)) {
+    config.transient(LinkHandler, DefaultLinkHandler);
+  }
 }
 
 /**
  * An implementation of the basic history API.
  */
 export class BrowserHistory extends History {
-  constructor() {
+  static inject() { return [LinkHandler]; }
+
+  constructor(linkHandler) {
     if (typeof window === 'undefined') {
       throw new Error('BrowserHistory requires a window context.');
     }
@@ -24,6 +31,7 @@ export class BrowserHistory extends History {
 
     this.location = window.location;
     this.history = window.history;
+    this.linkHandler = linkHandler;
   }
 
   /**
@@ -83,6 +91,8 @@ export class BrowserHistory extends History {
       this.fragment = this._getFragment();
     }
 
+    this.linkHandler.activate(this);
+
     if (!this.options.silent) {
       return this._loadUrl();
     }
@@ -95,6 +105,7 @@ export class BrowserHistory extends History {
     window.removeEventListener('popstate', this._checkUrlCallback);
     window.removeEventListener('hashchange', this._checkUrlCallback);
     this._isActive = false;
+    this.linkHandler.deactivate();
   }
 
   /**
