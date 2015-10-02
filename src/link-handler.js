@@ -1,3 +1,5 @@
+import {DOM, PLATFORM} from 'aurelia-pal';
+
 /**
  * Class responsible for handling interactions that should trigger browser history navigations.
  */
@@ -36,12 +38,12 @@ export class DefaultLinkHandler extends LinkHandler {
   activate(history: BrowserHistory) {
     if (history._hasPushState) {
       this.history = history;
-      document.addEventListener('click', this.handler, true);
+      DOM.addEventListener('click', this.handler, true);
     }
   }
 
   deactivate() {
-    document.removeEventListener('click', this.handler);
+    DOM.removeEventListener('click', this.handler);
   }
 
   /**
@@ -98,10 +100,11 @@ export class DefaultLinkHandler extends LinkHandler {
    */
   static targetIsThisWindow(target: Element): boolean {
     let targetWindow = target.getAttribute('target');
+    let win = PLATFORM.global;
 
     return !targetWindow ||
-      targetWindow === window.name ||
+      targetWindow === win.name ||
       targetWindow === '_self' ||
-      (targetWindow === 'top' && window === window.top);
+      (targetWindow === 'top' && win === win.top);
   }
 }

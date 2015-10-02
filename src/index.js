@@ -1,6 +1,7 @@
 import 'core-js';
 import {History} from 'aurelia-history';
 import {LinkHandler, DefaultLinkHandler} from './link-handler';
+import {DOM, PLATFORM} from 'aurelia-pal';
 
 /**
  * Configures the plugin by registering BrowserHistory as the implementation of History in the DI container.
@@ -17,20 +18,16 @@ export function configure(config: Object): void {
  * An implementation of the basic history API.
  */
 export class BrowserHistory extends History {
-  static inject() { return [LinkHandler]; }
+  static inject = [LinkHandler];
 
   constructor(linkHandler) {
-    if (typeof window === 'undefined') {
-      throw new Error('BrowserHistory requires a window context.');
-    }
-
     super();
 
     this._isActive = false;
     this._checkUrlCallback = this._checkUrl.bind(this);
 
-    this.location = window.location;
-    this.history = window.history;
+    this.location = PLATFORM.location;
+    this.history = PLATFORM.history;
     this.linkHandler = linkHandler;
   }
 
@@ -62,7 +59,7 @@ export class BrowserHistory extends History {
       eventName = 'hashchange';
     }
 
-    window.addEventListener(eventName, this._checkUrlCallback);
+    PLATFORM.addEventListener(eventName, this._checkUrlCallback);
 
     // Determine if we need to change the base url, for a pushState link
     // opened by a non-pushState browser.
@@ -83,7 +80,7 @@ export class BrowserHistory extends History {
         // in a browser where it could be `pushState`-based instead...
       } else if (this._hasPushState && atRoot && loc.hash) {
         this.fragment = this._getHash().replace(routeStripper, '');
-        this.history.replaceState({}, document.title, this.root + this.fragment + loc.search);
+        this.history.replaceState({}, DOM.title, this.root + this.fragment + loc.search);
       }
     }
 
@@ -102,8 +99,8 @@ export class BrowserHistory extends History {
    * Deactivates the history object.
    */
   deactivate(): void {
-    window.removeEventListener('popstate', this._checkUrlCallback);
-    window.removeEventListener('hashchange', this._checkUrlCallback);
+    PLATFORM.removeEventListener('popstate', this._checkUrlCallback);
+    PLATFORM.removeEventListener('hashchange', this._checkUrlCallback);
     this._isActive = false;
     this.linkHandler.deactivate();
   }
@@ -115,7 +112,7 @@ export class BrowserHistory extends History {
    */
   navigate(fragment?: string, {trigger = true, replace = false} = {}): boolean {
     if (fragment && absoluteUrl.test(fragment)) {
-      window.location.href = fragment;
+      this.location.href = fragment;
       return true;
     }
 
@@ -141,7 +138,7 @@ export class BrowserHistory extends History {
     // If pushState is available, we use it to set the fragment as a real URL.
     if (this._hasPushState) {
       url = url.replace('//', '/');
-      this.history[replace ? 'replaceState' : 'pushState']({}, document.title, url);
+      this.history[replace ? 'replaceState' : 'pushState']({}, DOM.title, url);
     } else if (this._wantsHashChange) {
       // If hash changes haven't been explicitly disabled, update the hash
       // fragment to store history.

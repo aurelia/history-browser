@@ -26,6 +26,7 @@
     },
     "dependencies": {
       "aurelia-history": "github:aurelia/history@^0.7.0",
+      "aurelia-pal": "github:aurelia/pal@^0.1.4",
       "core-js": "npm:core-js@^0.9.5"
     },
     "devDependencies": {
