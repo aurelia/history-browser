@@ -1,13 +1,23 @@
-System.register(['core-js', 'aurelia-history'], function (_export) {
+System.register(['core-js', 'aurelia-pal', 'aurelia-history'], function (_export) {
   'use strict';
 
-  var core, History, routeStripper, rootStripper, trailingSlash, absoluteUrl, BrowserHistory;
+  var DOM, PLATFORM, History, LinkHandler, DefaultLinkHandler, BrowserHistory, routeStripper, rootStripper, trailingSlash, absoluteUrl;
+
+  var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
   _export('configure', configure);
 
+  function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
   function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-  function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+  function configure(config) {
+    config.singleton(History, BrowserHistory);
+
+    if (!config.container.hasHandler(LinkHandler)) {
+      config.transient(LinkHandler, DefaultLinkHandler);
+    }
+  }
 
   function updateHash(location, fragment, replace) {
     if (replace) {
@@ -17,171 +27,210 @@ System.register(['core-js', 'aurelia-history'], function (_export) {
       location.hash = '#' + fragment;
     }
   }
-
-  function configure(config) {
-    config.singleton(History, BrowserHistory);
-  }
-
   return {
-    setters: [function (_coreJs) {
-      core = _coreJs;
+    setters: [function (_coreJs) {}, function (_aureliaPal) {
+      DOM = _aureliaPal.DOM;
+      PLATFORM = _aureliaPal.PLATFORM;
     }, function (_aureliaHistory) {
       History = _aureliaHistory.History;
     }],
     execute: function () {
-      routeStripper = /^#?\/*|\s+$/g;
-      rootStripper = /^\/+|\/+$/g;
-      trailingSlash = /\/$/;
-      absoluteUrl = /^([a-z][a-z0-9+\-.]*:)?\/\//i;
+      LinkHandler = (function () {
+        function LinkHandler() {
+          _classCallCheck(this, LinkHandler);
+        }
+
+        LinkHandler.prototype.activate = function activate(history) {};
+
+        LinkHandler.prototype.deactivate = function deactivate() {};
+
+        return LinkHandler;
+      })();
+
+      _export('LinkHandler', LinkHandler);
+
+      DefaultLinkHandler = (function (_LinkHandler) {
+        _inherits(DefaultLinkHandler, _LinkHandler);
+
+        function DefaultLinkHandler() {
+          var _this = this;
+
+          _classCallCheck(this, DefaultLinkHandler);
+
+          _LinkHandler.call(this);
+
+          this.handler = function (e) {
+            var _DefaultLinkHandler$getEventInfo = DefaultLinkHandler.getEventInfo(e);
+
+            var shouldHandleEvent = _DefaultLinkHandler$getEventInfo.shouldHandleEvent;
+            var href = _DefaultLinkHandler$getEventInfo.href;
+
+            if (shouldHandleEvent) {
+              e.preventDefault();
+              _this.history.navigate(href);
+            }
+          };
+        }
+
+        DefaultLinkHandler.prototype.activate = function activate(history) {
+          if (history._hasPushState) {
+            this.history = history;
+            DOM.addEventListener('click', this.handler, true);
+          }
+        };
+
+        DefaultLinkHandler.prototype.deactivate = function deactivate() {
+          DOM.removeEventListener('click', this.handler);
+        };
+
+        DefaultLinkHandler.getEventInfo = function getEventInfo(event) {
+          var info = {
+            shouldHandleEvent: false,
+            href: null,
+            anchor: null
+          };
+
+          var target = DefaultLinkHandler.findClosestAnchor(event.target);
+          if (!target || !DefaultLinkHandler.targetIsThisWindow(target)) {
+            return info;
+          }
+
+          if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) {
+            return info;
+          }
+
+          var href = target.getAttribute('href');
+          info.anchor = target;
+          info.href = href;
+
+          var hasModifierKey = event.altKey || event.ctrlKey || event.metaKey || event.shiftKey;
+          var isRelative = href && !(href.charAt(0) === '#' || /^[a-z]+:/i.test(href));
+
+          info.shouldHandleEvent = !hasModifierKey && isRelative;
+          return info;
+        };
+
+        DefaultLinkHandler.findClosestAnchor = function findClosestAnchor(el) {
+          while (el) {
+            if (el.tagName === 'A') {
+              return el;
+            }
+
+            el = el.parentNode;
+          }
+        };
+
+        DefaultLinkHandler.targetIsThisWindow = function targetIsThisWindow(target) {
+          var targetWindow = target.getAttribute('target');
+          var win = PLATFORM.global;
+
+          return !targetWindow || targetWindow === win.name || targetWindow === '_self' || targetWindow === 'top' && win === win.top;
+        };
+
+        return DefaultLinkHandler;
+      })(LinkHandler);
+
+      _export('DefaultLinkHandler', DefaultLinkHandler);
 
       BrowserHistory = (function (_History) {
         _inherits(BrowserHistory, _History);
 
-        function BrowserHistory() {
+        _createClass(BrowserHistory, null, [{
+          key: 'inject',
+          value: [LinkHandler],
+          enumerable: true
+        }]);
+
+        function BrowserHistory(linkHandler) {
           _classCallCheck(this, BrowserHistory);
 
           _History.call(this);
 
-          this.interval = 50;
-          this.active = false;
-          this.previousFragment = '';
-          this._checkUrlCallback = this.checkUrl.bind(this);
+          this._isActive = false;
+          this._checkUrlCallback = this._checkUrl.bind(this);
 
-          if (typeof window !== 'undefined') {
-            this.location = window.location;
-            this.history = window.history;
-          }
+          this.location = PLATFORM.location;
+          this.history = PLATFORM.history;
+          this.linkHandler = linkHandler;
         }
 
-        BrowserHistory.prototype.getHash = function getHash(window) {
-          var match = (window || this).location.href.match(/#(.*)$/);
-          return match ? match[1] : '';
-        };
-
-        BrowserHistory.prototype.getFragment = function getFragment(fragment, forcePushState) {
-          var root = undefined;
-
-          if (!fragment) {
-            if (this._hasPushState || !this._wantsHashChange || forcePushState) {
-              fragment = this.location.pathname + this.location.search;
-              root = this.root.replace(trailingSlash, '');
-              if (!fragment.indexOf(root)) {
-                fragment = fragment.substr(root.length);
-              }
-            } else {
-              fragment = this.getHash();
-            }
-          }
-
-          return '/' + fragment.replace(routeStripper, '');
-        };
-
         BrowserHistory.prototype.activate = function activate(options) {
-          if (this.active) {
+          if (this._isActive) {
             throw new Error('History has already been activated.');
           }
 
-          this.active = true;
+          var wantsPushState = !!options.pushState;
 
+          this._isActive = true;
           this.options = Object.assign({}, { root: '/' }, this.options, options);
-          this.root = this.options.root;
+
+          this.root = ('/' + this.options.root + '/').replace(rootStripper, '/');
+
           this._wantsHashChange = this.options.hashChange !== false;
-          this._wantsPushState = !!this.options.pushState;
           this._hasPushState = !!(this.options.pushState && this.history && this.history.pushState);
 
-          var fragment = this.getFragment();
-
-          this.root = ('/' + this.root + '/').replace(rootStripper, '/');
-
+          var eventName = undefined;
           if (this._hasPushState) {
-            window.onpopstate = this._checkUrlCallback;
-          } else if (this._wantsHashChange && 'onhashchange' in window) {
-            window.addEventListener('hashchange', this._checkUrlCallback);
+            eventName = 'popstate';
           } else if (this._wantsHashChange) {
-            this._checkUrlTimer = setTimeout(this._checkUrlCallback, this.interval);
+            eventName = 'hashchange';
           }
 
-          this.fragment = fragment;
+          PLATFORM.addEventListener(eventName, this._checkUrlCallback);
 
-          var loc = this.location;
-          var atRoot = loc.pathname.replace(/[^\/]$/, '$&/') === this.root;
+          if (this._wantsHashChange && wantsPushState) {
+            var loc = this.location;
+            var atRoot = loc.pathname.replace(/[^\/]$/, '$&/') === this.root;
 
-          if (this._wantsHashChange && this._wantsPushState) {
             if (!this._hasPushState && !atRoot) {
-              this.fragment = this.getFragment(null, true);
+              this.fragment = this._getFragment(null, true);
               this.location.replace(this.root + this.location.search + '#' + this.fragment);
 
               return true;
             } else if (this._hasPushState && atRoot && loc.hash) {
-                this.fragment = this.getHash().replace(routeStripper, '');
-                this.history.replaceState({}, document.title, this.root + this.fragment + loc.search);
+                this.fragment = this._getHash().replace(routeStripper, '');
+                this.history.replaceState({}, DOM.title, this.root + this.fragment + loc.search);
               }
           }
 
+          if (!this.fragment) {
+            this.fragment = this._getFragment();
+          }
+
+          this.linkHandler.activate(this);
+
           if (!this.options.silent) {
-            return this.loadUrl();
+            return this._loadUrl();
           }
         };
 
         BrowserHistory.prototype.deactivate = function deactivate() {
-          window.onpopstate = null;
-          window.removeEventListener('hashchange', this._checkUrlCallback);
-          clearTimeout(this._checkUrlTimer);
-          this.active = false;
+          PLATFORM.removeEventListener('popstate', this._checkUrlCallback);
+          PLATFORM.removeEventListener('hashchange', this._checkUrlCallback);
+          this._isActive = false;
+          this.linkHandler.deactivate();
         };
 
-        BrowserHistory.prototype.checkUrl = function checkUrl() {
-          var current = this.getFragment();
+        BrowserHistory.prototype.navigate = function navigate(fragment) {
+          var _ref = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
 
-          if (this._checkUrlTimer) {
-            clearTimeout(this._checkUrlTimer);
-            this._checkUrlTimer = setTimeout(this._checkUrlCallback, this.interval);
-          }
+          var _ref$trigger = _ref.trigger;
+          var trigger = _ref$trigger === undefined ? true : _ref$trigger;
+          var _ref$replace = _ref.replace;
+          var replace = _ref$replace === undefined ? false : _ref$replace;
 
-          if (current === this.fragment && this.iframe) {
-            current = this.getFragment(this.getHash(this.iframe));
-          }
-
-          if (current === this.fragment) {
-            return false;
-          }
-
-          if (this.iframe) {
-            this.navigate(current, false);
-          }
-
-          this.loadUrl();
-        };
-
-        BrowserHistory.prototype.loadUrl = function loadUrl(fragmentOverride) {
-          var fragment = this.fragment = this.getFragment(fragmentOverride);
-
-          return this.options.routeHandler ? this.options.routeHandler(fragment) : false;
-        };
-
-        BrowserHistory.prototype.navigate = function navigate(fragment, options) {
           if (fragment && absoluteUrl.test(fragment)) {
-            window.location.href = fragment;
+            this.location.href = fragment;
             return true;
           }
 
-          if (!this.active) {
+          if (!this._isActive) {
             return false;
           }
 
-          if (options === undefined) {
-            options = {
-              trigger: true
-            };
-          } else if (typeof options === 'boolean') {
-            options = {
-              trigger: options
-            };
-          }
+          fragment = this._getFragment(fragment || '');
 
-          fragment = this.getFragment(fragment || '');
-
-          if (this.fragment === fragment) {
+          if (this.fragment === fragment && !replace) {
             return false;
           }
 
@@ -195,36 +244,66 @@ System.register(['core-js', 'aurelia-history'], function (_export) {
 
           if (this._hasPushState) {
             url = url.replace('//', '/');
-            this.history[options.replace ? 'replaceState' : 'pushState']({}, document.title, url);
+            this.history[replace ? 'replaceState' : 'pushState']({}, DOM.title, url);
           } else if (this._wantsHashChange) {
-              updateHash(this.location, fragment, options.replace);
-
-              if (this.iframe && fragment !== this.getFragment(this.getHash(this.iframe))) {
-                if (!options.replace) {
-                  this.iframe.document.open().close();
-                }
-
-                updateHash(this.iframe.location, fragment, options.replace);
-              }
-            } else {
-                return this.location.assign(url);
-              }
-
-          if (options.trigger) {
-            return this.loadUrl(fragment);
+            updateHash(this.location, fragment, replace);
+          } else {
+            return this.location.assign(url);
           }
 
-          this.previousFragment = fragment;
+          if (trigger) {
+            return this._loadUrl(fragment);
+          }
         };
 
         BrowserHistory.prototype.navigateBack = function navigateBack() {
           this.history.back();
         };
 
+        BrowserHistory.prototype._getHash = function _getHash() {
+          return this.location.hash.substr(1);
+        };
+
+        BrowserHistory.prototype._getFragment = function _getFragment(fragment, forcePushState) {
+          var root = undefined;
+
+          if (!fragment) {
+            if (this._hasPushState || !this._wantsHashChange || forcePushState) {
+              fragment = this.location.pathname + this.location.search;
+              root = this.root.replace(trailingSlash, '');
+              if (!fragment.indexOf(root)) {
+                fragment = fragment.substr(root.length);
+              }
+            } else {
+              fragment = this._getHash();
+            }
+          }
+
+          return '/' + fragment.replace(routeStripper, '');
+        };
+
+        BrowserHistory.prototype._checkUrl = function _checkUrl() {
+          var current = this._getFragment();
+          if (current !== this.fragment) {
+            this._loadUrl();
+          }
+        };
+
+        BrowserHistory.prototype._loadUrl = function _loadUrl(fragmentOverride) {
+          var fragment = this.fragment = this._getFragment(fragmentOverride);
+
+          return this.options.routeHandler ? this.options.routeHandler(fragment) : false;
+        };
+
         return BrowserHistory;
       })(History);
 
       _export('BrowserHistory', BrowserHistory);
+
+      routeStripper = /^#?\/*|\s+$/g;
+      rootStripper = /^\/+|\/+$/g;
+      trailingSlash = /\/$/;
+      absoluteUrl = /^([a-z][a-z0-9+\-.]*:)?\/\//i;
     }
   };
 });

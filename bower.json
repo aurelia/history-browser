@@ -1,6 +1,6 @@
 {
   "name": "aurelia-history-browser",
-  "version": "0.8.0",
+  "version": "0.9.0",
   "description": "An implementation of the Aurelia history interface based on standard browser hash change and push state mechanisms.",
   "keywords": [
     "aurelia",
@@ -17,7 +17,8 @@
     "url": "http://github.com/aurelia/history-browser"
   },
   "dependencies": {
-    "aurelia-history": "^0.7.0",
+    "aurelia-history": "^0.8.0",
+    "aurelia-pal": "^0.2.0",
     "core-js": "zloirock/core-js"
   }
 }

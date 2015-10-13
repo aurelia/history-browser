@@ -1,14 +1,320 @@
-import * as core from 'core-js';
-import { History } from 'aurelia-history';
+import 'core-js';
+import {DOM,PLATFORM} from 'aurelia-pal';
+import {History} from 'aurelia-history';
+
+/**
+ * Class responsible for handling interactions that should trigger browser history navigations.
+ */
+export class LinkHandler {
+  /**
+   * Activate the instance.
+   *
+   * @param history The BrowserHistory instance that navigations should be dispatched to.
+   */
+  activate(history: BrowserHistory) {}
+
+  /**
+   * Deactivate the instance. Event handlers and other resources should be cleaned up here.
+   */
+  deactivate() {}
+}
+
+/**
+ * The default LinkHandler implementation. Navigations are triggered by click events on
+ * anchor elements with relative hrefs when the history instance is using pushstate.
+ */
+export class DefaultLinkHandler extends LinkHandler {
+  constructor() {
+    super();
+
+    this.handler = (e) => {
+      let {shouldHandleEvent, href} = DefaultLinkHandler.getEventInfo(e);
+
+      if (shouldHandleEvent) {
+        e.preventDefault();
+        this.history.navigate(href);
+      }
+    };
+  }
+
+  activate(history: BrowserHistory) {
+    if (history._hasPushState) {
+      this.history = history;
+      DOM.addEventListener('click', this.handler, true);
+    }
+  }
+
+  deactivate() {
+    DOM.removeEventListener('click', this.handler);
+  }
+
+  /**
+   * Gets the href and a "should handle" recommendation, given an Event.
+   *
+   * @param event The Event to inspect for target anchor and href.
+   */
+  static getEventInfo(event: Event): Object {
+    let info = {
+      shouldHandleEvent: false,
+      href: null,
+      anchor: null
+    };
+
+    let target = DefaultLinkHandler.findClosestAnchor(event.target);
+    if (!target || !DefaultLinkHandler.targetIsThisWindow(target)) {
+      return info;
+    }
+
+    if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) {
+      return info;
+    }
+
+    let href = target.getAttribute('href');
+    info.anchor = target;
+    info.href = href;
+
+    let hasModifierKey = (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey);
+    let isRelative = href && !(href.charAt(0) === '#' || (/^[a-z]+:/i).test(href));
+
+    info.shouldHandleEvent = !hasModifierKey && isRelative;
+    return info;
+  }
+
+  /**
+   * Finds the closest ancestor that's an anchor element.
+   *
+   * @param el The element to search upward from.
+   */
+  static findClosestAnchor(el: Element): Element {
+    while (el) {
+      if (el.tagName === 'A') {
+        return el;
+      }
+
+      el = el.parentNode;
+    }
+  }
+
+  /**
+   * Gets a value indicating whether or not an anchor targets the current window.
+   *
+   * @param target The anchor element whose target should be inspected.
+   */
+  static targetIsThisWindow(target: Element): boolean {
+    let targetWindow = target.getAttribute('target');
+    let win = PLATFORM.global;
+
+    return !targetWindow ||
+      targetWindow === win.name ||
+      targetWindow === '_self' ||
+      (targetWindow === 'top' && win === win.top);
+  }
+}
+
+/**
+ * Configures the plugin by registering BrowserHistory as the implementation of History in the DI container.
+ */
+export function configure(config: Object): void {
+  config.singleton(History, BrowserHistory);
+
+  if (!config.container.hasHandler(LinkHandler)) {
+    config.transient(LinkHandler, DefaultLinkHandler);
+  }
+}
+
+/**
+ * An implementation of the basic history API.
+ */
+export class BrowserHistory extends History {
+  static inject = [LinkHandler];
+
+  constructor(linkHandler) {
+    super();
+
+    this._isActive = false;
+    this._checkUrlCallback = this._checkUrl.bind(this);
+
+    this.location = PLATFORM.location;
+    this.history = PLATFORM.history;
+    this.linkHandler = linkHandler;
+  }
+
+  /**
+   * Activates the history object.
+   * @param options The set of options to activate history with.
+   */
+  activate(options?: Object): boolean {
+    if (this._isActive) {
+      throw new Error('History has already been activated.');
+    }
+
+    let wantsPushState = !!options.pushState;
+
+    this._isActive = true;
+    this.options = Object.assign({}, { root: '/' }, this.options, options);
+
+    // Normalize root to always include a leading and trailing slash.
+    this.root = ('/' + this.options.root + '/').replace(rootStripper, '/');
+
+    this._wantsHashChange = this.options.hashChange !== false;
+    this._hasPushState = !!(this.options.pushState && this.history && this.history.pushState);
+
+    // Determine how we check the URL state.
+    let eventName;
+    if (this._hasPushState) {
+      eventName = 'popstate';
+    } else if (this._wantsHashChange) {
+      eventName = 'hashchange';
+    }
+
+    PLATFORM.addEventListener(eventName, this._checkUrlCallback);
+
+    // Determine if we need to change the base url, for a pushState link
+    // opened by a non-pushState browser.
+    if (this._wantsHashChange && wantsPushState) {
+      // Transition from hashChange to pushState or vice versa if both are requested.
+      let loc = this.location;
+      let atRoot = loc.pathname.replace(/[^\/]$/, '$&/') === this.root;
+
+      // If we've started off with a route from a `pushState`-enabled
+      // browser, but we're currently in a browser that doesn't support it...
+      if (!this._hasPushState && !atRoot) {
+        this.fragment = this._getFragment(null, true);
+        this.location.replace(this.root + this.location.search + '#' + this.fragment);
+        // Return immediately as browser will do redirect to new url
+        return true;
+
+        // Or if we've started out with a hash-based route, but we're currently
+        // in a browser where it could be `pushState`-based instead...
+      } else if (this._hasPushState && atRoot && loc.hash) {
+        this.fragment = this._getHash().replace(routeStripper, '');
+        this.history.replaceState({}, DOM.title, this.root + this.fragment + loc.search);
+      }
+    }
+
+    if (!this.fragment) {
+      this.fragment = this._getFragment();
+    }
+
+    this.linkHandler.activate(this);
+
+    if (!this.options.silent) {
+      return this._loadUrl();
+    }
+  }
+
+  /**
+   * Deactivates the history object.
+   */
+  deactivate(): void {
+    PLATFORM.removeEventListener('popstate', this._checkUrlCallback);
+    PLATFORM.removeEventListener('hashchange', this._checkUrlCallback);
+    this._isActive = false;
+    this.linkHandler.deactivate();
+  }
+
+  /**
+   * Causes a history navigation to occur.
+   * @param fragment The history fragment to navigate to.
+   * @param options The set of options that specify how the navigation should occur.
+   */
+  navigate(fragment?: string, {trigger = true, replace = false} = {}): boolean {
+    if (fragment && absoluteUrl.test(fragment)) {
+      this.location.href = fragment;
+      return true;
+    }
+
+    if (!this._isActive) {
+      return false;
+    }
+
+    fragment = this._getFragment(fragment || '');
+
+    if (this.fragment === fragment && !replace) {
+      return false;
+    }
+
+    this.fragment = fragment;
+
+    let url = this.root + fragment;
+
+    // Don't include a trailing slash on the root.
+    if (fragment === '' && url !== '/') {
+      url = url.slice(0, -1);
+    }
+
+    // If pushState is available, we use it to set the fragment as a real URL.
+    if (this._hasPushState) {
+      url = url.replace('//', '/');
+      this.history[replace ? 'replaceState' : 'pushState']({}, DOM.title, url);
+    } else if (this._wantsHashChange) {
+      // If hash changes haven't been explicitly disabled, update the hash
+      // fragment to store history.
+      updateHash(this.location, fragment, replace);
+    } else {
+      // If you've told us that you explicitly don't want fallback hashchange-
+      // based history, then `navigate` becomes a page refresh.
+      return this.location.assign(url);
+    }
+
+    if (trigger) {
+      return this._loadUrl(fragment);
+    }
+  }
+
+  /**
+   * Causes the history state to navigate back.
+   */
+  navigateBack(): void {
+    this.history.back();
+  }
+
+  _getHash(): string {
+    return this.location.hash.substr(1);
+  }
+
+  _getFragment(fragment: string, forcePushState?: boolean): string {
+    let root;
+
+    if (!fragment) {
+      if (this._hasPushState || !this._wantsHashChange || forcePushState) {
+        fragment = this.location.pathname + this.location.search;
+        root = this.root.replace(trailingSlash, '');
+        if (!fragment.indexOf(root)) {
+          fragment = fragment.substr(root.length);
+        }
+      } else {
+        fragment = this._getHash();
+      }
+    }
+
+    return '/' + fragment.replace(routeStripper, '');
+  }
+
+  _checkUrl(): boolean {
+    let current = this._getFragment();
+    if (current !== this.fragment) {
+      this._loadUrl();
+    }
+  }
+
+  _loadUrl(fragmentOverride: string): boolean {
+    let fragment = this.fragment = this._getFragment(fragmentOverride);
+
+    return this.options.routeHandler ?
+      this.options.routeHandler(fragment) :
+      false;
+  }
+}
 
 // Cached regex for stripping a leading hash/slash and trailing space.
-let routeStripper = /^#?\/*|\s+$/g;
+const routeStripper = /^#?\/*|\s+$/g;
 
 // Cached regex for stripping leading and trailing slashes.
-let rootStripper = /^\/+|\/+$/g;
+const rootStripper = /^\/+|\/+$/g;
 
 // Cached regex for removing a trailing slash.
-let trailingSlash = /\/$/;
+const trailingSlash = /\/$/;
 
 // Cached regex for detecting if a URL is absolute,
 // i.e., starts with a scheme or is scheme-relative.
@@ -25,242 +331,4 @@ function updateHash(location, fragment, replace) {
     // Some browsers require that `hash` contains a leading #.
     location.hash = '#' + fragment;
   }
-}
-
-/**
- * An implementation of the basic history api.
- */
-export class BrowserHistory extends History {
-  /**
-   * Creates an instance of BrowserHistory.
-   */
-  constructor() {
-    super();
-
-    this.interval = 50;
-    this.active = false;
-    this.previousFragment = '';
-    this._checkUrlCallback = this.checkUrl.bind(this);
-
-    if (typeof window !== 'undefined') {
-      this.location = window.location;
-      this.history = window.history;
-    }
-  }
-
-  getHash(window?: Window): string {
-    let match = (window || this).location.href.match(/#(.*)$/);
-    return match ? match[1] : '';
-  }
-
-  getFragment(fragment: string, forcePushState?: boolean): string {
-    let root;
-
-    if (!fragment) {
-      if (this._hasPushState || !this._wantsHashChange || forcePushState) {
-        fragment = this.location.pathname + this.location.search;
-        root = this.root.replace(trailingSlash, '');
-        if (!fragment.indexOf(root)) {
-          fragment = fragment.substr(root.length);
-        }
-      } else {
-        fragment = this.getHash();
-      }
-    }
-
-    return '/' + fragment.replace(routeStripper, '');
-  }
-
-  /**
-   * Activates the history object.
-   * @param options The set of options to activate history with.
-   */
-  activate(options?: Object): boolean {
-    if (this.active) {
-      throw new Error('History has already been activated.');
-    }
-
-    this.active = true;
-
-    // Figure out the initial configuration. Do we need an iframe?
-    // Is pushState desired ... is it available?
-    this.options = Object.assign({}, { root: '/' }, this.options, options);
-    this.root = this.options.root;
-    this._wantsHashChange = this.options.hashChange !== false;
-    this._wantsPushState = !!this.options.pushState;
-    this._hasPushState = !!(this.options.pushState && this.history && this.history.pushState);
-
-    let fragment = this.getFragment();
-
-    // Normalize root to always include a leading and trailing slash.
-    this.root = ('/' + this.root + '/').replace(rootStripper, '/');
-
-    // Depending on whether we're using pushState or hashes, and whether
-    // 'onhashchange' is supported, determine how we check the URL state.
-    if (this._hasPushState) {
-      window.onpopstate = this._checkUrlCallback;
-    } else if (this._wantsHashChange && ('onhashchange' in window)) {
-      window.addEventListener('hashchange', this._checkUrlCallback);
-    } else if (this._wantsHashChange) {
-      this._checkUrlTimer = setTimeout(this._checkUrlCallback, this.interval);
-    }
-
-    // Determine if we need to change the base url, for a pushState link
-    // opened by a non-pushState browser.
-    this.fragment = fragment;
-
-    let loc = this.location;
-    let atRoot = loc.pathname.replace(/[^\/]$/, '$&/') === this.root;
-
-    // Transition from hashChange to pushState or vice versa if both are requested.
-    if (this._wantsHashChange && this._wantsPushState) {
-      // If we've started off with a route from a `pushState`-enabled
-      // browser, but we're currently in a browser that doesn't support it...
-      if (!this._hasPushState && !atRoot) {
-        this.fragment = this.getFragment(null, true);
-        this.location.replace(this.root + this.location.search + '#' + this.fragment);
-        // Return immediately as browser will do redirect to new url
-        return true;
-
-        // Or if we've started out with a hash-based route, but we're currently
-        // in a browser where it could be `pushState`-based instead...
-      } else if (this._hasPushState && atRoot && loc.hash) {
-        this.fragment = this.getHash().replace(routeStripper, '');
-        this.history.replaceState({}, document.title, this.root + this.fragment + loc.search);
-      }
-    }
-
-    if (!this.options.silent) {
-      return this.loadUrl();
-    }
-  }
-
-  /**
-   * Deactivates the history object.
-   */
-  deactivate(): void {
-    window.onpopstate = null;
-    window.removeEventListener('hashchange', this._checkUrlCallback);
-    clearTimeout(this._checkUrlTimer);
-    this.active = false;
-  }
-
-  checkUrl(): boolean {
-    let current = this.getFragment();
-
-    if (this._checkUrlTimer) {
-      clearTimeout(this._checkUrlTimer);
-      this._checkUrlTimer = setTimeout(this._checkUrlCallback, this.interval);
-    }
-
-    if (current === this.fragment && this.iframe) {
-      current = this.getFragment(this.getHash(this.iframe));
-    }
-
-    if (current === this.fragment) {
-      return false;
-    }
-
-    if (this.iframe) {
-      this.navigate(current, false);
-    }
-
-    this.loadUrl();
-  }
-
-  loadUrl(fragmentOverride: string): boolean {
-    let fragment = this.fragment = this.getFragment(fragmentOverride);
-
-    return this.options.routeHandler ?
-      this.options.routeHandler(fragment) :
-      false;
-  }
-
-  /**
-   * Causes a history navigation to occur.
-   * @param fragment The history fragment to navigate to.
-   * @param options The set of options that specify how the navigation should occur.
-   */
-  navigate(fragment?: string, options?: Object): boolean {
-    if (fragment && absoluteUrl.test(fragment)) {
-      window.location.href = fragment;
-      return true;
-    }
-
-    if (!this.active) {
-      return false;
-    }
-
-    if (options === undefined) {
-      options = {
-        trigger: true
-      };
-    } else if (typeof options === 'boolean') {
-      options = {
-        trigger: options
-      };
-    }
-
-    fragment = this.getFragment(fragment || '');
-
-    if (this.fragment === fragment) {
-      return false;
-    }
-
-    this.fragment = fragment;
-
-    let url = this.root + fragment;
-
-    // Don't include a trailing slash on the root.
-    if (fragment === '' && url !== '/') {
-      url = url.slice(0, -1);
-    }
-
-    // If pushState is available, we use it to set the fragment as a real URL.
-    if (this._hasPushState) {
-      url = url.replace('//', '/');
-      this.history[options.replace ? 'replaceState' : 'pushState']({}, document.title, url);
-
-      // If hash changes haven't been explicitly disabled, update the hash
-      // fragment to store history.
-    } else if (this._wantsHashChange) {
-      updateHash(this.location, fragment, options.replace);
-
-      if (this.iframe && (fragment !== this.getFragment(this.getHash(this.iframe)))) {
-        // Opening and closing the iframe tricks IE7 and earlier to push a
-        // history entry on hash-tag change.  When replace is true, we don't
-        // want history.
-        if (!options.replace) {
-          this.iframe.document.open().close();
-        }
-
-        updateHash(this.iframe.location, fragment, options.replace);
-      }
-
-      // If you've told us that you explicitly don't want fallback hashchange-
-      // based history, then `navigate` becomes a page refresh.
-    } else {
-      return this.location.assign(url);
-    }
-
-    if (options.trigger) {
-      return this.loadUrl(fragment);
-    }
-
-    this.previousFragment = fragment;
-  }
-
-  /**
-   * Causes the history state to navigate back.
-   */
-  navigateBack(): void {
-    this.history.back();
-  }
-}
-
-/**
- * Configures the plugin by registering BrowserHistory as the implementor of History in the DI container.
- */
-export function configure(config: Object): void {
-  config.singleton(History, BrowserHistory);
 }

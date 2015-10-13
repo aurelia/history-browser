@@ -6,7 +6,7 @@
   "flags": {},
   "children": [
     {
-      "id": 3,
+      "id": 26,
       "name": "BrowserHistory",
       "kind": 128,
       "kindString": "Class",
@@ -14,41 +14,62 @@
         "isExported": true
       },
       "comment": {
-        "shortText": "An implementation of the basic history api."
+        "shortText": "An implementation of the basic history API."
       },
       "children": [
         {
-          "id": 4,
+          "id": 28,
           "name": "constructor",
           "kind": 512,
           "kindString": "Constructor",
           "flags": {
             "isExported": true
           },
-          "comment": {
-            "shortText": "Creates an instance of BrowserHistory."
-          },
           "signatures": [
             {
-              "id": 5,
+              "id": 29,
               "name": "new BrowserHistory",
               "kind": 16384,
               "kindString": "Constructor signature",
               "flags": {},
-              "comment": {
-                "shortText": "Creates an instance of BrowserHistory."
-              },
+              "parameters": [
+                {
+                  "id": 30,
+                  "name": "linkHandler",
+                  "kind": 32768,
+                  "kindString": "Parameter",
+                  "flags": {},
+                  "type": {
+                    "type": "instrinct",
+                    "name": "any"
+                  }
+                }
+              ],
               "type": {
                 "type": "reference",
                 "name": "BrowserHistory",
-                "id": 3,
+                "id": 26,
                 "moduleName": "\"aurelia-history-browser\""
               }
             }
           ]
         },
         {
-          "id": 13,
+          "id": 27,
+          "name": "inject",
+          "kind": 1024,
+          "kindString": "Property",
+          "flags": {
+            "isStatic": true,
+            "isExported": true
+          },
+          "type": {
+            "type": "instrinct",
+            "name": "any"
+          }
+        },
+        {
+          "id": 31,
           "name": "activate",
           "kind": 2048,
           "kindString": "Method",
@@ -57,7 +78,7 @@
           },
           "signatures": [
             {
-              "id": 14,
+              "id": 32,
               "name": "activate",
               "kind": 4096,
               "kindString": "Call signature",
@@ -67,7 +88,7 @@
               },
               "parameters": [
                 {
-                  "id": 15,
+                  "id": 33,
                   "name": "options",
                   "kind": 32768,
                   "kindString": "Parameter",
@@ -90,40 +111,18 @@
               "overwrites": {
                 "type": "reference",
                 "name": "History.activate",
-                "id": 41
+                "id": 54
               }
             }
           ],
           "overwrites": {
             "type": "reference",
             "name": "History.activate",
-            "id": 41
+            "id": 54
           }
         },
         {
-          "id": 18,
-          "name": "checkUrl",
-          "kind": 2048,
-          "kindString": "Method",
-          "flags": {
-            "isExported": true
-          },
-          "signatures": [
-            {
-              "id": 19,
-              "name": "checkUrl",
-              "kind": 4096,
-              "kindString": "Call signature",
-              "flags": {},
-              "type": {
-                "type": "instrinct",
-                "name": "boolean"
-              }
-            }
-          ]
-        },
-        {
-          "id": 16,
+          "id": 34,
           "name": "deactivate",
           "kind": 2048,
           "kindString": "Method",
@@ -132,7 +131,7 @@
           },
           "signatures": [
             {
-              "id": 17,
+              "id": 35,
               "name": "deactivate",
               "kind": 4096,
               "kindString": "Call signature",
@@ -147,138 +146,18 @@
               "overwrites": {
                 "type": "reference",
                 "name": "History.deactivate",
-                "id": 44
+                "id": 57
               }
             }
           ],
           "overwrites": {
             "type": "reference",
             "name": "History.deactivate",
-            "id": 44
+            "id": 57
           }
         },
         {
-          "id": 9,
-          "name": "getFragment",
-          "kind": 2048,
-          "kindString": "Method",
-          "flags": {
-            "isExported": true
-          },
-          "signatures": [
-            {
-              "id": 10,
-              "name": "getFragment",
-              "kind": 4096,
-              "kindString": "Call signature",
-              "flags": {},
-              "parameters": [
-                {
-                  "id": 11,
-                  "name": "fragment",
-                  "kind": 32768,
-                  "kindString": "Parameter",
-                  "flags": {},
-                  "type": {
-                    "type": "instrinct",
-                    "name": "string"
-                  }
-                },
-                {
-                  "id": 12,
-                  "name": "forcePushState",
-                  "kind": 32768,
-                  "kindString": "Parameter",
-                  "flags": {
-                    "isOptional": true
-                  },
-                  "type": {
-                    "type": "instrinct",
-                    "name": "boolean"
-                  }
-                }
-              ],
-              "type": {
-                "type": "instrinct",
-                "name": "string"
-              }
-            }
-          ]
-        },
-        {
-          "id": 6,
-          "name": "getHash",
-          "kind": 2048,
-          "kindString": "Method",
-          "flags": {
-            "isExported": true
-          },
-          "signatures": [
-            {
-              "id": 7,
-              "name": "getHash",
-              "kind": 4096,
-              "kindString": "Call signature",
-              "flags": {},
-              "parameters": [
-                {
-                  "id": 8,
-                  "name": "window",
-                  "kind": 32768,
-                  "kindString": "Parameter",
-                  "flags": {
-                    "isOptional": true
-                  },
-                  "type": {
-                    "type": "reference",
-                    "name": "Window"
-                  }
-                }
-              ],
-              "type": {
-                "type": "instrinct",
-                "name": "string"
-              }
-            }
-          ]
-        },
-        {
-          "id": 20,
-          "name": "loadUrl",
-          "kind": 2048,
-          "kindString": "Method",
-          "flags": {
-            "isExported": true
-          },
-          "signatures": [
-            {
-              "id": 21,
-              "name": "loadUrl",
-              "kind": 4096,
-              "kindString": "Call signature",
-              "flags": {},
-              "parameters": [
-                {
-                  "id": 22,
-                  "name": "fragmentOverride",
-                  "kind": 32768,
-                  "kindString": "Parameter",
-                  "flags": {},
-                  "type": {
-                    "type": "instrinct",
-                    "name": "string"
-                  }
-                }
-              ],
-              "type": {
-                "type": "instrinct",
-                "name": "boolean"
-              }
-            }
-          ]
-        },
-        {
-          "id": 23,
+          "id": 36,
           "name": "navigate",
           "kind": 2048,
           "kindString": "Method",
@@ -287,7 +166,7 @@
           },
           "signatures": [
             {
-              "id": 24,
+              "id": 37,
               "name": "navigate",
               "kind": 4096,
               "kindString": "Call signature",
@@ -297,7 +176,7 @@
               },
               "parameters": [
                 {
-                  "id": 25,
+                  "id": 38,
                   "name": "fragment",
                   "kind": 32768,
                   "kindString": "Parameter",
@@ -313,19 +192,16 @@
                   }
                 },
                 {
-                  "id": 26,
-                  "name": "options",
+                  "id": 39,
+                  "name": "undefined",
                   "kind": 32768,
                   "kindString": "Parameter",
                   "flags": {
                     "isOptional": true
                   },
-                  "comment": {
-                    "text": "The set of options that specify how the navigation should occur.\n"
-                  },
                   "type": {
-                    "type": "reference",
-                    "name": "Object"
+                    "type": "instrinct",
+                    "name": "any"
                   }
                 }
               ],
@@ -336,18 +212,18 @@
               "overwrites": {
                 "type": "reference",
                 "name": "History.navigate",
-                "id": 46
+                "id": 59
               }
             }
           ],
           "overwrites": {
             "type": "reference",
             "name": "History.navigate",
-            "id": 46
+            "id": 59
           }
         },
         {
-          "id": 27,
+          "id": 40,
           "name": "navigateBack",
           "kind": 2048,
           "kindString": "Method",
@@ -356,7 +232,7 @@
           },
           "signatures": [
             {
-              "id": 28,
+              "id": 41,
               "name": "navigateBack",
               "kind": 4096,
               "kindString": "Call signature",
@@ -371,14 +247,14 @@
               "overwrites": {
                 "type": "reference",
                 "name": "History.navigateBack",
-                "id": 50
+                "id": 63
               }
             }
           ],
           "overwrites": {
             "type": "reference",
             "name": "History.navigateBack",
-            "id": 50
+            "id": 63
           }
         }
       ],
@@ -387,21 +263,24 @@
           "title": "Constructors",
           "kind": 512,
           "children": [
-            4
+            28
+          ]
+        },
+        {
+          "title": "Properties",
+          "kind": 1024,
+          "children": [
+            27
           ]
         },
         {
           "title": "Methods",
           "kind": 2048,
           "children": [
-            13,
-            18,
-            16,
-            9,
-            6,
-            20,
-            23,
-            27
+            31,
+            34,
+            36,
+            40
           ]
         }
       ],
@@ -409,12 +288,381 @@
         {
           "type": "reference",
           "name": "History",
-          "id": 40
+          "id": 53
         }
       ]
     },
     {
-      "id": 29,
+      "id": 9,
+      "name": "DefaultLinkHandler",
+      "kind": 128,
+      "kindString": "Class",
+      "flags": {
+        "isExported": true
+      },
+      "comment": {
+        "shortText": "The default LinkHandler implementation. Navigations are triggered by click events on\nanchor elements with relative hrefs when the history instance is using pushstate."
+      },
+      "children": [
+        {
+          "id": 10,
+          "name": "constructor",
+          "kind": 512,
+          "kindString": "Constructor",
+          "flags": {
+            "isExported": true
+          },
+          "signatures": [
+            {
+              "id": 11,
+              "name": "new DefaultLinkHandler",
+              "kind": 16384,
+              "kindString": "Constructor signature",
+              "flags": {},
+              "type": {
+                "type": "reference",
+                "name": "DefaultLinkHandler",
+                "id": 9,
+                "moduleName": "\"aurelia-history-browser\""
+              }
+            }
+          ]
+        },
+        {
+          "id": 12,
+          "name": "activate",
+          "kind": 2048,
+          "kindString": "Method",
+          "flags": {
+            "isExported": true
+          },
+          "signatures": [
+            {
+              "id": 13,
+              "name": "activate",
+              "kind": 4096,
+              "kindString": "Call signature",
+              "flags": {},
+              "parameters": [
+                {
+                  "id": 14,
+                  "name": "history",
+                  "kind": 32768,
+                  "kindString": "Parameter",
+                  "flags": {},
+                  "type": {
+                    "type": "reference",
+                    "name": "BrowserHistory",
+                    "id": 26,
+                    "moduleName": "\"aurelia-history-browser\""
+                  }
+                }
+              ],
+              "type": {
+                "type": "instrinct",
+                "name": "any"
+              },
+              "overwrites": {
+                "type": "reference",
+                "name": "LinkHandler.activate",
+                "id": 4
+              }
+            }
+          ],
+          "overwrites": {
+            "type": "reference",
+            "name": "LinkHandler.activate",
+            "id": 4
+          }
+        },
+        {
+          "id": 15,
+          "name": "deactivate",
+          "kind": 2048,
+          "kindString": "Method",
+          "flags": {
+            "isExported": true
+          },
+          "signatures": [
+            {
+              "id": 16,
+              "name": "deactivate",
+              "kind": 4096,
+              "kindString": "Call signature",
+              "flags": {},
+              "type": {
+                "type": "instrinct",
+                "name": "any"
+              },
+              "overwrites": {
+                "type": "reference",
+                "name": "LinkHandler.deactivate",
+                "id": 7
+              }
+            }
+          ],
+          "overwrites": {
+            "type": "reference",
+            "name": "LinkHandler.deactivate",
+            "id": 7
+          }
+        },
+        {
+          "id": 20,
+          "name": "findClosestAnchor",
+          "kind": 2048,
+          "kindString": "Method",
+          "flags": {
+            "isStatic": true,
+            "isExported": true
+          },
+          "signatures": [
+            {
+              "id": 21,
+              "name": "findClosestAnchor",
+              "kind": 4096,
+              "kindString": "Call signature",
+              "flags": {},
+              "comment": {
+                "shortText": "Finds the closest ancestor that's an anchor element."
+              },
+              "parameters": [
+                {
+                  "id": 22,
+                  "name": "el",
+                  "kind": 32768,
+                  "kindString": "Parameter",
+                  "flags": {},
+                  "comment": {
+                    "text": "The element to search upward from.\n"
+                  },
+                  "type": {
+                    "type": "reference",
+                    "name": "Element"
+                  }
+                }
+              ],
+              "type": {
+                "type": "reference",
+                "name": "Element"
+              }
+            }
+          ]
+        },
+        {
+          "id": 17,
+          "name": "getEventInfo",
+          "kind": 2048,
+          "kindString": "Method",
+          "flags": {
+            "isStatic": true,
+            "isExported": true
+          },
+          "signatures": [
+            {
+              "id": 18,
+              "name": "getEventInfo",
+              "kind": 4096,
+              "kindString": "Call signature",
+              "flags": {},
+              "comment": {
+                "shortText": "Gets the href and a \"should handle\" recommendation, given an Event."
+              },
+              "parameters": [
+                {
+                  "id": 19,
+                  "name": "event",
+                  "kind": 32768,
+                  "kindString": "Parameter",
+                  "flags": {},
+                  "comment": {
+                    "text": "The Event to inspect for target anchor and href.\n"
+                  },
+                  "type": {
+                    "type": "reference",
+                    "name": "Event"
+                  }
+                }
+              ],
+              "type": {
+                "type": "reference",
+                "name": "Object"
+              }
+            }
+          ]
+        },
+        {
+          "id": 23,
+          "name": "targetIsThisWindow",
+          "kind": 2048,
+          "kindString": "Method",
+          "flags": {
+            "isStatic": true,
+            "isExported": true
+          },
+          "signatures": [
+            {
+              "id": 24,
+              "name": "targetIsThisWindow",
+              "kind": 4096,
+              "kindString": "Call signature",
+              "flags": {},
+              "comment": {
+                "shortText": "Gets a value indicating whether or not an anchor targets the current window."
+              },
+              "parameters": [
+                {
+                  "id": 25,
+                  "name": "target",
+                  "kind": 32768,
+                  "kindString": "Parameter",
+                  "flags": {},
+                  "comment": {
+                    "text": "The anchor element whose target should be inspected.\n"
+                  },
+                  "type": {
+                    "type": "reference",
+                    "name": "Element"
+                  }
+                }
+              ],
+              "type": {
+                "type": "instrinct",
+                "name": "boolean"
+              }
+            }
+          ]
+        }
+      ],
+      "groups": [
+        {
+          "title": "Constructors",
+          "kind": 512,
+          "children": [
+            10
+          ]
+        },
+        {
+          "title": "Methods",
+          "kind": 2048,
+          "children": [
+            12,
+            15,
+            20,
+            17,
+            23
+          ]
+        }
+      ],
+      "extendedTypes": [
+        {
+          "type": "reference",
+          "name": "LinkHandler",
+          "id": 3
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "name": "LinkHandler",
+      "kind": 128,
+      "kindString": "Class",
+      "flags": {
+        "isExported": true
+      },
+      "comment": {
+        "shortText": "Class responsible for handling interactions that should trigger browser history navigations."
+      },
+      "children": [
+        {
+          "id": 4,
+          "name": "activate",
+          "kind": 2048,
+          "kindString": "Method",
+          "flags": {
+            "isExported": true
+          },
+          "signatures": [
+            {
+              "id": 5,
+              "name": "activate",
+              "kind": 4096,
+              "kindString": "Call signature",
+              "flags": {},
+              "comment": {
+                "shortText": "Activate the instance."
+              },
+              "parameters": [
+                {
+                  "id": 6,
+                  "name": "history",
+                  "kind": 32768,
+                  "kindString": "Parameter",
+                  "flags": {},
+                  "comment": {
+                    "text": "The BrowserHistory instance that navigations should be dispatched to.\n"
+                  },
+                  "type": {
+                    "type": "reference",
+                    "name": "BrowserHistory",
+                    "id": 26,
+                    "moduleName": "\"aurelia-history-browser\""
+                  }
+                }
+              ],
+              "type": {
+                "type": "instrinct",
+                "name": "any"
+              }
+            }
+          ]
+        },
+        {
+          "id": 7,
+          "name": "deactivate",
+          "kind": 2048,
+          "kindString": "Method",
+          "flags": {
+            "isExported": true
+          },
+          "signatures": [
+            {
+              "id": 8,
+              "name": "deactivate",
+              "kind": 4096,
+              "kindString": "Call signature",
+              "flags": {},
+              "comment": {
+                "shortText": "Deactivate the instance. Event handlers and other resources should be cleaned up here."
+              },
+              "type": {
+                "type": "instrinct",
+                "name": "any"
+              }
+            }
+          ]
+        }
+      ],
+      "groups": [
+        {
+          "title": "Methods",
+          "kind": 2048,
+          "children": [
+            4,
+            7
+          ]
+        }
+      ],
+      "extendedBy": [
+        {
+          "type": "reference",
+          "name": "DefaultLinkHandler",
+          "id": 9
+        }
+      ]
+    },
+    {
+      "id": 42,
       "name": "configure",
       "kind": 64,
       "kindString": "Function",
@@ -423,17 +671,17 @@
       },
       "signatures": [
         {
-          "id": 30,
+          "id": 43,
           "name": "configure",
           "kind": 4096,
           "kindString": "Call signature",
           "flags": {},
           "comment": {
-            "shortText": "Configures the plugin by registering BrowserHistory as the implementor of History in the DI container."
+            "shortText": "Configures the plugin by registering BrowserHistory as the implementation of History in the DI container."
           },
           "parameters": [
             {
-              "id": 31,
+              "id": 44,
               "name": "config",
               "kind": 32768,
               "kindString": "Parameter",
@@ -457,6 +705,8 @@
       "title": "Classes",
       "kind": 128,
       "children": [
+        26,
+        9,
         3
       ]
     },
@@ -464,7 +714,7 @@
       "title": "Functions",
       "kind": 64,
       "children": [
-        29
+        42
       ]
     }
   ]
