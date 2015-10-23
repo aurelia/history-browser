@@ -25,6 +25,9 @@
           "flags": {
             "isExported": true
           },
+          "comment": {
+            "shortText": "Creates an instance of BrowserHistory"
+          },
           "signatures": [
             {
               "id": 29,
@@ -32,6 +35,9 @@
               "kind": 16384,
               "kindString": "Constructor signature",
               "flags": {},
+              "comment": {
+                "shortText": "Creates an instance of BrowserHistory"
+              },
               "parameters": [
                 {
                   "id": 30,
@@ -39,9 +45,14 @@
                   "kind": 32768,
                   "kindString": "Parameter",
                   "flags": {},
+                  "comment": {
+                    "shortText": "An instance of LinkHandler.\n"
+                  },
                   "type": {
-                    "type": "instrinct",
-                    "name": "any"
+                    "type": "reference",
+                    "name": "LinkHandler",
+                    "id": 3,
+                    "moduleName": "\"aurelia-history-browser\""
                   }
                 }
               ],
@@ -172,7 +183,8 @@
               "kindString": "Call signature",
               "flags": {},
               "comment": {
-                "shortText": "Causes a history navigation to occur."
+                "shortText": "Causes a history navigation to occur.",
+                "returns": "True if navigation occurred/false otherwise.\n"
               },
               "parameters": [
                 {
@@ -312,6 +324,9 @@
           "flags": {
             "isExported": true
           },
+          "comment": {
+            "shortText": "Creates an instance of DefaultLinkHandler."
+          },
           "signatures": [
             {
               "id": 11,
@@ -319,6 +334,9 @@
               "kind": 16384,
               "kindString": "Constructor signature",
               "flags": {},
+              "comment": {
+                "shortText": "Creates an instance of DefaultLinkHandler."
+              },
               "type": {
                 "type": "reference",
                 "name": "DefaultLinkHandler",
@@ -343,6 +361,9 @@
               "kind": 4096,
               "kindString": "Call signature",
               "flags": {},
+              "comment": {
+                "shortText": "Activate the instance."
+              },
               "parameters": [
                 {
                   "id": 14,
@@ -350,6 +371,9 @@
                   "kind": 32768,
                   "kindString": "Parameter",
                   "flags": {},
+                  "comment": {
+                    "text": "The BrowserHistory instance that navigations should be dispatched to.\n"
+                  },
                   "type": {
                     "type": "reference",
                     "name": "BrowserHistory",
@@ -360,7 +384,7 @@
               ],
               "type": {
                 "type": "instrinct",
-                "name": "any"
+                "name": "void"
               },
               "overwrites": {
                 "type": "reference",
@@ -390,9 +414,12 @@
               "kind": 4096,
               "kindString": "Call signature",
               "flags": {},
+              "comment": {
+                "shortText": "Deactivate the instance. Event handlers and other resources should be cleaned up here."
+              },
               "type": {
                 "type": "instrinct",
-                "name": "any"
+                "name": "void"
               },
               "overwrites": {
                 "type": "reference",
@@ -612,7 +639,7 @@
               ],
               "type": {
                 "type": "instrinct",
-                "name": "any"
+                "name": "void"
               }
             }
           ]
@@ -637,7 +664,7 @@
               },
               "type": {
                 "type": "instrinct",
-                "name": "any"
+                "name": "void"
               }
             }
           ]
@@ -686,6 +713,9 @@
               "kind": 32768,
               "kindString": "Parameter",
               "flags": {},
+              "comment": {
+                "text": "The FrameworkConfiguration object provided by Aurelia.\n"
+              },
               "type": {
                 "type": "reference",
                 "name": "Object"

@@ -11,12 +11,12 @@ export class LinkHandler {
    *
    * @param history The BrowserHistory instance that navigations should be dispatched to.
    */
-  activate(history: BrowserHistory) {}
+  activate(history: BrowserHistory): void {}
 
   /**
    * Deactivate the instance. Event handlers and other resources should be cleaned up here.
    */
-  deactivate() {}
+  deactivate(): void {}
 }
 
 /**
@@ -24,6 +24,9 @@ export class LinkHandler {
  * anchor elements with relative hrefs when the history instance is using pushstate.
  */
 export class DefaultLinkHandler extends LinkHandler {
+  /**
+   * Creates an instance of DefaultLinkHandler.
+   */
   constructor() {
     super();
 
@@ -37,14 +40,22 @@ export class DefaultLinkHandler extends LinkHandler {
     };
   }
 
-  activate(history: BrowserHistory) {
+  /**
+   * Activate the instance.
+   *
+   * @param history The BrowserHistory instance that navigations should be dispatched to.
+   */
+  activate(history: BrowserHistory): void {
     if (history._hasPushState) {
       this.history = history;
       DOM.addEventListener('click', this.handler, true);
     }
   }
 
-  deactivate() {
+  /**
+   * Deactivate the instance. Event handlers and other resources should be cleaned up here.
+   */
+  deactivate(): void {
     DOM.removeEventListener('click', this.handler);
   }
 
@@ -113,6 +124,7 @@ export class DefaultLinkHandler extends LinkHandler {
 
 /**
  * Configures the plugin by registering BrowserHistory as the implementation of History in the DI container.
+ * @param config The FrameworkConfiguration object provided by Aurelia.
  */
 export function configure(config: Object): void {
   config.singleton(History, BrowserHistory);
@@ -128,7 +140,11 @@ export function configure(config: Object): void {
 export class BrowserHistory extends History {
   static inject = [LinkHandler];
 
-  constructor(linkHandler) {
+  /**
+   * Creates an instance of BrowserHistory
+   * @param linkHandler An instance of LinkHandler.
+   */
+  constructor(linkHandler: LinkHandler) {
     super();
 
     this._isActive = false;
@@ -217,6 +233,7 @@ export class BrowserHistory extends History {
    * Causes a history navigation to occur.
    * @param fragment The history fragment to navigate to.
    * @param options The set of options that specify how the navigation should occur.
+   * @return True if navigation occurred/false otherwise.
    */
   navigate(fragment?: string, {trigger = true, replace = false} = {}): boolean {
     if (fragment && absoluteUrl.test(fragment)) {

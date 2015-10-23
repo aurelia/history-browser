@@ -13,12 +13,12 @@ declare module 'aurelia-history-browser' {
        *
        * @param history The BrowserHistory instance that navigations should be dispatched to.
        */
-    activate(history: BrowserHistory): any;
+    activate(history: BrowserHistory): void;
     
     /**
        * Deactivate the instance. Event handlers and other resources should be cleaned up here.
        */
-    deactivate(): any;
+    deactivate(): void;
   }
   
   /**
@@ -26,9 +26,23 @@ declare module 'aurelia-history-browser' {
    * anchor elements with relative hrefs when the history instance is using pushstate.
    */
   export class DefaultLinkHandler extends LinkHandler {
+    
+    /**
+       * Creates an instance of DefaultLinkHandler.
+       */
     constructor();
-    activate(history: BrowserHistory): any;
-    deactivate(): any;
+    
+    /**
+       * Activate the instance.
+       *
+       * @param history The BrowserHistory instance that navigations should be dispatched to.
+       */
+    activate(history: BrowserHistory): void;
+    
+    /**
+       * Deactivate the instance. Event handlers and other resources should be cleaned up here.
+       */
+    deactivate(): void;
     
     /**
        * Gets the href and a "should handle" recommendation, given an Event.
@@ -54,6 +68,7 @@ declare module 'aurelia-history-browser' {
   
   /**
    * Configures the plugin by registering BrowserHistory as the implementation of History in the DI container.
+   * @param config The FrameworkConfiguration object provided by Aurelia.
    */
   export function configure(config: Object): void;
   
@@ -62,7 +77,12 @@ declare module 'aurelia-history-browser' {
    */
   export class BrowserHistory extends History {
     static inject: any;
-    constructor(linkHandler: any);
+    
+    /**
+       * Creates an instance of BrowserHistory
+       * @param linkHandler An instance of LinkHandler.
+       */
+    constructor(linkHandler: LinkHandler);
     
     /**
        * Activates the history object.
@@ -79,6 +99,7 @@ declare module 'aurelia-history-browser' {
        * Causes a history navigation to occur.
        * @param fragment The history fragment to navigate to.
        * @param options The set of options that specify how the navigation should occur.
+       * @return True if navigation occurred/false otherwise.
        */
     navigate(fragment?: string, undefined?: any): boolean;
     

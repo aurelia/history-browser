@@ -9,12 +9,12 @@ export class LinkHandler {
    *
    * @param history The BrowserHistory instance that navigations should be dispatched to.
    */
-  activate(history: BrowserHistory) {}
+  activate(history: BrowserHistory): void {}
 
   /**
    * Deactivate the instance. Event handlers and other resources should be cleaned up here.
    */
-  deactivate() {}
+  deactivate(): void {}
 }
 
 /**
@@ -22,6 +22,9 @@ export class LinkHandler {
  * anchor elements with relative hrefs when the history instance is using pushstate.
  */
 export class DefaultLinkHandler extends LinkHandler {
+  /**
+   * Creates an instance of DefaultLinkHandler.
+   */
   constructor() {
     super();
 
@@ -35,14 +38,22 @@ export class DefaultLinkHandler extends LinkHandler {
     };
   }
 
-  activate(history: BrowserHistory) {
+  /**
+   * Activate the instance.
+   *
+   * @param history The BrowserHistory instance that navigations should be dispatched to.
+   */
+  activate(history: BrowserHistory): void {
     if (history._hasPushState) {
       this.history = history;
       DOM.addEventListener('click', this.handler, true);
     }
   }
 
-  deactivate() {
+  /**
+   * Deactivate the instance. Event handlers and other resources should be cleaned up here.
+   */
+  deactivate(): void {
     DOM.removeEventListener('click', this.handler);
   }
 

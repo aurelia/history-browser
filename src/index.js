@@ -5,6 +5,7 @@ import {DOM, PLATFORM} from 'aurelia-pal';
 
 /**
  * Configures the plugin by registering BrowserHistory as the implementation of History in the DI container.
+ * @param config The FrameworkConfiguration object provided by Aurelia.
  */
 export function configure(config: Object): void {
   config.singleton(History, BrowserHistory);
@@ -20,7 +21,11 @@ export function configure(config: Object): void {
 export class BrowserHistory extends History {
   static inject = [LinkHandler];
 
-  constructor(linkHandler) {
+  /**
+   * Creates an instance of BrowserHistory
+   * @param linkHandler An instance of LinkHandler.
+   */
+  constructor(linkHandler: LinkHandler) {
     super();
 
     this._isActive = false;
@@ -109,6 +114,7 @@ export class BrowserHistory extends History {
    * Causes a history navigation to occur.
    * @param fragment The history fragment to navigate to.
    * @param options The set of options that specify how the navigation should occur.
+   * @return True if navigation occurred/false otherwise.
    */
   navigate(fragment?: string, {trigger = true, replace = false} = {}): boolean {
     if (fragment && absoluteUrl.test(fragment)) {
