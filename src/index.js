@@ -33,6 +33,7 @@ export class BrowserHistory extends History {
 
   /**
    * Activates the history object.
+   *
    * @param options The set of options to activate history with.
    */
   activate(options?: Object): boolean {
@@ -107,6 +108,7 @@ export class BrowserHistory extends History {
 
   /**
    * Causes a history navigation to occur.
+   *
    * @param fragment The history fragment to navigate to.
    * @param options The set of options that specify how the navigation should occur.
    */
@@ -159,6 +161,13 @@ export class BrowserHistory extends History {
    */
   navigateBack(): void {
     this.history.back();
+  }
+
+  /**
+   * Sets the document title.
+   */
+  setTitle(title: string): void {
+    DOM.title = title;
   }
 
   _getHash(): string {
