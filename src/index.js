@@ -9,10 +9,7 @@ import {DOM, PLATFORM} from 'aurelia-pal';
  */
 export function configure(config: Object): void {
   config.singleton(History, BrowserHistory);
-
-  if (!config.container.hasHandler(LinkHandler)) {
-    config.transient(LinkHandler, DefaultLinkHandler);
-  }
+  config.transient(LinkHandler, DefaultLinkHandler);
 }
 
 /**
