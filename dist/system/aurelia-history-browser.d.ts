@@ -86,6 +86,7 @@ declare module 'aurelia-history-browser' {
     
     /**
        * Activates the history object.
+       *
        * @param options The set of options to activate history with.
        */
     activate(options?: Object): boolean;
@@ -97,6 +98,7 @@ declare module 'aurelia-history-browser' {
     
     /**
        * Causes a history navigation to occur.
+       *
        * @param fragment The history fragment to navigate to.
        * @param options The set of options that specify how the navigation should occur.
        * @return True if navigation occurred/false otherwise.
@@ -107,5 +109,10 @@ declare module 'aurelia-history-browser' {
        * Causes the history state to navigate back.
        */
     navigateBack(): void;
+    
+    /**
+       * Sets the document title.
+       */
+    setTitle(title: string): void;
   }
 }

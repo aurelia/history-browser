@@ -13,10 +13,7 @@ System.register(['core-js', 'aurelia-pal', 'aurelia-history'], function (_export
 
   function configure(config) {
     config.singleton(History, BrowserHistory);
-
-    if (!config.container.hasHandler(LinkHandler)) {
-      config.transient(LinkHandler, DefaultLinkHandler);
-    }
+    config.transient(LinkHandler, DefaultLinkHandler);
   }
 
   function updateHash(location, fragment, replace) {
@@ -258,6 +255,10 @@ System.register(['core-js', 'aurelia-pal', 'aurelia-history'], function (_export
 
         BrowserHistory.prototype.navigateBack = function navigateBack() {
           this.history.back();
+        };
+
+        BrowserHistory.prototype.setTitle = function setTitle(title) {
+          DOM.title = title;
         };
 
         BrowserHistory.prototype._getHash = function _getHash() {

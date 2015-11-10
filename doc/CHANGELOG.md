@@ -1,3 +1,16 @@
+## 0.10.0 (2015-11-09)
+
+
+#### Bug Fixes
+
+* **index:** update to latest container api ([4690d655](http://github.com/aurelia/history-browser/commit/4690d65522004040ce9118ffbaf646d6b8babd4f))
+
+
+#### Features
+
+* **history:** implement method for setting document title ([dc17f75c](http://github.com/aurelia/history-browser/commit/dc17f75cb68a6d83bf780495666beb88c9eaeaa3))
+
+
 ## 0.9.0 (2015-10-13)
 
 

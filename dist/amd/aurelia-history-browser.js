@@ -110,10 +110,7 @@ define(['exports', 'core-js', 'aurelia-pal', 'aurelia-history'], function (expor
 
   function configure(config) {
     config.singleton(_aureliaHistory.History, BrowserHistory);
-
-    if (!config.container.hasHandler(LinkHandler)) {
-      config.transient(LinkHandler, DefaultLinkHandler);
-    }
+    config.transient(LinkHandler, DefaultLinkHandler);
   }
 
   var BrowserHistory = (function (_History) {
@@ -242,6 +239,10 @@ define(['exports', 'core-js', 'aurelia-pal', 'aurelia-history'], function (expor
 
     BrowserHistory.prototype.navigateBack = function navigateBack() {
       this.history.back();
+    };
+
+    BrowserHistory.prototype.setTitle = function setTitle(title) {
+      _aureliaPal.DOM.title = title;
     };
 
     BrowserHistory.prototype._getHash = function _getHash() {
