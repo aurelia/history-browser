@@ -17,8 +17,8 @@
     "url": "http://github.com/aurelia/history-browser"
   },
   "dependencies": {
-    "aurelia-history": "^0.8.0",
-    "aurelia-pal": "^0.2.0",
+    "aurelia-history": "^0.9.0",
+    "aurelia-pal": "^0.3.0",
     "core-js": "zloirock/core-js"
   }
 }
