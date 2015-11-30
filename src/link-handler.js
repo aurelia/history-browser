@@ -82,10 +82,10 @@ export class DefaultLinkHandler extends LinkHandler {
     info.anchor = target;
     info.href = href;
 
-    let hasModifierKey = (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey);
+    let leftButtonClicked = event.which === 1;
     let isRelative = href && !(href.charAt(0) === '#' || (/^[a-z]+:/i).test(href));
 
-    info.shouldHandleEvent = !hasModifierKey && isRelative;
+    info.shouldHandleEvent = leftButtonClicked && isRelative;
     return info;
   }
 
