@@ -1,3 +1,11 @@
+## 1.0.0-beta.1.0.1 (2015-12-03)
+
+
+#### Bug Fixes
+
+* **history-browser:** open link in new tab when it clicked with middle button ([8acf18fe](http://github.com/aurelia/history-browser/commit/8acf18fe820bed72e6957ed2f7686d37430b178b))
+
+
 ### 1.0.0-beta.1 (2015-11-16)
 
 

@@ -100,10 +100,10 @@ System.register(['core-js', 'aurelia-pal', 'aurelia-history'], function (_export
           info.anchor = target;
           info.href = href;
 
-          var hasModifierKey = event.altKey || event.ctrlKey || event.metaKey || event.shiftKey;
+          var leftButtonClicked = event.which === 1;
           var isRelative = href && !(href.charAt(0) === '#' || /^[a-z]+:/i.test(href));
 
-          info.shouldHandleEvent = !hasModifierKey && isRelative;
+          info.shouldHandleEvent = leftButtonClicked && isRelative;
           return info;
         };
 
