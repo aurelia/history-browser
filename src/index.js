@@ -108,6 +108,14 @@ export class BrowserHistory extends History {
   }
 
   /**
+   * Returns the fully-qualified root of the current history object.
+   */
+  getAbsoluteRoot(): string {
+    let origin = createOrigin(this.location.protocol, this.location.hostname, this.location.port);
+    return `${origin}${this.root}`;
+  }
+
+  /**
    * Causes a history navigation to occur.
    *
    * @param fragment The history fragment to navigate to.
@@ -234,4 +242,8 @@ function updateHash(location, fragment, replace) {
     // Some browsers require that `hash` contains a leading #.
     location.hash = '#' + fragment;
   }
+}
+
+function createOrigin(protocol: string, hostname: string, port: string) {
+  return `${protocol}//${hostname}${port ? ':' + port : ''}`;
 }
