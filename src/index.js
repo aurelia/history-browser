@@ -1,4 +1,3 @@
-import 'core-js';
 import {History} from 'aurelia-history';
 import {LinkHandler, DefaultLinkHandler} from './link-handler';
 import {DOM, PLATFORM} from 'aurelia-pal';
