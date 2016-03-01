@@ -1,4 +1,3 @@
-import 'core-js';
 import {DOM,PLATFORM} from 'aurelia-pal';
 import {History} from 'aurelia-history';
 

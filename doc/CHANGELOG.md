@@ -1,3 +1,19 @@
+### 1.0.0-beta.1.1.4 (2016-03-01)
+
+
+#### Bug Fixes
+
+* **all:** remove core-js dependency ([209629f8](http://github.com/aurelia/history-browser/commit/209629f8b611449bcdf950faf50f2e1856c2174b))
+
+
+### 1.0.0-beta.1.1.3 (2016-03-01)
+
+
+#### Bug Fixes
+
+* **all:** remove core-js dependency ([209629f8](http://github.com/aurelia/history-browser/commit/209629f8b611449bcdf950faf50f2e1856c2174b))
+
+
 ### 1.0.0-beta.1.1.2 (2016-02-08)
 
 

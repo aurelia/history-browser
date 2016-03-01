@@ -1,4 +1,4 @@
-System.register(['core-js', 'aurelia-pal', 'aurelia-history'], function (_export) {
+System.register(['aurelia-pal', 'aurelia-history'], function (_export) {
   'use strict';
 
   var DOM, PLATFORM, History, LinkHandler, DefaultLinkHandler, BrowserHistory, routeStripper, rootStripper, trailingSlash, absoluteUrl;
@@ -25,7 +25,7 @@ System.register(['core-js', 'aurelia-pal', 'aurelia-history'], function (_export
     }
   }
   return {
-    setters: [function (_coreJs) {}, function (_aureliaPal) {
+    setters: [function (_aureliaPal) {
       DOM = _aureliaPal.DOM;
       PLATFORM = _aureliaPal.PLATFORM;
     }, function (_aureliaHistory) {
