@@ -1,20 +1,25 @@
 'use strict';
 
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.BrowserHistory = exports.DefaultLinkHandler = exports.LinkHandler = undefined;
 
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+var _class, _temp;
 
 exports.configure = configure;
-
-function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
 var _aureliaPal = require('aurelia-pal');
 
 var _aureliaHistory = require('aurelia-history');
 
-var LinkHandler = (function () {
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var LinkHandler = exports.LinkHandler = function () {
   function LinkHandler() {
     _classCallCheck(this, LinkHandler);
   }
@@ -24,31 +29,29 @@ var LinkHandler = (function () {
   LinkHandler.prototype.deactivate = function deactivate() {};
 
   return LinkHandler;
-})();
+}();
 
-exports.LinkHandler = LinkHandler;
-
-var DefaultLinkHandler = (function (_LinkHandler) {
+var DefaultLinkHandler = exports.DefaultLinkHandler = function (_LinkHandler) {
   _inherits(DefaultLinkHandler, _LinkHandler);
 
   function DefaultLinkHandler() {
-    var _this = this;
-
     _classCallCheck(this, DefaultLinkHandler);
 
-    _LinkHandler.call(this);
+    var _this = _possibleConstructorReturn(this, _LinkHandler.call(this));
 
-    this.handler = function (e) {
-      var _DefaultLinkHandler$getEventInfo = DefaultLinkHandler.getEventInfo(e);
+    _this.handler = function (e) {
+      var _DefaultLinkHandler$g = DefaultLinkHandler.getEventInfo(e);
 
-      var shouldHandleEvent = _DefaultLinkHandler$getEventInfo.shouldHandleEvent;
-      var href = _DefaultLinkHandler$getEventInfo.href;
+      var shouldHandleEvent = _DefaultLinkHandler$g.shouldHandleEvent;
+      var href = _DefaultLinkHandler$g.href;
+
 
       if (shouldHandleEvent) {
         e.preventDefault();
         _this.history.navigate(href);
       }
     };
+    return _this;
   }
 
   DefaultLinkHandler.prototype.activate = function activate(history) {
@@ -107,35 +110,28 @@ var DefaultLinkHandler = (function (_LinkHandler) {
   };
 
   return DefaultLinkHandler;
-})(LinkHandler);
-
-exports.DefaultLinkHandler = DefaultLinkHandler;
+}(LinkHandler);
 
 function configure(config) {
   config.singleton(_aureliaHistory.History, BrowserHistory);
   config.transient(LinkHandler, DefaultLinkHandler);
 }
 
-var BrowserHistory = (function (_History) {
+var BrowserHistory = exports.BrowserHistory = (_temp = _class = function (_History) {
   _inherits(BrowserHistory, _History);
-
-  _createClass(BrowserHistory, null, [{
-    key: 'inject',
-    value: [LinkHandler],
-    enumerable: true
-  }]);
 
   function BrowserHistory(linkHandler) {
     _classCallCheck(this, BrowserHistory);
 
-    _History.call(this);
+    var _this2 = _possibleConstructorReturn(this, _History.call(this));
 
-    this._isActive = false;
-    this._checkUrlCallback = this._checkUrl.bind(this);
+    _this2._isActive = false;
+    _this2._checkUrlCallback = _this2._checkUrl.bind(_this2);
 
-    this.location = _aureliaPal.PLATFORM.location;
-    this.history = _aureliaPal.PLATFORM.history;
-    this.linkHandler = linkHandler;
+    _this2.location = _aureliaPal.PLATFORM.location;
+    _this2.history = _aureliaPal.PLATFORM.history;
+    _this2.linkHandler = linkHandler;
+    return _this2;
   }
 
   BrowserHistory.prototype.activate = function activate(options) {
@@ -153,7 +149,7 @@ var BrowserHistory = (function (_History) {
     this._wantsHashChange = this.options.hashChange !== false;
     this._hasPushState = !!(this.options.pushState && this.history && this.history.pushState);
 
-    var eventName = undefined;
+    var eventName = void 0;
     if (this._hasPushState) {
       eventName = 'popstate';
     } else if (this._wantsHashChange) {
@@ -253,7 +249,7 @@ var BrowserHistory = (function (_History) {
   };
 
   BrowserHistory.prototype._getFragment = function _getFragment(fragment, forcePushState) {
-    var root = undefined;
+    var root = void 0;
 
     if (!fragment) {
       if (this._hasPushState || !this._wantsHashChange || forcePushState) {
@@ -284,9 +280,7 @@ var BrowserHistory = (function (_History) {
   };
 
   return BrowserHistory;
-})(_aureliaHistory.History);
-
-exports.BrowserHistory = BrowserHistory;
+}(_aureliaHistory.History), _class.inject = [LinkHandler], _temp);
 
 var routeStripper = /^#?\/*|\s+$/g;
 

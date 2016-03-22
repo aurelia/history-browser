@@ -1,6 +1,11 @@
 declare module 'aurelia-history-browser' {
-  import { DOM, PLATFORM }  from 'aurelia-pal';
-  import { History }  from 'aurelia-history';
+  import {
+    DOM,
+    PLATFORM
+  } from 'aurelia-pal';
+  import {
+    History
+  } from 'aurelia-history';
   
   /**
    * Class responsible for handling interactions that should trigger browser history navigations.
