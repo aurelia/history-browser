@@ -8,6 +8,8 @@
     "router"
   ],
   "homepage": "http://aurelia.io",
+  "main": "dist/commonjs/aurelia-history-browser.js",
+  "moduleType": "node",
   "license": "MIT",
   "authors": [
     "Rob Eisenberg <rob@bluespire.com> (http://robeisenberg.com/)"
