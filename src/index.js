@@ -34,8 +34,8 @@ export class BrowserHistory extends History {
 
   /**
    * Activates the history object.
-   *
    * @param options The set of options to activate history with.
+   * @returns Whether or not activation occurred.
    */
   activate(options?: Object): boolean {
     if (this._isActive) {
@@ -109,6 +109,7 @@ export class BrowserHistory extends History {
 
   /**
    * Returns the fully-qualified root of the current history object.
+   * @returns The absolute root of the application.
    */
   getAbsoluteRoot(): string {
     let origin = createOrigin(this.location.protocol, this.location.hostname, this.location.port);

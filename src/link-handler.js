@@ -18,6 +18,24 @@ export class LinkHandler {
 }
 
 /**
+ * Provides information about how to handle an anchor event.
+ */
+interface AnchorEventInfo {
+  /**
+   * Indicates whether the event should be handled or not.
+   */
+  shouldHandleEvent: boolean;
+  /**
+   * The href of the link or null if not-applicable.
+   */
+  href: string;
+  /**
+   * The anchor element or null if not-applicable.
+   */
+  anchor: Element;
+}
+
+/**
  * The default LinkHandler implementation. Navigations are triggered by click events on
  * anchor elements with relative hrefs when the history instance is using pushstate.
  */
@@ -62,7 +80,7 @@ export class DefaultLinkHandler extends LinkHandler {
    *
    * @param event The Event to inspect for target anchor and href.
    */
-  static getEventInfo(event: Event): Object {
+  static getEventInfo(event: Event): AnchorEventInfo {
     let info = {
       shouldHandleEvent: false,
       href: null,
@@ -93,6 +111,7 @@ export class DefaultLinkHandler extends LinkHandler {
    * Finds the closest ancestor that's an anchor element.
    *
    * @param el The element to search upward from.
+   * @returns The link element that is the closest ancestor.
    */
   static findClosestAnchor(el: Element): Element {
     while (el) {
@@ -108,6 +127,7 @@ export class DefaultLinkHandler extends LinkHandler {
    * Gets a value indicating whether or not an anchor targets the current window.
    *
    * @param target The anchor element whose target should be inspected.
+   * @returns True if the target of the link element is this window; false otherwise.
    */
   static targetIsThisWindow(target: Element): boolean {
     let targetWindow = target.getAttribute('target');
