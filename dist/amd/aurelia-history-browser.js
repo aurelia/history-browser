@@ -211,6 +211,11 @@ define(['exports', 'aurelia-pal', 'aurelia-history'], function (exports, _aureli
       this.linkHandler.deactivate();
     };
 
+    BrowserHistory.prototype.getAbsoluteRoot = function getAbsoluteRoot() {
+      var origin = createOrigin(this.location.protocol, this.location.hostname, this.location.port);
+      return '' + origin + this.root;
+    };
+
     BrowserHistory.prototype.navigate = function navigate(fragment) {
       var _ref = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
 
@@ -312,10 +317,14 @@ define(['exports', 'aurelia-pal', 'aurelia-history'], function (exports, _aureli
 
   function updateHash(location, fragment, replace) {
     if (replace) {
-      var href = location.href.replace(/(javascript:|#).*$/, '');
-      location.replace(href + '#' + fragment);
+      var _href = location.href.replace(/(javascript:|#).*$/, '');
+      location.replace(_href + '#' + fragment);
     } else {
       location.hash = '#' + fragment;
     }
+  }
+
+  function createOrigin(protocol, hostname, port) {
+    return protocol + '//' + hostname + (port ? ':' + port : '');
   }
 });

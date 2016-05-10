@@ -35,11 +35,15 @@ System.register(['aurelia-pal', 'aurelia-history'], function (_export, _context)
 
   function updateHash(location, fragment, replace) {
     if (replace) {
-      var href = location.href.replace(/(javascript:|#).*$/, '');
-      location.replace(href + '#' + fragment);
+      var _href = location.href.replace(/(javascript:|#).*$/, '');
+      location.replace(_href + '#' + fragment);
     } else {
       location.hash = '#' + fragment;
     }
+  }
+
+  function createOrigin(protocol, hostname, port) {
+    return protocol + '//' + hostname + (port ? ':' + port : '');
   }
   return {
     setters: [function (_aureliaPal) {
@@ -225,6 +229,11 @@ System.register(['aurelia-pal', 'aurelia-history'], function (_export, _context)
           PLATFORM.removeEventListener('hashchange', this._checkUrlCallback);
           this._isActive = false;
           this.linkHandler.deactivate();
+        };
+
+        BrowserHistory.prototype.getAbsoluteRoot = function getAbsoluteRoot() {
+          var origin = createOrigin(this.location.protocol, this.location.hostname, this.location.port);
+          return '' + origin + this.root;
         };
 
         BrowserHistory.prototype.navigate = function navigate(fragment) {

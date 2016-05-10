@@ -6,7 +6,7 @@
   "flags": {},
   "children": [
     {
-      "id": 26,
+      "id": 30,
       "name": "BrowserHistory",
       "kind": 128,
       "kindString": "Class",
@@ -18,7 +18,7 @@
       },
       "children": [
         {
-          "id": 28,
+          "id": 32,
           "name": "constructor",
           "kind": 512,
           "kindString": "Constructor",
@@ -30,7 +30,7 @@
           },
           "signatures": [
             {
-              "id": 29,
+              "id": 33,
               "name": "new BrowserHistory",
               "kind": 16384,
               "kindString": "Constructor signature",
@@ -40,7 +40,7 @@
               },
               "parameters": [
                 {
-                  "id": 30,
+                  "id": 34,
                   "name": "linkHandler",
                   "kind": 32768,
                   "kindString": "Parameter",
@@ -51,7 +51,7 @@
                   "type": {
                     "type": "reference",
                     "name": "LinkHandler",
-                    "id": 3,
+                    "id": 7,
                     "moduleName": "\"aurelia-history-browser\""
                   }
                 }
@@ -59,14 +59,14 @@
               "type": {
                 "type": "reference",
                 "name": "BrowserHistory",
-                "id": 26,
+                "id": 30,
                 "moduleName": "\"aurelia-history-browser\""
               }
             }
           ]
         },
         {
-          "id": 27,
+          "id": 31,
           "name": "inject",
           "kind": 1024,
           "kindString": "Property",
@@ -80,7 +80,7 @@
           }
         },
         {
-          "id": 31,
+          "id": 35,
           "name": "activate",
           "kind": 2048,
           "kindString": "Method",
@@ -89,17 +89,18 @@
           },
           "signatures": [
             {
-              "id": 32,
+              "id": 36,
               "name": "activate",
               "kind": 4096,
               "kindString": "Call signature",
               "flags": {},
               "comment": {
-                "shortText": "Activates the history object."
+                "shortText": "Activates the history object.",
+                "returns": "Whether or not activation occurred.\n"
               },
               "parameters": [
                 {
-                  "id": 33,
+                  "id": 37,
                   "name": "options",
                   "kind": 32768,
                   "kindString": "Parameter",
@@ -107,7 +108,7 @@
                     "isOptional": true
                   },
                   "comment": {
-                    "text": "The set of options to activate history with.\n"
+                    "text": "The set of options to activate history with."
                   },
                   "type": {
                     "type": "reference",
@@ -122,18 +123,18 @@
               "overwrites": {
                 "type": "reference",
                 "name": "History.activate",
-                "id": 57
+                "id": 63
               }
             }
           ],
           "overwrites": {
             "type": "reference",
             "name": "History.activate",
-            "id": 57
+            "id": 63
           }
         },
         {
-          "id": 34,
+          "id": 38,
           "name": "deactivate",
           "kind": 2048,
           "kindString": "Method",
@@ -142,7 +143,7 @@
           },
           "signatures": [
             {
-              "id": 35,
+              "id": 39,
               "name": "deactivate",
               "kind": 4096,
               "kindString": "Call signature",
@@ -157,18 +158,44 @@
               "overwrites": {
                 "type": "reference",
                 "name": "History.deactivate",
-                "id": 60
+                "id": 66
               }
             }
           ],
           "overwrites": {
             "type": "reference",
             "name": "History.deactivate",
-            "id": 60
+            "id": 66
           }
         },
         {
-          "id": 36,
+          "id": 40,
+          "name": "getAbsoluteRoot",
+          "kind": 2048,
+          "kindString": "Method",
+          "flags": {
+            "isExported": true
+          },
+          "signatures": [
+            {
+              "id": 41,
+              "name": "getAbsoluteRoot",
+              "kind": 4096,
+              "kindString": "Call signature",
+              "flags": {},
+              "comment": {
+                "shortText": "Returns the fully-qualified root of the current history object.",
+                "returns": "The absolute root of the application.\n"
+              },
+              "type": {
+                "type": "instrinct",
+                "name": "string"
+              }
+            }
+          ]
+        },
+        {
+          "id": 42,
           "name": "navigate",
           "kind": 2048,
           "kindString": "Method",
@@ -177,7 +204,7 @@
           },
           "signatures": [
             {
-              "id": 37,
+              "id": 43,
               "name": "navigate",
               "kind": 4096,
               "kindString": "Call signature",
@@ -188,7 +215,7 @@
               },
               "parameters": [
                 {
-                  "id": 38,
+                  "id": 44,
                   "name": "fragment",
                   "kind": 32768,
                   "kindString": "Parameter",
@@ -204,7 +231,7 @@
                   }
                 },
                 {
-                  "id": 39,
+                  "id": 45,
                   "name": "undefined",
                   "kind": 32768,
                   "kindString": "Parameter",
@@ -224,18 +251,18 @@
               "overwrites": {
                 "type": "reference",
                 "name": "History.navigate",
-                "id": 62
+                "id": 68
               }
             }
           ],
           "overwrites": {
             "type": "reference",
             "name": "History.navigate",
-            "id": 62
+            "id": 68
           }
         },
         {
-          "id": 40,
+          "id": 46,
           "name": "navigateBack",
           "kind": 2048,
           "kindString": "Method",
@@ -244,7 +271,7 @@
           },
           "signatures": [
             {
-              "id": 41,
+              "id": 47,
               "name": "navigateBack",
               "kind": 4096,
               "kindString": "Call signature",
@@ -259,18 +286,18 @@
               "overwrites": {
                 "type": "reference",
                 "name": "History.navigateBack",
-                "id": 66
+                "id": 72
               }
             }
           ],
           "overwrites": {
             "type": "reference",
             "name": "History.navigateBack",
-            "id": 66
+            "id": 72
           }
         },
         {
-          "id": 42,
+          "id": 48,
           "name": "setTitle",
           "kind": 2048,
           "kindString": "Method",
@@ -279,7 +306,7 @@
           },
           "signatures": [
             {
-              "id": 43,
+              "id": 49,
               "name": "setTitle",
               "kind": 4096,
               "kindString": "Call signature",
@@ -289,7 +316,7 @@
               },
               "parameters": [
                 {
-                  "id": 44,
+                  "id": 50,
                   "name": "title",
                   "kind": 32768,
                   "kindString": "Parameter",
@@ -307,14 +334,14 @@
               "overwrites": {
                 "type": "reference",
                 "name": "History.setTitle",
-                "id": 68
+                "id": 74
               }
             }
           ],
           "overwrites": {
             "type": "reference",
             "name": "History.setTitle",
-            "id": 68
+            "id": 74
           }
         }
       ],
@@ -323,25 +350,26 @@
           "title": "Constructors",
           "kind": 512,
           "children": [
-            28
+            32
           ]
         },
         {
           "title": "Properties",
           "kind": 1024,
           "children": [
-            27
+            31
           ]
         },
         {
           "title": "Methods",
           "kind": 2048,
           "children": [
-            31,
-            34,
-            36,
+            35,
+            38,
             40,
-            42
+            42,
+            46,
+            48
           ]
         }
       ],
@@ -349,12 +377,12 @@
         {
           "type": "reference",
           "name": "History",
-          "id": 56
+          "id": 62
         }
       ]
     },
     {
-      "id": 9,
+      "id": 13,
       "name": "DefaultLinkHandler",
       "kind": 128,
       "kindString": "Class",
@@ -366,7 +394,7 @@
       },
       "children": [
         {
-          "id": 10,
+          "id": 14,
           "name": "constructor",
           "kind": 512,
           "kindString": "Constructor",
@@ -378,7 +406,7 @@
           },
           "signatures": [
             {
-              "id": 11,
+              "id": 15,
               "name": "new DefaultLinkHandler",
               "kind": 16384,
               "kindString": "Constructor signature",
@@ -389,14 +417,14 @@
               "type": {
                 "type": "reference",
                 "name": "DefaultLinkHandler",
-                "id": 9,
+                "id": 13,
                 "moduleName": "\"aurelia-history-browser\""
               }
             }
           ]
         },
         {
-          "id": 12,
+          "id": 16,
           "name": "activate",
           "kind": 2048,
           "kindString": "Method",
@@ -405,7 +433,7 @@
           },
           "signatures": [
             {
-              "id": 13,
+              "id": 17,
               "name": "activate",
               "kind": 4096,
               "kindString": "Call signature",
@@ -415,7 +443,7 @@
               },
               "parameters": [
                 {
-                  "id": 14,
+                  "id": 18,
                   "name": "history",
                   "kind": 32768,
                   "kindString": "Parameter",
@@ -426,7 +454,7 @@
                   "type": {
                     "type": "reference",
                     "name": "BrowserHistory",
-                    "id": 26,
+                    "id": 30,
                     "moduleName": "\"aurelia-history-browser\""
                   }
                 }
@@ -438,18 +466,18 @@
               "overwrites": {
                 "type": "reference",
                 "name": "LinkHandler.activate",
-                "id": 4
+                "id": 8
               }
             }
           ],
           "overwrites": {
             "type": "reference",
             "name": "LinkHandler.activate",
-            "id": 4
+            "id": 8
           }
         },
         {
-          "id": 15,
+          "id": 19,
           "name": "deactivate",
           "kind": 2048,
           "kindString": "Method",
@@ -458,7 +486,7 @@
           },
           "signatures": [
             {
-              "id": 16,
+              "id": 20,
               "name": "deactivate",
               "kind": 4096,
               "kindString": "Call signature",
@@ -473,18 +501,18 @@
               "overwrites": {
                 "type": "reference",
                 "name": "LinkHandler.deactivate",
-                "id": 7
+                "id": 11
               }
             }
           ],
           "overwrites": {
             "type": "reference",
             "name": "LinkHandler.deactivate",
-            "id": 7
+            "id": 11
           }
         },
         {
-          "id": 20,
+          "id": 24,
           "name": "findClosestAnchor",
           "kind": 2048,
           "kindString": "Method",
@@ -494,23 +522,24 @@
           },
           "signatures": [
             {
-              "id": 21,
+              "id": 25,
               "name": "findClosestAnchor",
               "kind": 4096,
               "kindString": "Call signature",
               "flags": {},
               "comment": {
-                "shortText": "Finds the closest ancestor that's an anchor element."
+                "shortText": "Finds the closest ancestor that's an anchor element.",
+                "returns": "The link element that is the closest ancestor.\n"
               },
               "parameters": [
                 {
-                  "id": 22,
+                  "id": 26,
                   "name": "el",
                   "kind": 32768,
                   "kindString": "Parameter",
                   "flags": {},
                   "comment": {
-                    "text": "The element to search upward from.\n"
+                    "text": "The element to search upward from."
                   },
                   "type": {
                     "type": "reference",
@@ -526,7 +555,7 @@
           ]
         },
         {
-          "id": 17,
+          "id": 21,
           "name": "getEventInfo",
           "kind": 2048,
           "kindString": "Method",
@@ -536,7 +565,7 @@
           },
           "signatures": [
             {
-              "id": 18,
+              "id": 22,
               "name": "getEventInfo",
               "kind": 4096,
               "kindString": "Call signature",
@@ -546,7 +575,7 @@
               },
               "parameters": [
                 {
-                  "id": 19,
+                  "id": 23,
                   "name": "event",
                   "kind": 32768,
                   "kindString": "Parameter",
@@ -562,13 +591,15 @@
               ],
               "type": {
                 "type": "reference",
-                "name": "Object"
+                "name": "AnchorEventInfo",
+                "id": 3,
+                "moduleName": "\"aurelia-history-browser\""
               }
             }
           ]
         },
         {
-          "id": 23,
+          "id": 27,
           "name": "targetIsThisWindow",
           "kind": 2048,
           "kindString": "Method",
@@ -578,23 +609,24 @@
           },
           "signatures": [
             {
-              "id": 24,
+              "id": 28,
               "name": "targetIsThisWindow",
               "kind": 4096,
               "kindString": "Call signature",
               "flags": {},
               "comment": {
-                "shortText": "Gets a value indicating whether or not an anchor targets the current window."
+                "shortText": "Gets a value indicating whether or not an anchor targets the current window.",
+                "returns": "True if the target of the link element is this window; false otherwise.\n"
               },
               "parameters": [
                 {
-                  "id": 25,
+                  "id": 29,
                   "name": "target",
                   "kind": 32768,
                   "kindString": "Parameter",
                   "flags": {},
                   "comment": {
-                    "text": "The anchor element whose target should be inspected.\n"
+                    "text": "The anchor element whose target should be inspected."
                   },
                   "type": {
                     "type": "reference",
@@ -615,18 +647,18 @@
           "title": "Constructors",
           "kind": 512,
           "children": [
-            10
+            14
           ]
         },
         {
           "title": "Methods",
           "kind": 2048,
           "children": [
-            12,
-            15,
-            20,
-            17,
-            23
+            16,
+            19,
+            24,
+            21,
+            27
           ]
         }
       ],
@@ -634,12 +666,12 @@
         {
           "type": "reference",
           "name": "LinkHandler",
-          "id": 3
+          "id": 7
         }
       ]
     },
     {
-      "id": 3,
+      "id": 7,
       "name": "LinkHandler",
       "kind": 128,
       "kindString": "Class",
@@ -651,7 +683,7 @@
       },
       "children": [
         {
-          "id": 4,
+          "id": 8,
           "name": "activate",
           "kind": 2048,
           "kindString": "Method",
@@ -660,7 +692,7 @@
           },
           "signatures": [
             {
-              "id": 5,
+              "id": 9,
               "name": "activate",
               "kind": 4096,
               "kindString": "Call signature",
@@ -670,7 +702,7 @@
               },
               "parameters": [
                 {
-                  "id": 6,
+                  "id": 10,
                   "name": "history",
                   "kind": 32768,
                   "kindString": "Parameter",
@@ -681,7 +713,7 @@
                   "type": {
                     "type": "reference",
                     "name": "BrowserHistory",
-                    "id": 26,
+                    "id": 30,
                     "moduleName": "\"aurelia-history-browser\""
                   }
                 }
@@ -694,7 +726,7 @@
           ]
         },
         {
-          "id": 7,
+          "id": 11,
           "name": "deactivate",
           "kind": 2048,
           "kindString": "Method",
@@ -703,7 +735,7 @@
           },
           "signatures": [
             {
-              "id": 8,
+              "id": 12,
               "name": "deactivate",
               "kind": 4096,
               "kindString": "Call signature",
@@ -724,8 +756,8 @@
           "title": "Methods",
           "kind": 2048,
           "children": [
-            4,
-            7
+            8,
+            11
           ]
         }
       ],
@@ -733,12 +765,85 @@
         {
           "type": "reference",
           "name": "DefaultLinkHandler",
-          "id": 9
+          "id": 13
         }
       ]
     },
     {
-      "id": 45,
+      "id": 3,
+      "name": "AnchorEventInfo",
+      "kind": 256,
+      "kindString": "Interface",
+      "flags": {
+        "isExported": true
+      },
+      "comment": {
+        "shortText": "Provides information about how to handle an anchor event."
+      },
+      "children": [
+        {
+          "id": 6,
+          "name": "anchor",
+          "kind": 1024,
+          "kindString": "Property",
+          "flags": {
+            "isExported": true
+          },
+          "comment": {
+            "shortText": "The anchor element or null if not-applicable."
+          },
+          "type": {
+            "type": "reference",
+            "name": "Element"
+          }
+        },
+        {
+          "id": 5,
+          "name": "href",
+          "kind": 1024,
+          "kindString": "Property",
+          "flags": {
+            "isExported": true
+          },
+          "comment": {
+            "shortText": "The href of the link or null if not-applicable."
+          },
+          "type": {
+            "type": "instrinct",
+            "name": "string"
+          }
+        },
+        {
+          "id": 4,
+          "name": "shouldHandleEvent",
+          "kind": 1024,
+          "kindString": "Property",
+          "flags": {
+            "isExported": true
+          },
+          "comment": {
+            "shortText": "Indicates whether the event should be handled or not."
+          },
+          "type": {
+            "type": "instrinct",
+            "name": "boolean"
+          }
+        }
+      ],
+      "groups": [
+        {
+          "title": "Properties",
+          "kind": 1024,
+          "children": [
+            6,
+            5,
+            4
+          ]
+        }
+      ]
+    },
+    {
+      "id": 51,
       "name": "configure",
       "kind": 64,
       "kindString": "Function",
@@ -747,7 +852,7 @@
       },
       "signatures": [
         {
-          "id": 46,
+          "id": 52,
           "name": "configure",
           "kind": 4096,
           "kindString": "Call signature",
@@ -757,7 +862,7 @@
           },
           "parameters": [
             {
-              "id": 47,
+              "id": 53,
               "name": "config",
               "kind": 32768,
               "kindString": "Parameter",
@@ -784,8 +889,15 @@
       "title": "Classes",
       "kind": 128,
       "children": [
-        26,
-        9,
+        30,
+        13,
+        7
+      ]
+    },
+    {
+      "title": "Interfaces",
+      "kind": 256,
+      "children": [
         3
       ]
     },
@@ -793,7 +905,7 @@
       "title": "Functions",
       "kind": 64,
       "children": [
-        45
+        51
       ]
     }
   ]

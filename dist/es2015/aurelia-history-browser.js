@@ -153,6 +153,11 @@ export let BrowserHistory = (_temp = _class = class BrowserHistory extends Histo
     this.linkHandler.deactivate();
   }
 
+  getAbsoluteRoot() {
+    let origin = createOrigin(this.location.protocol, this.location.hostname, this.location.port);
+    return `${ origin }${ this.root }`;
+  }
+
   navigate(fragment, { trigger = true, replace = false } = {}) {
     if (fragment && absoluteUrl.test(fragment)) {
       this.location.href = fragment;
@@ -250,4 +255,8 @@ function updateHash(location, fragment, replace) {
   } else {
     location.hash = '#' + fragment;
   }
+}
+
+function createOrigin(protocol, hostname, port) {
+  return `${ protocol }//${ hostname }${ port ? ':' + port : '' }`;
 }
