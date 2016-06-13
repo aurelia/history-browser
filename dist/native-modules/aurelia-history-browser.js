@@ -1,17 +1,4 @@
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.BrowserHistory = exports.DefaultLinkHandler = exports.LinkHandler = undefined;
-
 var _class, _temp;
-
-exports.configure = configure;
-
-var _aureliaPal = require('aurelia-pal');
-
-var _aureliaHistory = require('aurelia-history');
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
@@ -19,7 +6,10 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 
 
-var LinkHandler = exports.LinkHandler = function () {
+import { DOM, PLATFORM } from 'aurelia-pal';
+import { History } from 'aurelia-history';
+
+export var LinkHandler = function () {
   function LinkHandler() {
     
   }
@@ -31,7 +21,7 @@ var LinkHandler = exports.LinkHandler = function () {
   return LinkHandler;
 }();
 
-var DefaultLinkHandler = exports.DefaultLinkHandler = function (_LinkHandler) {
+export var DefaultLinkHandler = function (_LinkHandler) {
   _inherits(DefaultLinkHandler, _LinkHandler);
 
   function DefaultLinkHandler() {
@@ -57,12 +47,12 @@ var DefaultLinkHandler = exports.DefaultLinkHandler = function (_LinkHandler) {
   DefaultLinkHandler.prototype.activate = function activate(history) {
     if (history._hasPushState) {
       this.history = history;
-      _aureliaPal.DOM.addEventListener('click', this.handler, true);
+      DOM.addEventListener('click', this.handler, true);
     }
   };
 
   DefaultLinkHandler.prototype.deactivate = function deactivate() {
-    _aureliaPal.DOM.removeEventListener('click', this.handler);
+    DOM.removeEventListener('click', this.handler);
   };
 
   DefaultLinkHandler.getEventInfo = function getEventInfo(event) {
@@ -104,7 +94,7 @@ var DefaultLinkHandler = exports.DefaultLinkHandler = function (_LinkHandler) {
 
   DefaultLinkHandler.targetIsThisWindow = function targetIsThisWindow(target) {
     var targetWindow = target.getAttribute('target');
-    var win = _aureliaPal.PLATFORM.global;
+    var win = PLATFORM.global;
 
     return !targetWindow || targetWindow === win.name || targetWindow === '_self' || targetWindow === 'top' && win === win.top;
   };
@@ -112,12 +102,12 @@ var DefaultLinkHandler = exports.DefaultLinkHandler = function (_LinkHandler) {
   return DefaultLinkHandler;
 }(LinkHandler);
 
-function configure(config) {
-  config.singleton(_aureliaHistory.History, BrowserHistory);
+export function configure(config) {
+  config.singleton(History, BrowserHistory);
   config.transient(LinkHandler, DefaultLinkHandler);
 }
 
-var BrowserHistory = exports.BrowserHistory = (_temp = _class = function (_History) {
+export var BrowserHistory = (_temp = _class = function (_History) {
   _inherits(BrowserHistory, _History);
 
   function BrowserHistory(linkHandler) {
@@ -128,8 +118,8 @@ var BrowserHistory = exports.BrowserHistory = (_temp = _class = function (_Histo
     _this2._isActive = false;
     _this2._checkUrlCallback = _this2._checkUrl.bind(_this2);
 
-    _this2.location = _aureliaPal.PLATFORM.location;
-    _this2.history = _aureliaPal.PLATFORM.history;
+    _this2.location = PLATFORM.location;
+    _this2.history = PLATFORM.history;
     _this2.linkHandler = linkHandler;
     return _this2;
   }
@@ -156,7 +146,7 @@ var BrowserHistory = exports.BrowserHistory = (_temp = _class = function (_Histo
       eventName = 'hashchange';
     }
 
-    _aureliaPal.PLATFORM.addEventListener(eventName, this._checkUrlCallback);
+    PLATFORM.addEventListener(eventName, this._checkUrlCallback);
 
     if (this._wantsHashChange && wantsPushState) {
       var loc = this.location;
@@ -169,7 +159,7 @@ var BrowserHistory = exports.BrowserHistory = (_temp = _class = function (_Histo
         return true;
       } else if (this._hasPushState && atRoot && loc.hash) {
           this.fragment = this._getHash().replace(routeStripper, '');
-          this.history.replaceState({}, _aureliaPal.DOM.title, this.root + this.fragment + loc.search);
+          this.history.replaceState({}, DOM.title, this.root + this.fragment + loc.search);
         }
     }
 
@@ -185,8 +175,8 @@ var BrowserHistory = exports.BrowserHistory = (_temp = _class = function (_Histo
   };
 
   BrowserHistory.prototype.deactivate = function deactivate() {
-    _aureliaPal.PLATFORM.removeEventListener('popstate', this._checkUrlCallback);
-    _aureliaPal.PLATFORM.removeEventListener('hashchange', this._checkUrlCallback);
+    PLATFORM.removeEventListener('popstate', this._checkUrlCallback);
+    PLATFORM.removeEventListener('hashchange', this._checkUrlCallback);
     this._isActive = false;
     this.linkHandler.deactivate();
   };
@@ -229,7 +219,7 @@ var BrowserHistory = exports.BrowserHistory = (_temp = _class = function (_Histo
 
     if (this._hasPushState) {
       url = url.replace('//', '/');
-      this.history[replace ? 'replaceState' : 'pushState']({}, _aureliaPal.DOM.title, url);
+      this.history[replace ? 'replaceState' : 'pushState']({}, DOM.title, url);
     } else if (this._wantsHashChange) {
       updateHash(this.location, fragment, replace);
     } else {
@@ -246,7 +236,7 @@ var BrowserHistory = exports.BrowserHistory = (_temp = _class = function (_Histo
   };
 
   BrowserHistory.prototype.setTitle = function setTitle(title) {
-    _aureliaPal.DOM.title = title;
+    DOM.title = title;
   };
 
   BrowserHistory.prototype._getHash = function _getHash() {
@@ -285,7 +275,7 @@ var BrowserHistory = exports.BrowserHistory = (_temp = _class = function (_Histo
   };
 
   return BrowserHistory;
-}(_aureliaHistory.History), _class.inject = [LinkHandler], _temp);
+}(History), _class.inject = [LinkHandler], _temp);
 
 var routeStripper = /^#?\/*|\s+$/g;
 

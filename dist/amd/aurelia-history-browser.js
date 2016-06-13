@@ -33,15 +33,11 @@ define(['exports', 'aurelia-pal', 'aurelia-history'], function (exports, _aureli
     if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
   }
 
-  function _classCallCheck(instance, Constructor) {
-    if (!(instance instanceof Constructor)) {
-      throw new TypeError("Cannot call a class as a function");
-    }
-  }
+  
 
   var LinkHandler = exports.LinkHandler = function () {
     function LinkHandler() {
-      _classCallCheck(this, LinkHandler);
+      
     }
 
     LinkHandler.prototype.activate = function activate(history) {};
@@ -55,7 +51,7 @@ define(['exports', 'aurelia-pal', 'aurelia-history'], function (exports, _aureli
     _inherits(DefaultLinkHandler, _LinkHandler);
 
     function DefaultLinkHandler() {
-      _classCallCheck(this, DefaultLinkHandler);
+      
 
       var _this = _possibleConstructorReturn(this, _LinkHandler.call(this));
 
@@ -141,7 +137,7 @@ define(['exports', 'aurelia-pal', 'aurelia-history'], function (exports, _aureli
     _inherits(BrowserHistory, _History);
 
     function BrowserHistory(linkHandler) {
-      _classCallCheck(this, BrowserHistory);
+      
 
       var _this2 = _possibleConstructorReturn(this, _History.call(this));
 

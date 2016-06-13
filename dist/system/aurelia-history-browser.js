@@ -1,6 +1,8 @@
 'use strict';
 
 System.register(['aurelia-pal', 'aurelia-history'], function (_export, _context) {
+  "use strict";
+
   var DOM, PLATFORM, History, _class, _temp, LinkHandler, DefaultLinkHandler, BrowserHistory, routeStripper, rootStripper, trailingSlash, absoluteUrl;
 
   function _possibleConstructorReturn(self, call) {
@@ -27,11 +29,7 @@ System.register(['aurelia-pal', 'aurelia-history'], function (_export, _context)
     if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
   }
 
-  function _classCallCheck(instance, Constructor) {
-    if (!(instance instanceof Constructor)) {
-      throw new TypeError("Cannot call a class as a function");
-    }
-  }
+  
 
   function updateHash(location, fragment, replace) {
     if (replace) {
@@ -55,7 +53,7 @@ System.register(['aurelia-pal', 'aurelia-history'], function (_export, _context)
     execute: function () {
       _export('LinkHandler', LinkHandler = function () {
         function LinkHandler() {
-          _classCallCheck(this, LinkHandler);
+          
         }
 
         LinkHandler.prototype.activate = function activate(history) {};
@@ -71,7 +69,7 @@ System.register(['aurelia-pal', 'aurelia-history'], function (_export, _context)
         _inherits(DefaultLinkHandler, _LinkHandler);
 
         function DefaultLinkHandler() {
-          _classCallCheck(this, DefaultLinkHandler);
+          
 
           var _this = _possibleConstructorReturn(this, _LinkHandler.call(this));
 
@@ -161,7 +159,7 @@ System.register(['aurelia-pal', 'aurelia-history'], function (_export, _context)
         _inherits(BrowserHistory, _History);
 
         function BrowserHistory(linkHandler) {
-          _classCallCheck(this, BrowserHistory);
+          
 
           var _this2 = _possibleConstructorReturn(this, _History.call(this));
 
