@@ -150,8 +150,4 @@ export declare class BrowserHistory extends History {
      * Sets the document title.
      */
   setTitle(title: string): void;
-  _getHash(): string;
-  _getFragment(fragment: string, forcePushState?: boolean): string;
-  _checkUrl(): boolean;
-  _loadUrl(fragmentOverride: string): boolean;
 }
