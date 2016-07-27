@@ -31,6 +31,13 @@ System.register(['aurelia-pal', 'aurelia-history'], function (_export, _context)
 
   
 
+  function configure(config) {
+    config.singleton(History, BrowserHistory);
+    config.transient(LinkHandler, DefaultLinkHandler);
+  }
+
+  _export('configure', configure);
+
   function updateHash(location, fragment, replace) {
     if (replace) {
       var _href = location.href.replace(/(javascript:|#).*$/, '');
@@ -147,13 +154,6 @@ System.register(['aurelia-pal', 'aurelia-history'], function (_export, _context)
       }(LinkHandler));
 
       _export('DefaultLinkHandler', DefaultLinkHandler);
-
-      function configure(config) {
-        config.singleton(History, BrowserHistory);
-        config.transient(LinkHandler, DefaultLinkHandler);
-      }
-
-      _export('configure', configure);
 
       _export('BrowserHistory', BrowserHistory = (_temp = _class = function (_History) {
         _inherits(BrowserHistory, _History);

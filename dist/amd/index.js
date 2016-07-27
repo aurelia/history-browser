@@ -5,7 +5,7 @@ define(['exports', './aurelia-history-browser'], function (exports, _aureliaHist
     value: true
   });
   Object.keys(_aureliaHistoryBrowser).forEach(function (key) {
-    if (key === "default") return;
+    if (key === "default" || key === "__esModule") return;
     Object.defineProperty(exports, key, {
       enumerable: true,
       get: function () {
