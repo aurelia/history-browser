@@ -20,6 +20,7 @@
   },
   "dependencies": {
     "aurelia-history": "^1.0.0",
-    "aurelia-pal": "^1.0.0"
+    "aurelia-pal": "^1.0.0",
+    "aurelia-storage": "^1.0.0"
   }
 }

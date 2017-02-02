@@ -1,5 +1,12 @@
 System.config({
   defaultJSExtensions: true,
+  transpiler: "babel",
+  babelOptions: {
+    "optional": [
+      "runtime",
+      "optimisation.modules.system"
+    ]
+  },
   paths: {
     "github:*": "jspm_packages/github/*",
     "aurelia-history-browser/*": "dist/*",
@@ -10,6 +17,7 @@ System.config({
     "aurelia-history": "npm:aurelia-history@1.0.0",
     "aurelia-pal": "npm:aurelia-pal@1.0.0",
     "aurelia-pal-browser": "npm:aurelia-pal-browser@1.0.0",
+    "aurelia-storage": "github:jwx/storage@master",
     "babel": "npm:babel-core@5.8.38",
     "babel-runtime": "npm:babel-runtime@5.8.38",
     "core-js": "npm:core-js@2.4.1",
