@@ -107,6 +107,30 @@ export declare function configure(config: Object): void;
  */
 export declare class BrowserHistory extends History {
   static inject: any;
+
+  	/**
+	 * The root of the url
+	 * 
+	 * @type {string}
+	 * @memberOf BrowserHistory
+	 */
+	root: string;
+
+	/**
+	 * The current fragment of the url
+	 * 
+	 * @type {string}
+	 * @memberOf BrowserHistory
+	 */
+	fragment: string;
+
+	/**
+	 * The url of the previous browser location
+	 * 
+	 * @type {string}
+	 * @memberOf BrowserHistory
+	 */
+	previousLocation: string;
   
   /**
      * Creates an instance of BrowserHistory
