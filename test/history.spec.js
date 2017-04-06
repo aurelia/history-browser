@@ -1,7 +1,6 @@
 import './setup';
 import { BrowserHistory } from '../src/index';
 import { LinkHandler } from '../src/link-handler';
-import { Storage } from 'aurelia-storage';
 
 describe('browser history', () => {
   it('should have some tests', () => {
@@ -72,7 +71,7 @@ describe('browser history', () => {
   describe('setState', () => {
     it('should set browser page state', () => {
       var state = { 'number': 123 };
-      var bh = new BrowserHistory(new LinkHandler(), new Storage());
+      var bh = new BrowserHistory(new LinkHandler());
       bh.activate({});
       bh.location = {
         protocol: 'http:',
@@ -86,7 +85,7 @@ describe('browser history', () => {
 
   describe('getState', () => {
     it('should get browser page state', () => {
-      var bh = new BrowserHistory(new LinkHandler(), new Storage());
+      var bh = new BrowserHistory(new LinkHandler());
       bh.activate({});
       bh.location = {
         protocol: 'http:',

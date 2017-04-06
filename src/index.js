@@ -1,7 +1,6 @@
 import {History} from 'aurelia-history';
 import {LinkHandler, DefaultLinkHandler} from './link-handler';
 import {DOM, PLATFORM} from 'aurelia-pal';
-import {Storage} from 'aurelia-storage';
 
 /**
  * Configures the plugin by registering BrowserHistory as the implementation of History in the DI container.
@@ -16,13 +15,13 @@ export function configure(config: Object): void {
  * An implementation of the basic history API.
  */
 export class BrowserHistory extends History {
-  static inject = [LinkHandler, Storage];
+  static inject = [LinkHandler];
 
   /**
    * Creates an instance of BrowserHistory
    * @param linkHandler An instance of LinkHandler.
    */
-  constructor(linkHandler: LinkHandler, storage: Storage) {
+  constructor(linkHandler: LinkHandler) {
     super();
 
     this._isActive = false;
@@ -31,7 +30,6 @@ export class BrowserHistory extends History {
     this.location = PLATFORM.location;
     this.history = PLATFORM.history;
     this.linkHandler = linkHandler;
-    this.storage = storage;
   }
 
   /**
@@ -189,10 +187,9 @@ export class BrowserHistory extends History {
    * @param value The value to set.
    */
   setState(key: string, value: any): void {
-      this.storage.store('-page', key, value);
-      // let state = Object.assign({}, this.history.state);
-      // state[key] = value;
-      // this.history.replaceState(state, null, null);
+      let state = Object.assign({}, this.history.state);
+      state[key] = value;
+      this.history.replaceState(state, null, null);
   }
 
   /**
@@ -201,9 +198,8 @@ export class BrowserHistory extends History {
    * @returns The value for the key.
    */
   getState(key: string): any {
-      return this.storage.retrieve('-page', key);
-      // let state = Object.assign({}, this.history.state);
-      // return state[key];
+      let state = Object.assign({}, this.history.state);
+      return state[key];
   }
 
   _getHash(): string {
