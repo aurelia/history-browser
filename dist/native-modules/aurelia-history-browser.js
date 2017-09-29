@@ -239,6 +239,17 @@ export var BrowserHistory = (_temp = _class = function (_History) {
     DOM.title = title;
   };
 
+  BrowserHistory.prototype.setState = function setState(key, value) {
+    var state = Object.assign({}, this.history.state);
+    state[key] = value;
+    this.history.replaceState(state, null, null);
+  };
+
+  BrowserHistory.prototype.getState = function getState(key) {
+    var state = Object.assign({}, this.history.state);
+    return state[key];
+  };
+
   BrowserHistory.prototype._getHash = function _getHash() {
     return this.location.hash.substr(1);
   };

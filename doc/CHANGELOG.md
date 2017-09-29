@@ -1,3 +1,10 @@
+<a name="1.1.0"></a>
+# [1.1.0](https://github.com/aurelia/history-browser/compare/1.0.0...v1.1.0) (2017-09-29)
+
+#### Features
+
+* **history-browser:** add getState and setState
+
 <a name="1.0.0"></a>
 # [1.0.0](https://github.com/aurelia/history-browser/compare/1.0.0-rc.1.0.0...v1.0.0) (2016-07-27)
 

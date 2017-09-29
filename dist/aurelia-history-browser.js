@@ -320,6 +320,27 @@ export class BrowserHistory extends History {
     DOM.title = title;
   }
 
+  /**
+   * Sets a key in the history page state.
+   * @param key The key for the value.
+   * @param value The value to set.
+   */
+  setState(key: string, value: any): void {
+    let state = Object.assign({}, this.history.state);
+    state[key] = value;
+    this.history.replaceState(state, null, null);
+  }
+
+  /**
+   * Gets a key in the history page state.
+   * @param key The key for the value.
+   * @return The value for the key.
+   */
+  getState(key: string): any {
+    let state = Object.assign({}, this.history.state);
+    return state[key];
+  }
+
   _getHash(): string {
     return this.location.hash.substr(1);
   }

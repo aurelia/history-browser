@@ -204,6 +204,17 @@ export let BrowserHistory = (_temp = _class = class BrowserHistory extends Histo
     DOM.title = title;
   }
 
+  setState(key, value) {
+    let state = Object.assign({}, this.history.state);
+    state[key] = value;
+    this.history.replaceState(state, null, null);
+  }
+
+  getState(key) {
+    let state = Object.assign({}, this.history.state);
+    return state[key];
+  }
+
   _getHash() {
     return this.location.hash.substr(1);
   }
