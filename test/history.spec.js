@@ -1,6 +1,6 @@
 import './setup';
-import {BrowserHistory} from '../src/index';
-import {LinkHandler} from '../src/link-handler';
+import { BrowserHistory } from '../src/index';
+import { LinkHandler } from '../src/link-handler';
 
 describe('browser history', () => {
   it('should have some tests', () => {
@@ -55,7 +55,7 @@ describe('browser history', () => {
     });
 
     it('should return a valid URL with a trailing fragment if root is set', () => {
-      var options = { root: '/application/'}
+      var options = { root: '/application/' }
       var bh = new BrowserHistory(new LinkHandler());
       bh.activate(options);
       bh.location = {
@@ -65,6 +65,34 @@ describe('browser history', () => {
       };
 
       expect(bh.getAbsoluteRoot()).toBe('https://www.aurelia.io:8080/application/');
+    });
+  });
+
+  describe('setState', () => {
+    it('should set browser page state', () => {
+      var state = { 'number': 123 };
+      var bh = new BrowserHistory(new LinkHandler());
+      bh.activate({});
+      bh.location = {
+        protocol: 'http:',
+        hostname: 'localhost',
+        port: ''
+      };
+      bh.setState('TestState', state);
+      // expect(bh.getState('TestState')['number']).toBe(123);
+    });
+  });
+
+  describe('getState', () => {
+    it('should get browser page state', () => {
+      var bh = new BrowserHistory(new LinkHandler());
+      bh.activate({});
+      bh.location = {
+        protocol: 'http:',
+        hostname: 'localhost',
+        port: ''
+      };
+      expect(bh.getState('TestState')['number']).toBe(123);
     });
   });
 });
