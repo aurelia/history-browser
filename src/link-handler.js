@@ -87,6 +87,10 @@ export class DefaultLinkHandler extends LinkHandler {
       anchor: null
     };
 
+    if (event.defaultPrevented) {
+      return info;
+    }
+
     let target = DefaultLinkHandler.findClosestAnchor(event.target);
     if (!target || !DefaultLinkHandler.targetIsThisWindow(target)) {
       return info;
