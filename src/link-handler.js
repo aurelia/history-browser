@@ -64,7 +64,7 @@ export class DefaultLinkHandler extends LinkHandler {
   activate(history: BrowserHistory): void {
     if (history._hasPushState) {
       this.history = history;
-      DOM.addEventListener('click', this.handler, true);
+      DOM.addEventListener('click', this.handler, false);
     }
   }
 
