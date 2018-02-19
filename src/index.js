@@ -188,8 +188,9 @@ export class BrowserHistory extends History {
    */
   setState(key: string, value: any): void {
     let state = Object.assign({}, this.history.state);
+    let { pathname, search, hash } = this.location;
     state[key] = value;
-    this.history.replaceState(state, null, this.location.href);
+    this.history.replaceState(state, null, `${pathname}${search}${hash}`);
   }
 
   /**
