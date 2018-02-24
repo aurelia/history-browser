@@ -1,3 +1,13 @@
+<a name="1.1.1"></a>
+## [1.1.1](https://github.com/aurelia/history-browser/compare/1.1.0...v1.1.1) (2018-02-24)
+
+
+### Bug Fixes
+
+* **history-browser:** Add location.href to replaceState() call ([424c252](https://github.com/aurelia/history-browser/commit/424c252))
+
+
+
 <a name="1.1.0"></a>
 # [1.1.0](https://github.com/aurelia/history-browser/compare/1.0.0...v1.1.0) (2017-09-29)
 
