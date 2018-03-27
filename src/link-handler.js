@@ -92,6 +92,10 @@ export class DefaultLinkHandler extends LinkHandler {
       return info;
     }
 
+    if(target.hasAttribute('download') || target.hasAttribute('router-ignore')){ 
+      return info;
+    }
+
     if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) {
       return info;
     }
@@ -135,7 +139,6 @@ export class DefaultLinkHandler extends LinkHandler {
 
     return !targetWindow ||
       targetWindow === win.name ||
-      targetWindow === '_self' ||
-      (targetWindow === 'top' && win === win.top);
+      targetWindow === '_self';
   }
 }

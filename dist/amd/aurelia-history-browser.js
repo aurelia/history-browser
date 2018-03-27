@@ -56,11 +56,9 @@ define(['exports', 'aurelia-pal', 'aurelia-history'], function (exports, _aureli
       var _this = _possibleConstructorReturn(this, _LinkHandler.call(this));
 
       _this.handler = function (e) {
-        var _DefaultLinkHandler$g = DefaultLinkHandler.getEventInfo(e);
-
-        var shouldHandleEvent = _DefaultLinkHandler$g.shouldHandleEvent;
-        var href = _DefaultLinkHandler$g.href;
-
+        var _DefaultLinkHandler$g = DefaultLinkHandler.getEventInfo(e),
+            shouldHandleEvent = _DefaultLinkHandler$g.shouldHandleEvent,
+            href = _DefaultLinkHandler$g.href;
 
         if (shouldHandleEvent) {
           e.preventDefault();
@@ -93,6 +91,10 @@ define(['exports', 'aurelia-pal', 'aurelia-history'], function (exports, _aureli
         return info;
       }
 
+      if (target.hasAttribute('download') || target.hasAttribute('router-ignore')) {
+        return;
+      }
+
       if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) {
         return info;
       }
@@ -122,7 +124,7 @@ define(['exports', 'aurelia-pal', 'aurelia-history'], function (exports, _aureli
       var targetWindow = target.getAttribute('target');
       var win = _aureliaPal.PLATFORM.global;
 
-      return !targetWindow || targetWindow === win.name || targetWindow === '_self' || targetWindow === 'top' && win === win.top;
+      return !targetWindow || targetWindow === win.name || targetWindow === '_self';
     };
 
     return DefaultLinkHandler;
@@ -184,9 +186,9 @@ define(['exports', 'aurelia-pal', 'aurelia-history'], function (exports, _aureli
 
           return true;
         } else if (this._hasPushState && atRoot && loc.hash) {
-            this.fragment = this._getHash().replace(routeStripper, '');
-            this.history.replaceState({}, _aureliaPal.DOM.title, this.root + this.fragment + loc.search);
-          }
+          this.fragment = this._getHash().replace(routeStripper, '');
+          this.history.replaceState({}, _aureliaPal.DOM.title, this.root + this.fragment + loc.search);
+        }
       }
 
       if (!this.fragment) {
@@ -213,12 +215,11 @@ define(['exports', 'aurelia-pal', 'aurelia-history'], function (exports, _aureli
     };
 
     BrowserHistory.prototype.navigate = function navigate(fragment) {
-      var _ref = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
-
-      var _ref$trigger = _ref.trigger;
-      var trigger = _ref$trigger === undefined ? true : _ref$trigger;
-      var _ref$replace = _ref.replace;
-      var replace = _ref$replace === undefined ? false : _ref$replace;
+      var _ref = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {},
+          _ref$trigger = _ref.trigger,
+          trigger = _ref$trigger === undefined ? true : _ref$trigger,
+          _ref$replace = _ref.replace,
+          replace = _ref$replace === undefined ? false : _ref$replace;
 
       if (fragment && absoluteUrl.test(fragment)) {
         this.location.href = fragment;
@@ -267,10 +268,10 @@ define(['exports', 'aurelia-pal', 'aurelia-history'], function (exports, _aureli
 
     BrowserHistory.prototype.setState = function setState(key, value) {
       var state = Object.assign({}, this.history.state);
-      var _location = this.location;
-      var pathname = _location.pathname;
-      var search = _location.search;
-      var hash = _location.hash;
+      var _location = this.location,
+          pathname = _location.pathname,
+          search = _location.search,
+          hash = _location.hash;
 
       state[key] = value;
       this.history.replaceState(state, null, '' + pathname + search + hash);
