@@ -8,7 +8,7 @@ System.register(['./aurelia-history-browser'], function (_export, _context) {
       var _exportObj = {};
 
       for (var _key in _aureliaHistoryBrowser) {
-        if (_key !== "default" && key !== "__esModule") _exportObj[_key] = _aureliaHistoryBrowser[_key];
+        if (_key !== "default" && _key !== "__esModule") _exportObj[_key] = _aureliaHistoryBrowser[_key];
       }
 
       _export(_exportObj);
