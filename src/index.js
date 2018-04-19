@@ -121,9 +121,9 @@ export class BrowserHistory extends History {
    *
    * @param fragment The history fragment to navigate to.
    * @param options The set of options that specify how the navigation should occur.
-   * @return True if navigation occurred/false otherwise.
+   * @return Promise if triggering navigation, otherwise true/false indicating if navigation occured.
    */
-  navigate(fragment?: string, {trigger = true, replace = false} = {}): boolean {
+  navigate(fragment?: string, {trigger = true, replace = false} = {}): Promise|boolean {
     if (fragment && absoluteUrl.test(fragment)) {
       this.location.href = fragment;
       return true;
@@ -159,7 +159,8 @@ export class BrowserHistory extends History {
     } else {
       // If you've told us that you explicitly don't want fallback hashchange-
       // based history, then `navigate` becomes a page refresh.
-      return this.location.assign(url);
+      this.location.assign(url);
+      return true;
     }
 
     if (trigger) {
@@ -232,7 +233,7 @@ export class BrowserHistory extends History {
     }
   }
 
-  _loadUrl(fragmentOverride: string): boolean {
+  _loadUrl(fragmentOverride: string): Promise|boolean {
     let fragment = this.fragment = this._getFragment(fragmentOverride);
 
     return this.options.routeHandler ?
