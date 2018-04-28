@@ -160,12 +160,13 @@ export class BrowserHistory extends History {
       // If you've told us that you explicitly don't want fallback hashchange-
       // based history, then `navigate` becomes a page refresh.
       this.location.assign(url);
-      return true;
     }
 
     if (trigger) {
       return this._loadUrl(fragment);
     }
+
+    return true;
   }
 
   /**
