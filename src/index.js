@@ -124,9 +124,19 @@ export class BrowserHistory extends History {
    * @return Promise if triggering navigation, otherwise true/false indicating if navigation occured.
    */
   navigate(url?: string, {trigger = true, replace = false} = {}): Promise|boolean {
-    if (url && absoluteUrl.test(url)) {
-      this.location.href = url;
-      return true;
+    if (url) {
+      let isOutbound = false;
+      if (absoluteUrl.test(url)) {
+        isOutbound = true;
+      } else if (this._hasPushState && url.indexOf('/') === 0 && url.indexOf(this.root) !== 0) {
+        // Absolute path with a different root
+        isOutbound = true;
+      }
+
+      if (isOutbound) {
+        this.location.href = url;
+        return true;
+      }
     }
 
     if (!this._isActive) {
