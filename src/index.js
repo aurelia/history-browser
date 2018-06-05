@@ -119,21 +119,31 @@ export class BrowserHistory extends History {
   /**
    * Causes a history navigation to occur.
    *
-   * @param fragment The history fragment to navigate to.
+   * @param url URL to navigate to.
    * @param options The set of options that specify how the navigation should occur.
    * @return Promise if triggering navigation, otherwise true/false indicating if navigation occured.
    */
-  navigate(fragment?: string, {trigger = true, replace = false} = {}): Promise|boolean {
-    if (fragment && absoluteUrl.test(fragment)) {
-      this.location.href = fragment;
-      return true;
+  navigate(url?: string, {trigger = true, replace = false} = {}): Promise|boolean {
+    if (url) {
+      let isOutbound = false;
+      if (absoluteUrl.test(url)) {
+        isOutbound = true;
+      } else if (this._hasPushState && url.indexOf('/') === 0 && url.indexOf(this.root) !== 0) {
+        // Absolute path with a different root
+        isOutbound = true;
+      }
+
+      if (isOutbound) {
+        this.location.href = url;
+        return true;
+      }
     }
 
     if (!this._isActive) {
       return false;
     }
 
-    fragment = this._getFragment(fragment || '');
+    const fragment = this._getFragment(url || '');
 
     if (this.fragment === fragment && !replace) {
       return false;
@@ -141,14 +151,17 @@ export class BrowserHistory extends History {
 
     this.fragment = fragment;
 
-    let url = this.root + fragment;
+    url = fragment;
+    if (this._hasPushState) {
+      url = this.root + url;
+    }
 
     // Don't include a trailing slash on the root.
     if (fragment === '' && url !== '/') {
       url = url.slice(0, -1);
     }
 
-    // If pushState is available, we use it to set the fragment as a real URL.
+    // If pushState is available, we use it to set the url as a real URL.
     if (this._hasPushState) {
       url = url.replace('//', '/');
       this.history[replace ? 'replaceState' : 'pushState']({}, DOM.title, url);
@@ -163,7 +176,7 @@ export class BrowserHistory extends History {
     }
 
     if (trigger) {
-      return this._loadUrl(fragment);
+      return this._loadUrl(url);
     }
 
     return true;
@@ -209,18 +222,19 @@ export class BrowserHistory extends History {
     return this.location.hash.substr(1);
   }
 
-  _getFragment(fragment: string, forcePushState?: boolean): string {
-    let root;
-
+  _getFragment(url: string, forcePushState?: boolean): string {
+    let fragment = url;
     if (!fragment) {
       if (this._hasPushState || !this._wantsHashChange || forcePushState) {
         fragment = this.location.pathname + this.location.search;
-        root = this.root.replace(trailingSlash, '');
-        if (!fragment.indexOf(root)) {
-          fragment = fragment.substr(root.length);
-        }
       } else {
         fragment = this._getHash();
+      }
+    }
+    if (this._hasPushState || !this._wantsHashChange || forcePushState) {
+      const root = this.root.replace(trailingSlash, '');
+      if (fragment.indexOf(root) === 0) {
+        fragment = fragment.substr(root.length);
       }
     }
 

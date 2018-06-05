@@ -10,9 +10,10 @@ describe('browser history', () => {
 
   describe('_getFragment()', () => {
 
-    it('should normalize fragment', () => {
+    it('should normalize fragment from URL', () => {
       var expected = '/admin/user/123';
-      var bh = new BrowserHistory();
+      var bh = new BrowserHistory(new LinkHandler());
+      bh.activate({});
 
       expect(bh._getFragment('admin/user/123')).toBe(expected);
       expect(bh._getFragment('admin/user/123  ')).toBe(expected);
@@ -20,6 +21,28 @@ describe('browser history', () => {
       expect(bh._getFragment('/admin/user/123   ')).toBe(expected);
       expect(bh._getFragment('///admin/user/123')).toBe(expected);
 
+      expect(bh._getFragment('#admin/user/123')).toBe(expected);
+      expect(bh._getFragment('#admin/user/123  ')).toBe(expected);
+      expect(bh._getFragment('#/admin/user/123')).toBe(expected);
+      expect(bh._getFragment('#/admin/user/123   ')).toBe(expected);
+      expect(bh._getFragment('#///admin/user/123')).toBe(expected);
+    });
+
+    it('should normalize fragment when a root is configured', () => {
+      const expected = '/admin/user/123';
+      const bh = new BrowserHistory(new LinkHandler());
+      bh.activate({root: '/root'});
+
+      bh._hasPushState = true;
+      expect(bh._getFragment('admin/user/123')).toBe(expected);
+      expect(bh._getFragment('admin/user/123  ')).toBe(expected);
+      expect(bh._getFragment('/admin/user/123')).toBe(expected);
+      expect(bh._getFragment('/admin/user/123   ')).toBe(expected);
+      expect(bh._getFragment('///admin/user/123')).toBe(expected);
+      expect(bh._getFragment('/root/admin/user/123')).toBe(expected);
+      expect(bh._getFragment('/root///admin/user/123')).toBe(expected);
+
+      bh._hasPushState = false;
       expect(bh._getFragment('#admin/user/123')).toBe(expected);
       expect(bh._getFragment('#admin/user/123  ')).toBe(expected);
       expect(bh._getFragment('#/admin/user/123')).toBe(expected);
