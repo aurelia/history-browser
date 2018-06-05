@@ -151,7 +151,10 @@ export class BrowserHistory extends History {
 
     this.fragment = fragment;
 
-    url = this.root + fragment;
+    url = fragment;
+    if (this.pushState) {
+      url = this.root + url;
+    }
 
     // Don't include a trailing slash on the root.
     if (fragment === '' && url !== '/') {
