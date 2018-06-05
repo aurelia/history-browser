@@ -152,7 +152,7 @@ export class BrowserHistory extends History {
     this.fragment = fragment;
 
     url = fragment;
-    if (this.pushState) {
+    if (this._hasPushState) {
       url = this.root + url;
     }
 
