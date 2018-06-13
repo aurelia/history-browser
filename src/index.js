@@ -121,9 +121,9 @@ export class BrowserHistory extends History {
    *
    * @param fragment The history fragment to navigate to.
    * @param options The set of options that specify how the navigation should occur.
-   * @return Promise if triggering navigation, otherwise true/false indicating if navigation occured.
+   * @return Promise if triggering navigation, otherwise true/false indicating if navigation occurred.
    */
-  navigate(fragment?: string, {trigger = true, replace = false} = {}): Promise|boolean {
+  navigate(fragment?: string, {trigger = true, replace = false} = {}): boolean {
     if (fragment && absoluteUrl.test(fragment)) {
       this.location.href = fragment;
       return true;
@@ -234,7 +234,7 @@ export class BrowserHistory extends History {
     }
   }
 
-  _loadUrl(fragmentOverride: string): Promise|boolean {
+  _loadUrl(fragmentOverride: string): boolean {
     let fragment = this.fragment = this._getFragment(fragmentOverride);
 
     return this.options.routeHandler ?
