@@ -93,6 +93,10 @@ export class DefaultLinkHandler extends LinkHandler {
       return info;
     }
 
+    if (target.hasAttribute('download') || target.hasAttribute('router-ignore')) {
+      return info;
+    }
+
     if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) {
       return info;
     }
@@ -136,8 +140,7 @@ export class DefaultLinkHandler extends LinkHandler {
 
     return !targetWindow ||
       targetWindow === win.name ||
-      targetWindow === '_self' ||
-      (targetWindow === 'top' && win === win.top);
+      targetWindow === '_self';
   }
 }
 
@@ -260,7 +263,7 @@ export class BrowserHistory extends History {
    *
    * @param fragment The history fragment to navigate to.
    * @param options The set of options that specify how the navigation should occur.
-   * @return True if navigation occurred/false otherwise.
+   * @return Promise if triggering navigation, otherwise true/false indicating if navigation occurred.
    */
   navigate(fragment?: string, {trigger = true, replace = false} = {}): boolean {
     if (fragment && absoluteUrl.test(fragment)) {
@@ -298,12 +301,14 @@ export class BrowserHistory extends History {
     } else {
       // If you've told us that you explicitly don't want fallback hashchange-
       // based history, then `navigate` becomes a page refresh.
-      return this.location.assign(url);
+      this.location.assign(url);
     }
 
     if (trigger) {
       return this._loadUrl(fragment);
     }
+
+    return true;
   }
 
   /**

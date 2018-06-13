@@ -1,3 +1,15 @@
+<a name="1.2.0"></a>
+# [1.2.0](https://github.com/aurelia/history-browser/compare/1.1.1...1.2.0) (2018-06-13)
+
+
+### Bug Fixes
+
+* **history-browser:** Ensure all navigate() paths return a value ([47beb9b](https://github.com/aurelia/history-browser/commit/47beb9b))
+* **index:** revert return types ([0481af4](https://github.com/aurelia/history-browser/commit/0481af4))
+* **typing:** update return types ([e1a574a](https://github.com/aurelia/history-browser/commit/e1a574a))
+
+
+
 <a name="1.1.1"></a>
 ## [1.1.1](https://github.com/aurelia/history-browser/compare/1.1.0...v1.1.1) (2018-02-24)
 

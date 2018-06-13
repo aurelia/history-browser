@@ -46,6 +46,10 @@ export let DefaultLinkHandler = class DefaultLinkHandler extends LinkHandler {
       return info;
     }
 
+    if (target.hasAttribute('download') || target.hasAttribute('router-ignore')) {
+      return info;
+    }
+
     if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) {
       return info;
     }
@@ -75,7 +79,7 @@ export let DefaultLinkHandler = class DefaultLinkHandler extends LinkHandler {
     let targetWindow = target.getAttribute('target');
     let win = PLATFORM.global;
 
-    return !targetWindow || targetWindow === win.name || targetWindow === '_self' || targetWindow === 'top' && win === win.top;
+    return !targetWindow || targetWindow === win.name || targetWindow === '_self';
   }
 };
 
@@ -130,9 +134,9 @@ export let BrowserHistory = (_temp = _class = class BrowserHistory extends Histo
 
         return true;
       } else if (this._hasPushState && atRoot && loc.hash) {
-          this.fragment = this._getHash().replace(routeStripper, '');
-          this.history.replaceState({}, DOM.title, this.root + this.fragment + loc.search);
-        }
+        this.fragment = this._getHash().replace(routeStripper, '');
+        this.history.replaceState({}, DOM.title, this.root + this.fragment + loc.search);
+      }
     }
 
     if (!this.fragment) {
@@ -155,7 +159,7 @@ export let BrowserHistory = (_temp = _class = class BrowserHistory extends Histo
 
   getAbsoluteRoot() {
     let origin = createOrigin(this.location.protocol, this.location.hostname, this.location.port);
-    return `${ origin }${ this.root }`;
+    return `${origin}${this.root}`;
   }
 
   navigate(fragment, { trigger = true, replace = false } = {}) {
@@ -188,12 +192,14 @@ export let BrowserHistory = (_temp = _class = class BrowserHistory extends Histo
     } else if (this._wantsHashChange) {
       updateHash(this.location, fragment, replace);
     } else {
-      return this.location.assign(url);
+      this.location.assign(url);
     }
 
     if (trigger) {
       return this._loadUrl(fragment);
     }
+
+    return true;
   }
 
   navigateBack() {
@@ -208,7 +214,7 @@ export let BrowserHistory = (_temp = _class = class BrowserHistory extends Histo
     let state = Object.assign({}, this.history.state);
     let { pathname, search, hash } = this.location;
     state[key] = value;
-    this.history.replaceState(state, null, `${ pathname }${ search }${ hash }`);
+    this.history.replaceState(state, null, `${pathname}${search}${hash}`);
   }
 
   getState(key) {
@@ -270,5 +276,5 @@ function updateHash(location, fragment, replace) {
 }
 
 function createOrigin(protocol, hostname, port) {
-  return `${ protocol }//${ hostname }${ port ? ':' + port : '' }`;
+  return `${protocol}//${hostname}${port ? ':' + port : ''}`;
 }
