@@ -205,6 +205,19 @@ export class BrowserHistory extends History {
     return state[key];
   }
 
+  /**
+   * Returns the current index in the history object.
+   * @returns The current index.
+   */
+  getHistoryIndex(): number {
+    let historyIndex = this.getState('HistoryIndex');
+    if (historyIndex === undefined) {
+      historyIndex = this.history.length - 1;
+      this.setState('HistoryIndex', historyIndex);
+    }
+    return historyIndex;
+  }
+
   _getHash(): string {
     return this.location.hash.substr(1);
   }

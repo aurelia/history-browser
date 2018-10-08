@@ -2,6 +2,14 @@ import './setup';
 import { BrowserHistory } from '../src/index';
 import { LinkHandler } from '../src/link-handler';
 
+class MockWindowHistory {
+  length = 2;
+  state = {};
+  replaceState(state) {
+    this.state = state;
+  }
+}
+
 describe('browser history', () => {
   it('should have some tests', () => {
     var bh = new BrowserHistory();
@@ -93,6 +101,17 @@ describe('browser history', () => {
         port: ''
       };
       expect(bh.getState('TestState')['number']).toBe(123);
+    });
+  });
+
+  describe('getHistoryIndex', () => {
+    it('should get the current browser history index', () => {
+      var bh = new BrowserHistory(new LinkHandler());
+      bh.activate({});
+      bh.history = new MockWindowHistory();
+
+      expect(bh.getHistoryIndex()).toBe(1);
+      expect(bh.getState('HistoryIndex')).toBe(1);
     });
   });
 });
