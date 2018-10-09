@@ -206,7 +206,7 @@ export class BrowserHistory extends History {
   }
 
   /**
-   * Returns the current index in the history object.
+   * Returns the current index in the navigation history.
    * @returns The current index.
    */
   getHistoryIndex(): number {
@@ -216,6 +216,14 @@ export class BrowserHistory extends History {
       this.setState('HistoryIndex', historyIndex);
     }
     return historyIndex;
+  }
+
+  /**
+   * Move to a specific position in the navigation history.
+   * @param movement The amount of steps, positive or negative, to move.
+   */
+  go(movement: number): void {
+    this.history.go(movement);
   }
 
   _getHash(): string {
