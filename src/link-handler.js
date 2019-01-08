@@ -92,7 +92,7 @@ export class DefaultLinkHandler extends LinkHandler {
       return info;
     }
 
-    if (target.hasAttribute('download') || target.hasAttribute('router-ignore')) {
+    if (target.hasAttribute('download') || target.hasAttribute('router-ignore') || target.hasAttribute('data-router-ignore')) {
       return info;
     }
 
