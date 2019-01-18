@@ -93,7 +93,7 @@ export class DefaultLinkHandler extends LinkHandler {
       return info;
     }
 
-    if (target.hasAttribute('download') || target.hasAttribute('router-ignore')) {
+    if (target.hasAttribute('download') || target.hasAttribute('router-ignore') || target.hasAttribute('data-router-ignore')) {
       return info;
     }
 
@@ -345,6 +345,27 @@ export class BrowserHistory extends History {
   getState(key: string): any {
     let state = Object.assign({}, this.history.state);
     return state[key];
+  }
+
+  /**
+   * Returns the current index in the navigation history.
+   * @returns The current index.
+   */
+  getHistoryIndex(): number {
+    let historyIndex = this.getState('HistoryIndex');
+    if (historyIndex === undefined) {
+      historyIndex = this.history.length - 1;
+      this.setState('HistoryIndex', historyIndex);
+    }
+    return historyIndex;
+  }
+
+  /**
+   * Move to a specific position in the navigation history.
+   * @param movement The amount of steps, positive or negative, to move.
+   */
+  go(movement: number): void {
+    this.history.go(movement);
   }
 
   _getHash(): string {

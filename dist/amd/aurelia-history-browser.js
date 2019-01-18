@@ -91,7 +91,7 @@ define(['exports', 'aurelia-pal', 'aurelia-history'], function (exports, _aureli
         return info;
       }
 
-      if (target.hasAttribute('download') || target.hasAttribute('router-ignore')) {
+      if (target.hasAttribute('download') || target.hasAttribute('router-ignore') || target.hasAttribute('data-router-ignore')) {
         return info;
       }
 
@@ -282,6 +282,19 @@ define(['exports', 'aurelia-pal', 'aurelia-history'], function (exports, _aureli
     BrowserHistory.prototype.getState = function getState(key) {
       var state = Object.assign({}, this.history.state);
       return state[key];
+    };
+
+    BrowserHistory.prototype.getHistoryIndex = function getHistoryIndex() {
+      var historyIndex = this.getState('HistoryIndex');
+      if (historyIndex === undefined) {
+        historyIndex = this.history.length - 1;
+        this.setState('HistoryIndex', historyIndex);
+      }
+      return historyIndex;
+    };
+
+    BrowserHistory.prototype.go = function go(movement) {
+      this.history.go(movement);
     };
 
     BrowserHistory.prototype._getHash = function _getHash() {

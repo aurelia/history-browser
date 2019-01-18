@@ -75,7 +75,7 @@ var DefaultLinkHandler = exports.DefaultLinkHandler = function (_LinkHandler) {
       return info;
     }
 
-    if (target.hasAttribute('download') || target.hasAttribute('router-ignore')) {
+    if (target.hasAttribute('download') || target.hasAttribute('router-ignore') || target.hasAttribute('data-router-ignore')) {
       return info;
     }
 
@@ -266,6 +266,19 @@ var BrowserHistory = exports.BrowserHistory = (_temp = _class = function (_Histo
   BrowserHistory.prototype.getState = function getState(key) {
     var state = Object.assign({}, this.history.state);
     return state[key];
+  };
+
+  BrowserHistory.prototype.getHistoryIndex = function getHistoryIndex() {
+    var historyIndex = this.getState('HistoryIndex');
+    if (historyIndex === undefined) {
+      historyIndex = this.history.length - 1;
+      this.setState('HistoryIndex', historyIndex);
+    }
+    return historyIndex;
+  };
+
+  BrowserHistory.prototype.go = function go(movement) {
+    this.history.go(movement);
   };
 
   BrowserHistory.prototype._getHash = function _getHash() {

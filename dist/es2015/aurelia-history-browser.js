@@ -46,7 +46,7 @@ export let DefaultLinkHandler = class DefaultLinkHandler extends LinkHandler {
       return info;
     }
 
-    if (target.hasAttribute('download') || target.hasAttribute('router-ignore')) {
+    if (target.hasAttribute('download') || target.hasAttribute('router-ignore') || target.hasAttribute('data-router-ignore')) {
       return info;
     }
 
@@ -220,6 +220,19 @@ export let BrowserHistory = (_temp = _class = class BrowserHistory extends Histo
   getState(key) {
     let state = Object.assign({}, this.history.state);
     return state[key];
+  }
+
+  getHistoryIndex() {
+    let historyIndex = this.getState('HistoryIndex');
+    if (historyIndex === undefined) {
+      historyIndex = this.history.length - 1;
+      this.setState('HistoryIndex', historyIndex);
+    }
+    return historyIndex;
+  }
+
+  go(movement) {
+    this.history.go(movement);
   }
 
   _getHash() {

@@ -1,3 +1,12 @@
+<a name="1.3.0"></a>
+# [1.3.0](https://github.com/aurelia/history-browser/compare/1.2.0...1.3.0) (2019-01-18)
+
+### Features
+
+* add support of data-router-ignore attribute ([0d8f7a0](https://github.com/aurelia/history-browser/commit/0d8f7a0))
+* Add go method
+* Add history index getter
+
 <a name="1.2.0"></a>
 # [1.2.0](https://github.com/aurelia/history-browser/compare/1.1.1...1.2.0) (2018-06-13)
 
