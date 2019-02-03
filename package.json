@@ -1,6 +1,6 @@
 {
   "name": "aurelia-history-browser",
-  "version": "1.3.0",
+  "version": "1.3.1",
   "description": "An implementation of the Aurelia history interface based on standard browser hash change and push state mechanisms.",
   "keywords": [
     "aurelia",
@@ -34,15 +34,10 @@
   },
   "jspm": {
     "registry": "npm",
-    "jspmPackage": true,
     "main": "aurelia-history-browser",
     "format": "amd",
     "directories": {
       "dist": "dist/amd"
-    },
-    "peerDependencies": {
-      "aurelia-history": "^1.0.0",
-      "aurelia-pal": "^1.0.0"
     },
     "dependencies": {
       "aurelia-history": "^1.0.0",
@@ -57,7 +52,8 @@
   },
   "dependencies": {
     "aurelia-history": "^1.0.0",
-    "aurelia-pal": "^1.0.0"
+    "aurelia-pal": "^1.0.0",
+    "jspm": "^0.16.53"
   },
   "devDependencies": {
     "aurelia-tools": "0.2.4",
