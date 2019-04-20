@@ -29,7 +29,10 @@
     "test": "karma start --single-run",
     "test:watch": "karma start",
     "test:debugger": "karma start --browsers ChromeDebugging",
+    "prebuild": "rimraf dist",
     "build": "rollup -c",
+    "postbuild": "npm run build:dts",
+    "build:dts": "dts-bundle-generator -o dist/aurelia-ui-virtualization.d.ts src/aurelia-ui-virtualization.ts --external-types",
     "cut-release": "gulp prepare-release",
     "ci": "gulp ci"
   },
@@ -50,14 +53,22 @@
     "aurelia-pal": "^1.0.0"
   },
   "devDependencies": {
+    "@types/jasmine": "^3.3.12",
+    "aurelia-pal-browser": "^1.8.1",
     "jasmine-core": "^3.4.0",
     "karma": "^4.1.0",
     "karma-chrome-launcher": "^2.2.0",
     "karma-coverage": "^1.1.2",
     "karma-jasmine": "^2.0.1",
+    "karma-mocha-reporter": "^2.2.5",
+    "karma-sourcemap-loader": "^0.3.7",
+    "karma-webpack": "^3.0.5",
+    "rimraf": "^2.6.3",
     "rollup": "^1.10.0",
     "rollup-plugin-typescript2": "^0.20.1",
+    "ts-loader": "^5.3.3",
     "typescript": "^3.3.4000",
+    "webpack": "^4.30.0",
     "yargs": "^4.8.1"
   }
 }

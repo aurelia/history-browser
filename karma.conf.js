@@ -1,5 +1,4 @@
 const path = require('path');
-const { AureliaPlugin } = require('aurelia-webpack-plugin');
 
 module.exports = function(config) {
   const browsers = config.browsers;
@@ -7,10 +6,9 @@ module.exports = function(config) {
 
     basePath: '',
     frameworks: ["jasmine"],
-    files: ["test/**/*.spec.ts", "test/**/*.spec.tsx"],
+    files: ["test/**/*.spec.ts"],
     preprocessors: {
-      "test/**/*.spec.ts": ["webpack", "sourcemap"],
-      "test/**/*.spec.tsx": ["webpack", "sourcemap"]
+      "test/**/*.spec.ts": ["webpack", "sourcemap"]
     },
     webpack: {
       mode: "development",
@@ -28,12 +26,7 @@ module.exports = function(config) {
           {
             test: /\.tsx?$/,
             loader: "ts-loader",
-            exclude: /node_modules/,
-            options: {
-              compilerOptions: {
-                sourceMap: true
-              }
-            }
+            exclude: /node_modules/
           }
         ]
       }
@@ -47,7 +40,7 @@ module.exports = function(config) {
     customLaunchers: {
       ChromeDebugging: {
         base: "Chrome",
-        flags: [...commonChromeFlags, "--remote-debugging-port=9333"],
+        flags: ["--remote-debugging-port=9333"],
         debug: true
       }
     },
