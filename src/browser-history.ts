@@ -1,5 +1,5 @@
 import { DOM, PLATFORM } from 'aurelia-pal';
-import { LinkHandler } from "./link-handler";
+import { LinkHandler } from './link-handler';
 
 /**
  * An implementation of the basic history API.

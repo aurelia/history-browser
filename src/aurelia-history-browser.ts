@@ -17,4 +17,4 @@ export {
   LinkHandler,
   DefaultLinkHandler,
   BrowserHistory
-}
+};

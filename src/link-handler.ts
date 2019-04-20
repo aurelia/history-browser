@@ -11,12 +11,12 @@ export class LinkHandler {
    *
    * @param history The BrowserHistory instance that navigations should be dispatched to.
    */
-  activate(history: BrowserHistory): void {}
+  activate(history: BrowserHistory): void {/**/}
 
   /**
    * Deactivate the instance. Event handlers and other resources should be cleaned up here.
    */
-  deactivate(): void {}
+  deactivate(): void {/**/}
 }
 
 /**
@@ -37,7 +37,7 @@ export class DefaultLinkHandler extends LinkHandler {
     super();
 
     this.handler = (e) => {
-      let {shouldHandleEvent, href} = DefaultLinkHandler.getEventInfo(e);
+      let { shouldHandleEvent, href } = DefaultLinkHandler.getEventInfo(e);
 
       if (shouldHandleEvent) {
         e.preventDefault();
@@ -71,7 +71,7 @@ export class DefaultLinkHandler extends LinkHandler {
    * @param event The Event to inspect for target anchor and href.
    */
   static getEventInfo(event: Event): AnchorEventInfo {
-    const $event = event as MouseEvent;
+    let $event = event as MouseEvent;
     let info = {
       shouldHandleEvent: false,
       href: null,
@@ -83,7 +83,10 @@ export class DefaultLinkHandler extends LinkHandler {
       return info;
     }
 
-    if (target.hasAttribute('download') || target.hasAttribute('router-ignore') || target.hasAttribute('data-router-ignore')) {
+    if (hasAttribute(target, 'download')
+      || hasAttribute(target, 'router-ignore')
+      || hasAttribute(target, 'data-router-ignore')
+    ) {
       return info;
     }
 
@@ -133,3 +136,5 @@ export class DefaultLinkHandler extends LinkHandler {
       targetWindow === '_self';
   }
 }
+
+const hasAttribute = (el: Element, attr: string) => el.hasAttribute(attr);
