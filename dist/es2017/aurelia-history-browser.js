@@ -250,4 +250,3 @@ function configure(config) {
 }
 
 export { BrowserHistory, DefaultLinkHandler, LinkHandler, configure };
-//# sourceMappingURL=aurelia-history-browser.js.map
