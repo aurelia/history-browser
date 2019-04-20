@@ -1,5 +1,5 @@
 import './setup';
-import { BrowserHistory } from '../src/index';
+import { BrowserHistory } from '../src/aurelia-history-browser';
 import { LinkHandler } from '../src/link-handler';
 
 class MockWindowHistory {
@@ -12,15 +12,15 @@ class MockWindowHistory {
 
 describe('browser history', () => {
   it('should have some tests', () => {
-    var bh = new BrowserHistory();
+    let bh = new BrowserHistory(null);
     expect(bh).toBe(bh);
   });
 
   describe('_getFragment()', () => {
 
     it('should normalize fragment', () => {
-      var expected = '/admin/user/123';
-      var bh = new BrowserHistory();
+      let expected = '/admin/user/123';
+      let bh = new BrowserHistory(null);
 
       expect(bh._getFragment('admin/user/123')).toBe(expected);
       expect(bh._getFragment('admin/user/123  ')).toBe(expected);
@@ -38,39 +38,39 @@ describe('browser history', () => {
 
   describe('getAbsoluteRoot', () => {
     it('should return a valid URL with a trailing slash', () => {
-      var bh = new BrowserHistory(new LinkHandler());
+      let bh = new BrowserHistory(new LinkHandler());
       bh.activate({});
       bh.location = {
         protocol: 'http:',
         hostname: 'localhost',
         port: ''
-      };
+      } as Location;
 
       expect(bh.getAbsoluteRoot()).toBe('http://localhost/');
     });
 
     it('should return a valid URL with a port', () => {
-      var options = {};
-      var bh = new BrowserHistory(new LinkHandler());
+      let options = {};
+      let bh = new BrowserHistory(new LinkHandler());
       bh.activate(options);
       bh.location = {
         protocol: 'https:',
         hostname: 'www.aurelia.io',
         port: '8080'
-      };
+      } as Location;
 
       expect(bh.getAbsoluteRoot()).toBe('https://www.aurelia.io:8080/');
     });
 
     it('should return a valid URL with a trailing fragment if root is set', () => {
-      var options = { root: '/application/' }
-      var bh = new BrowserHistory(new LinkHandler());
+      let options = { root: '/application/' };
+      let bh = new BrowserHistory(new LinkHandler());
       bh.activate(options);
       bh.location = {
         protocol: 'https:',
         hostname: 'www.aurelia.io',
         port: '8080'
-      };
+      } as Location;
 
       expect(bh.getAbsoluteRoot()).toBe('https://www.aurelia.io:8080/application/');
     });
@@ -78,37 +78,39 @@ describe('browser history', () => {
 
   describe('setState', () => {
     it('should set browser page state', () => {
-      var state = { 'number': 123 };
-      var bh = new BrowserHistory(new LinkHandler());
+      let state = { 'number': 123 };
+      let bh = new BrowserHistory(new LinkHandler());
       bh.activate({});
       bh.location = {
         protocol: 'http:',
         hostname: 'localhost',
         port: ''
-      };
+      } as Location;
       bh.setState('TestState', state);
-      // expect(bh.getState('TestState')['number']).toBe(123);
+      expect(bh.getState('TestState')['number']).toBe(123);
     });
   });
 
   describe('getState', () => {
     it('should get browser page state', () => {
-      var bh = new BrowserHistory(new LinkHandler());
+      let bh = new BrowserHistory(new LinkHandler());
       bh.activate({});
       bh.location = {
         protocol: 'http:',
         hostname: 'localhost',
         port: ''
-      };
+      } as Location;
+      let state = { 'number': 123 };
+      bh.setState('TestState', state);
       expect(bh.getState('TestState')['number']).toBe(123);
     });
   });
 
   describe('getHistoryIndex', () => {
     it('should get the current browser history index', () => {
-      var bh = new BrowserHistory(new LinkHandler());
+      let bh = new BrowserHistory(new LinkHandler());
       bh.activate({});
-      bh.history = new MockWindowHistory();
+      bh.history = new MockWindowHistory() as any;
 
       expect(bh.getHistoryIndex()).toBe(1);
       expect(bh.getState('HistoryIndex')).toBe(1);

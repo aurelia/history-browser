@@ -1,0 +1,1 @@
+export * from 'aurelia-history-browser/aurelia-history-browser';

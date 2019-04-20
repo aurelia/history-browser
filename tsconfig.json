@@ -8,8 +8,9 @@
     "stripInternal": true,
     "preserveConstEnums": true,
     "listFiles": true,
-    "declaration": true,
-    "removeComments": true,
+    "declaration": false,
+    "removeComments": false,
+    "sourceMap": true,
     "lib": ["es2015", "dom"]
   },
   "exclude": [
@@ -17,7 +18,6 @@
     "dist",
     "build",
     "doc",
-    "test",
     "config.js",
     "gulpfile.js",
     "karma.conf.js"

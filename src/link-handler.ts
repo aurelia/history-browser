@@ -1,4 +1,6 @@
-import {DOM, PLATFORM} from 'aurelia-pal';
+import { DOM, PLATFORM } from 'aurelia-pal';
+import { BrowserHistory } from './browser-history';
+import { AnchorEventInfo } from './interfaces';
 
 /**
  * Class responsible for handling interactions that should trigger browser history navigations.
@@ -9,30 +11,12 @@ export class LinkHandler {
    *
    * @param history The BrowserHistory instance that navigations should be dispatched to.
    */
-  activate(history: BrowserHistory): void {}
+  activate(history: BrowserHistory): void {/**/}
 
   /**
    * Deactivate the instance. Event handlers and other resources should be cleaned up here.
    */
-  deactivate(): void {}
-}
-
-/**
- * Provides information about how to handle an anchor event.
- */
-interface AnchorEventInfo {
-  /**
-   * Indicates whether the event should be handled or not.
-   */
-  shouldHandleEvent: boolean;
-  /**
-   * The href of the link or null if not-applicable.
-   */
-  href: string;
-  /**
-   * The anchor element or null if not-applicable.
-   */
-  anchor: Element;
+  deactivate(): void {/**/}
 }
 
 /**
@@ -40,6 +24,12 @@ interface AnchorEventInfo {
  * anchor elements with relative hrefs when the history instance is using pushstate.
  */
 export class DefaultLinkHandler extends LinkHandler {
+
+  /**@internal */
+  handler: (e: Event) => void;
+
+  /**@internal */
+  history: BrowserHistory;
   /**
    * Creates an instance of DefaultLinkHandler.
    */
@@ -47,7 +37,7 @@ export class DefaultLinkHandler extends LinkHandler {
     super();
 
     this.handler = (e) => {
-      let {shouldHandleEvent, href} = DefaultLinkHandler.getEventInfo(e);
+      let { shouldHandleEvent, href } = DefaultLinkHandler.getEventInfo(e);
 
       if (shouldHandleEvent) {
         e.preventDefault();
@@ -72,7 +62,7 @@ export class DefaultLinkHandler extends LinkHandler {
    * Deactivate the instance. Event handlers and other resources should be cleaned up here.
    */
   deactivate(): void {
-    DOM.removeEventListener('click', this.handler);
+    DOM.removeEventListener('click', this.handler, true);
   }
 
   /**
@@ -81,22 +71,26 @@ export class DefaultLinkHandler extends LinkHandler {
    * @param event The Event to inspect for target anchor and href.
    */
   static getEventInfo(event: Event): AnchorEventInfo {
+    let $event = event as MouseEvent;
     let info = {
       shouldHandleEvent: false,
       href: null,
       anchor: null
     };
 
-    let target = DefaultLinkHandler.findClosestAnchor(event.target);
+    let target = DefaultLinkHandler.findClosestAnchor($event.target as Element);
     if (!target || !DefaultLinkHandler.targetIsThisWindow(target)) {
       return info;
     }
 
-    if (target.hasAttribute('download') || target.hasAttribute('router-ignore') || target.hasAttribute('data-router-ignore')) {
+    if (hasAttribute(target, 'download')
+      || hasAttribute(target, 'router-ignore')
+      || hasAttribute(target, 'data-router-ignore')
+    ) {
       return info;
     }
 
-    if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) {
+    if ($event.altKey || $event.ctrlKey || $event.metaKey || $event.shiftKey) {
       return info;
     }
 
@@ -104,7 +98,7 @@ export class DefaultLinkHandler extends LinkHandler {
     info.anchor = target;
     info.href = href;
 
-    let leftButtonClicked = event.which === 1;
+    let leftButtonClicked = $event.which === 1;
     let isRelative = href && !(href.charAt(0) === '#' || (/^[a-z]+:/i).test(href));
 
     info.shouldHandleEvent = leftButtonClicked && isRelative;
@@ -123,7 +117,7 @@ export class DefaultLinkHandler extends LinkHandler {
         return el;
       }
 
-      el = el.parentNode;
+      el = el.parentNode as Element;
     }
   }
 
@@ -142,3 +136,5 @@ export class DefaultLinkHandler extends LinkHandler {
       targetWindow === '_self';
   }
 }
+
+const hasAttribute = (el: Element, attr: string) => el.hasAttribute(attr);
