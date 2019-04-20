@@ -1,21 +1,34 @@
-import {History} from 'aurelia-history';
-import {LinkHandler, DefaultLinkHandler} from './link-handler';
-import {DOM, PLATFORM} from 'aurelia-pal';
-
-/**
- * Configures the plugin by registering BrowserHistory as the implementation of History in the DI container.
- * @param config The FrameworkConfiguration object provided by Aurelia.
- */
-export function configure(config: Object): void {
-  config.singleton(History, BrowserHistory);
-  config.transient(LinkHandler, DefaultLinkHandler);
-}
+import { DOM, PLATFORM } from 'aurelia-pal';
+import { LinkHandler } from "./link-handler";
 
 /**
  * An implementation of the basic history API.
  */
 export class BrowserHistory extends History {
+  /**@internal */
   static inject = [LinkHandler];
+
+  /**@internal */
+  _isActive: boolean;
+
+  /**@internal*/
+  _checkUrlCallback: any;
+  /**@internal*/
+  location: Location;
+  /**@internal*/
+  history: typeof PLATFORM['history'];
+  /**@internal*/
+  linkHandler: LinkHandler;
+  /**@internal*/
+  options: any;
+  /**@internal*/
+  root: string;
+  /**@internal*/
+  _wantsHashChange: boolean;
+  /**@internal*/
+  _hasPushState: boolean;
+  /**@internal*/
+  fragment: string;
 
   /**
    * Creates an instance of BrowserHistory
@@ -42,22 +55,23 @@ export class BrowserHistory extends History {
       throw new Error('History has already been activated.');
     }
 
-    let wantsPushState = !!options.pushState;
+    let $history = this.history;
+    let wantsPushState = !!(options as any).pushState;
 
     this._isActive = true;
-    this.options = Object.assign({}, { root: '/' }, this.options, options);
+    let normalizedOptions = this.options = Object.assign({}, { root: '/' }, this.options, options);
 
     // Normalize root to always include a leading and trailing slash.
-    this.root = ('/' + this.options.root + '/').replace(rootStripper, '/');
+    let rootUrl = this.root = ('/' + normalizedOptions.root + '/').replace(rootStripper, '/');
 
-    this._wantsHashChange = this.options.hashChange !== false;
-    this._hasPushState = !!(this.options.pushState && this.history && this.history.pushState);
+    let wantsHashChange = this._wantsHashChange = normalizedOptions.hashChange !== false;
+    let hasPushState = this._hasPushState = !!(normalizedOptions.pushState && $history && $history.pushState);
 
     // Determine how we check the URL state.
-    let eventName;
-    if (this._hasPushState) {
+    let eventName: string;
+    if (hasPushState) {
       eventName = 'popstate';
-    } else if (this._wantsHashChange) {
+    } else if (wantsHashChange) {
       eventName = 'hashchange';
     }
 
@@ -65,35 +79,35 @@ export class BrowserHistory extends History {
 
     // Determine if we need to change the base url, for a pushState link
     // opened by a non-pushState browser.
-    if (this._wantsHashChange && wantsPushState) {
+    if (wantsHashChange && wantsPushState) {
       // Transition from hashChange to pushState or vice versa if both are requested.
-      let loc = this.location;
-      let atRoot = loc.pathname.replace(/[^\/]$/, '$&/') === this.root;
+      let $location = this.location;
+      let atRoot = $location.pathname.replace(/[^\/]$/, '$&/') === rootUrl;
 
       // If we've started off with a route from a `pushState`-enabled
       // browser, but we're currently in a browser that doesn't support it...
-      if (!this._hasPushState && !atRoot) {
-        this.fragment = this._getFragment(null, true);
-        this.location.replace(this.root + this.location.search + '#' + this.fragment);
+      if (!hasPushState && !atRoot) {
+        let fragment =  this.fragment = this._getFragment(null, true);
+        $location.replace(rootUrl + $location.search + '#' + fragment);
         // Return immediately as browser will do redirect to new url
         return true;
 
         // Or if we've started out with a hash-based route, but we're currently
         // in a browser where it could be `pushState`-based instead...
-      } else if (this._hasPushState && atRoot && loc.hash) {
-        this.fragment = this._getHash().replace(routeStripper, '');
-        this.history.replaceState({}, DOM.title, this.root + this.fragment + loc.search);
+      } else if (hasPushState && atRoot && $location.hash) {
+        let fragment = this.fragment = this._getHash().replace(routeStripper, '');
+        $history.replaceState({}, DOM.title, rootUrl + fragment + $location.search);
       }
     }
 
     if (!this.fragment) {
-      this.fragment = this._getFragment();
+      this.fragment = this._getFragment('');
     }
 
     this.linkHandler.activate(this);
 
-    if (!this.options.silent) {
-      return this._loadUrl();
+    if (!normalizedOptions.silent) {
+      return this._loadUrl('');
     }
   }
 
@@ -101,8 +115,9 @@ export class BrowserHistory extends History {
    * Deactivates the history object.
    */
   deactivate(): void {
-    PLATFORM.removeEventListener('popstate', this._checkUrlCallback);
-    PLATFORM.removeEventListener('hashchange', this._checkUrlCallback);
+    const handler = this._checkUrlCallback;
+    PLATFORM.removeEventListener('popstate', handler);
+    PLATFORM.removeEventListener('hashchange', handler);
     this._isActive = false;
     this.linkHandler.deactivate();
   }
@@ -112,7 +127,8 @@ export class BrowserHistory extends History {
    * @returns The absolute root of the application.
    */
   getAbsoluteRoot(): string {
-    let origin = createOrigin(this.location.protocol, this.location.hostname, this.location.port);
+    let $location = this.location;
+    let origin = createOrigin($location.protocol, $location.hostname, $location.port);
     return `${origin}${this.root}`;
   }
 
@@ -124,8 +140,9 @@ export class BrowserHistory extends History {
    * @return Promise if triggering navigation, otherwise true/false indicating if navigation occurred.
    */
   navigate(fragment?: string, {trigger = true, replace = false} = {}): boolean {
+    let location = this.location;
     if (fragment && absoluteUrl.test(fragment)) {
-      this.location.href = fragment;
+      location.href = fragment;
       return true;
     }
 
@@ -155,11 +172,11 @@ export class BrowserHistory extends History {
     } else if (this._wantsHashChange) {
       // If hash changes haven't been explicitly disabled, update the hash
       // fragment to store history.
-      updateHash(this.location, fragment, replace);
+      updateHash(location, fragment, replace);
     } else {
       // If you've told us that you explicitly don't want fallback hashchange-
       // based history, then `navigate` becomes a page refresh.
-      this.location.assign(url);
+      location.assign(url);
     }
 
     if (trigger) {
@@ -189,10 +206,11 @@ export class BrowserHistory extends History {
    * @param value The value to set.
    */
   setState(key: string, value: any): void {
-    let state = Object.assign({}, this.history.state);
+    let $history = this.history;
+    let state = Object.assign({}, $history.state);
     let { pathname, search, hash } = this.location;
     state[key] = value;
-    this.history.replaceState(state, null, `${pathname}${search}${hash}`);
+    $history.replaceState(state, null, `${pathname}${search}${hash}`);
   }
 
   /**
@@ -226,19 +244,26 @@ export class BrowserHistory extends History {
     this.history.go(movement);
   }
 
+  /**
+   * @internal
+   */
   _getHash(): string {
     return this.location.hash.substr(1);
   }
 
+  /**
+   * @internal
+   */
   _getFragment(fragment: string, forcePushState?: boolean): string {
-    let root;
+    let rootUrl: string;
 
     if (!fragment) {
       if (this._hasPushState || !this._wantsHashChange || forcePushState) {
-        fragment = this.location.pathname + this.location.search;
-        root = this.root.replace(trailingSlash, '');
-        if (!fragment.indexOf(root)) {
-          fragment = fragment.substr(root.length);
+        let location = this.location;
+        fragment = location.pathname + location.search;
+        rootUrl = this.root.replace(trailingSlash, '');
+        if (!fragment.indexOf(rootUrl)) {
+          fragment = fragment.substr(rootUrl.length);
         }
       } else {
         fragment = this._getHash();
@@ -248,13 +273,22 @@ export class BrowserHistory extends History {
     return '/' + fragment.replace(routeStripper, '');
   }
 
-  _checkUrl(): boolean {
-    let current = this._getFragment();
+  /**
+   * Url change handler.
+   * Invoked when current fragment is different with previous fragment
+   * @internal
+   */
+  _checkUrl(): void {
+    let current = this._getFragment('');
     if (current !== this.fragment) {
-      this._loadUrl();
+      this._loadUrl('');
     }
   }
 
+  /**
+   * invoke routeHandler
+   * @internal
+   */
   _loadUrl(fragmentOverride: string): boolean {
     let fragment = this.fragment = this._getFragment(fragmentOverride);
 
@@ -280,13 +314,13 @@ const absoluteUrl = /^([a-z][a-z0-9+\-.]*:)?\/\//i;
 
 // Update the hash location, either replacing the current entry, or adding
 // a new one to the browser history.
-function updateHash(location, fragment, replace) {
+function updateHash($location: Location, fragment: string, replace: boolean) {
   if (replace) {
-    let href = location.href.replace(/(javascript:|#).*$/, '');
-    location.replace(href + '#' + fragment);
+    let href = $location.href.replace(/(javascript:|#).*$/, '');
+    $location.replace(href + '#' + fragment);
   } else {
     // Some browsers require that `hash` contains a leading #.
-    location.hash = '#' + fragment;
+    $location.hash = '#' + fragment;
   }
 }
 
