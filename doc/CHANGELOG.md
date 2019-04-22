@@ -1,3 +1,7 @@
+## [1.3.2](https://github.com/aurelia/history-browser/compare/1.3.1...1.3.2) (2019-04-20)
+
+
+
 <a name="1.3.2"></a>
 ## [1.3.2](https://github.com/aurelia/history-browser/compare/1.3.0...1.3.2) (2019-03-27)
 

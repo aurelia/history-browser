@@ -1,331 +1,292 @@
-var _class, _temp;
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-
-
-import { DOM, PLATFORM } from 'aurelia-pal';
 import { History } from 'aurelia-history';
+import { DOM, PLATFORM } from 'aurelia-pal';
 
-export var LinkHandler = function () {
-  function LinkHandler() {
-    
-  }
+/*! *****************************************************************************
+Copyright (c) Microsoft Corporation. All rights reserved.
+Licensed under the Apache License, Version 2.0 (the "License"); you may not use
+this file except in compliance with the License. You may obtain a copy of the
+License at http://www.apache.org/licenses/LICENSE-2.0
 
-  LinkHandler.prototype.activate = function activate(history) {};
+THIS CODE IS PROVIDED ON AN *AS IS* BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, EITHER EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION ANY IMPLIED
+WARRANTIES OR CONDITIONS OF TITLE, FITNESS FOR A PARTICULAR PURPOSE,
+MERCHANTABLITY OR NON-INFRINGEMENT.
 
-  LinkHandler.prototype.deactivate = function deactivate() {};
+See the Apache Version 2.0 License for specific language governing permissions
+and limitations under the License.
+***************************************************************************** */
+/* global Reflect, Promise */
 
-  return LinkHandler;
-}();
+var extendStatics = function(d, b) {
+    extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return extendStatics(d, b);
+};
 
-export var DefaultLinkHandler = function (_LinkHandler) {
-  _inherits(DefaultLinkHandler, _LinkHandler);
-
-  function DefaultLinkHandler() {
-    
-
-    var _this = _possibleConstructorReturn(this, _LinkHandler.call(this));
-
-    _this.handler = function (e) {
-      var _DefaultLinkHandler$g = DefaultLinkHandler.getEventInfo(e),
-          shouldHandleEvent = _DefaultLinkHandler$g.shouldHandleEvent,
-          href = _DefaultLinkHandler$g.href;
-
-      if (shouldHandleEvent) {
-        e.preventDefault();
-        _this.history.navigate(href);
-      }
-    };
-    return _this;
-  }
-
-  DefaultLinkHandler.prototype.activate = function activate(history) {
-    if (history._hasPushState) {
-      this.history = history;
-      DOM.addEventListener('click', this.handler, true);
-    }
-  };
-
-  DefaultLinkHandler.prototype.deactivate = function deactivate() {
-    DOM.removeEventListener('click', this.handler);
-  };
-
-  DefaultLinkHandler.getEventInfo = function getEventInfo(event) {
-    var info = {
-      shouldHandleEvent: false,
-      href: null,
-      anchor: null
-    };
-
-    var target = DefaultLinkHandler.findClosestAnchor(event.target);
-    if (!target || !DefaultLinkHandler.targetIsThisWindow(target)) {
-      return info;
-    }
-
-    if (target.hasAttribute('download') || target.hasAttribute('router-ignore') || target.hasAttribute('data-router-ignore')) {
-      return info;
-    }
-
-    if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) {
-      return info;
-    }
-
-    var href = target.getAttribute('href');
-    info.anchor = target;
-    info.href = href;
-
-    var leftButtonClicked = event.which === 1;
-    var isRelative = href && !(href.charAt(0) === '#' || /^[a-z]+:/i.test(href));
-
-    info.shouldHandleEvent = leftButtonClicked && isRelative;
-    return info;
-  };
-
-  DefaultLinkHandler.findClosestAnchor = function findClosestAnchor(el) {
-    while (el) {
-      if (el.tagName === 'A') {
-        return el;
-      }
-
-      el = el.parentNode;
-    }
-  };
-
-  DefaultLinkHandler.targetIsThisWindow = function targetIsThisWindow(target) {
-    var targetWindow = target.getAttribute('target');
-    var win = PLATFORM.global;
-
-    return !targetWindow || targetWindow === win.name || targetWindow === '_self';
-  };
-
-  return DefaultLinkHandler;
-}(LinkHandler);
-
-export function configure(config) {
-  config.singleton(History, BrowserHistory);
-  config.transient(LinkHandler, DefaultLinkHandler);
+function __extends(d, b) {
+    extendStatics(d, b);
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 }
 
-export var BrowserHistory = (_temp = _class = function (_History) {
-  _inherits(BrowserHistory, _History);
-
-  function BrowserHistory(linkHandler) {
-    
-
-    var _this2 = _possibleConstructorReturn(this, _History.call(this));
-
-    _this2._isActive = false;
-    _this2._checkUrlCallback = _this2._checkUrl.bind(_this2);
-
-    _this2.location = PLATFORM.location;
-    _this2.history = PLATFORM.history;
-    _this2.linkHandler = linkHandler;
-    return _this2;
-  }
-
-  BrowserHistory.prototype.activate = function activate(options) {
-    if (this._isActive) {
-      throw new Error('History has already been activated.');
+var LinkHandler = (function () {
+    function LinkHandler() {
     }
-
-    var wantsPushState = !!options.pushState;
-
-    this._isActive = true;
-    this.options = Object.assign({}, { root: '/' }, this.options, options);
-
-    this.root = ('/' + this.options.root + '/').replace(rootStripper, '/');
-
-    this._wantsHashChange = this.options.hashChange !== false;
-    this._hasPushState = !!(this.options.pushState && this.history && this.history.pushState);
-
-    var eventName = void 0;
-    if (this._hasPushState) {
-      eventName = 'popstate';
-    } else if (this._wantsHashChange) {
-      eventName = 'hashchange';
+    LinkHandler.prototype.activate = function (history) { };
+    LinkHandler.prototype.deactivate = function () { };
+    return LinkHandler;
+}());
+var DefaultLinkHandler = (function (_super) {
+    __extends(DefaultLinkHandler, _super);
+    function DefaultLinkHandler() {
+        var _this = _super.call(this) || this;
+        _this.handler = function (e) {
+            var _a = DefaultLinkHandler.getEventInfo(e), shouldHandleEvent = _a.shouldHandleEvent, href = _a.href;
+            if (shouldHandleEvent) {
+                e.preventDefault();
+                _this.history.navigate(href);
+            }
+        };
+        return _this;
     }
-
-    PLATFORM.addEventListener(eventName, this._checkUrlCallback);
-
-    if (this._wantsHashChange && wantsPushState) {
-      var loc = this.location;
-      var atRoot = loc.pathname.replace(/[^\/]$/, '$&/') === this.root;
-
-      if (!this._hasPushState && !atRoot) {
-        this.fragment = this._getFragment(null, true);
-        this.location.replace(this.root + this.location.search + '#' + this.fragment);
-
-        return true;
-      } else if (this._hasPushState && atRoot && loc.hash) {
-        this.fragment = this._getHash().replace(routeStripper, '');
-        this.history.replaceState({}, DOM.title, this.root + this.fragment + loc.search);
-      }
-    }
-
-    if (!this.fragment) {
-      this.fragment = this._getFragment();
-    }
-
-    this.linkHandler.activate(this);
-
-    if (!this.options.silent) {
-      return this._loadUrl();
-    }
-  };
-
-  BrowserHistory.prototype.deactivate = function deactivate() {
-    PLATFORM.removeEventListener('popstate', this._checkUrlCallback);
-    PLATFORM.removeEventListener('hashchange', this._checkUrlCallback);
-    this._isActive = false;
-    this.linkHandler.deactivate();
-  };
-
-  BrowserHistory.prototype.getAbsoluteRoot = function getAbsoluteRoot() {
-    var origin = createOrigin(this.location.protocol, this.location.hostname, this.location.port);
-    return '' + origin + this.root;
-  };
-
-  BrowserHistory.prototype.navigate = function navigate(fragment) {
-    var _ref = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {},
-        _ref$trigger = _ref.trigger,
-        trigger = _ref$trigger === undefined ? true : _ref$trigger,
-        _ref$replace = _ref.replace,
-        replace = _ref$replace === undefined ? false : _ref$replace;
-
-    if (fragment && absoluteUrl.test(fragment)) {
-      this.location.href = fragment;
-      return true;
-    }
-
-    if (!this._isActive) {
-      return false;
-    }
-
-    fragment = this._getFragment(fragment || '');
-
-    if (this.fragment === fragment && !replace) {
-      return false;
-    }
-
-    this.fragment = fragment;
-
-    var url = this.root + fragment;
-
-    if (fragment === '' && url !== '/') {
-      url = url.slice(0, -1);
-    }
-
-    if (this._hasPushState) {
-      url = url.replace('//', '/');
-      this.history[replace ? 'replaceState' : 'pushState']({}, DOM.title, url);
-    } else if (this._wantsHashChange) {
-      updateHash(this.location, fragment, replace);
-    } else {
-      this.location.assign(url);
-    }
-
-    if (trigger) {
-      return this._loadUrl(fragment);
-    }
-
-    return true;
-  };
-
-  BrowserHistory.prototype.navigateBack = function navigateBack() {
-    this.history.back();
-  };
-
-  BrowserHistory.prototype.setTitle = function setTitle(title) {
-    DOM.title = title;
-  };
-
-  BrowserHistory.prototype.setState = function setState(key, value) {
-    var state = Object.assign({}, this.history.state);
-    var _location = this.location,
-        pathname = _location.pathname,
-        search = _location.search,
-        hash = _location.hash;
-
-    state[key] = value;
-    this.history.replaceState(state, null, '' + pathname + search + hash);
-  };
-
-  BrowserHistory.prototype.getState = function getState(key) {
-    var state = Object.assign({}, this.history.state);
-    return state[key];
-  };
-
-  BrowserHistory.prototype.getHistoryIndex = function getHistoryIndex() {
-    var historyIndex = this.getState('HistoryIndex');
-    if (historyIndex === undefined) {
-      historyIndex = this.history.length - 1;
-      this.setState('HistoryIndex', historyIndex);
-    }
-    return historyIndex;
-  };
-
-  BrowserHistory.prototype.go = function go(movement) {
-    this.history.go(movement);
-  };
-
-  BrowserHistory.prototype._getHash = function _getHash() {
-    return this.location.hash.substr(1);
-  };
-
-  BrowserHistory.prototype._getFragment = function _getFragment(fragment, forcePushState) {
-    var root = void 0;
-
-    if (!fragment) {
-      if (this._hasPushState || !this._wantsHashChange || forcePushState) {
-        fragment = this.location.pathname + this.location.search;
-        root = this.root.replace(trailingSlash, '');
-        if (!fragment.indexOf(root)) {
-          fragment = fragment.substr(root.length);
+    DefaultLinkHandler.prototype.activate = function (history) {
+        if (history._hasPushState) {
+            this.history = history;
+            DOM.addEventListener('click', this.handler, true);
         }
-      } else {
-        fragment = this._getHash();
-      }
+    };
+    DefaultLinkHandler.prototype.deactivate = function () {
+        DOM.removeEventListener('click', this.handler, true);
+    };
+    DefaultLinkHandler.getEventInfo = function (event) {
+        var $event = event;
+        var info = {
+            shouldHandleEvent: false,
+            href: null,
+            anchor: null
+        };
+        var target = DefaultLinkHandler.findClosestAnchor($event.target);
+        if (!target || !DefaultLinkHandler.targetIsThisWindow(target)) {
+            return info;
+        }
+        if (hasAttribute(target, 'download')
+            || hasAttribute(target, 'router-ignore')
+            || hasAttribute(target, 'data-router-ignore')) {
+            return info;
+        }
+        if ($event.altKey || $event.ctrlKey || $event.metaKey || $event.shiftKey) {
+            return info;
+        }
+        var href = target.getAttribute('href');
+        info.anchor = target;
+        info.href = href;
+        var leftButtonClicked = $event.which === 1;
+        var isRelative = href && !(href.charAt(0) === '#' || (/^[a-z]+:/i).test(href));
+        info.shouldHandleEvent = leftButtonClicked && isRelative;
+        return info;
+    };
+    DefaultLinkHandler.findClosestAnchor = function (el) {
+        while (el) {
+            if (el.tagName === 'A') {
+                return el;
+            }
+            el = el.parentNode;
+        }
+    };
+    DefaultLinkHandler.targetIsThisWindow = function (target) {
+        var targetWindow = target.getAttribute('target');
+        var win = PLATFORM.global;
+        return !targetWindow ||
+            targetWindow === win.name ||
+            targetWindow === '_self';
+    };
+    return DefaultLinkHandler;
+}(LinkHandler));
+var hasAttribute = function (el, attr) { return el.hasAttribute(attr); };
+
+var BrowserHistory = (function (_super) {
+    __extends(BrowserHistory, _super);
+    function BrowserHistory(linkHandler) {
+        var _this = _super.call(this) || this;
+        _this._isActive = false;
+        _this._checkUrlCallback = _this._checkUrl.bind(_this);
+        _this.location = PLATFORM.location;
+        _this.history = PLATFORM.history;
+        _this.linkHandler = linkHandler;
+        return _this;
     }
-
-    return '/' + fragment.replace(routeStripper, '');
-  };
-
-  BrowserHistory.prototype._checkUrl = function _checkUrl() {
-    var current = this._getFragment();
-    if (current !== this.fragment) {
-      this._loadUrl();
-    }
-  };
-
-  BrowserHistory.prototype._loadUrl = function _loadUrl(fragmentOverride) {
-    var fragment = this.fragment = this._getFragment(fragmentOverride);
-
-    return this.options.routeHandler ? this.options.routeHandler(fragment) : false;
-  };
-
-  return BrowserHistory;
-}(History), _class.inject = [LinkHandler], _temp);
-
+    BrowserHistory.prototype.activate = function (options) {
+        if (this._isActive) {
+            throw new Error('History has already been activated.');
+        }
+        var $history = this.history;
+        var wantsPushState = !!options.pushState;
+        this._isActive = true;
+        var normalizedOptions = this.options = Object.assign({}, { root: '/' }, this.options, options);
+        var rootUrl = this.root = ('/' + normalizedOptions.root + '/').replace(rootStripper, '/');
+        var wantsHashChange = this._wantsHashChange = normalizedOptions.hashChange !== false;
+        var hasPushState = this._hasPushState = !!(normalizedOptions.pushState && $history && $history.pushState);
+        var eventName;
+        if (hasPushState) {
+            eventName = 'popstate';
+        }
+        else if (wantsHashChange) {
+            eventName = 'hashchange';
+        }
+        PLATFORM.addEventListener(eventName, this._checkUrlCallback);
+        if (wantsHashChange && wantsPushState) {
+            var $location = this.location;
+            var atRoot = $location.pathname.replace(/[^\/]$/, '$&/') === rootUrl;
+            if (!hasPushState && !atRoot) {
+                var fragment = this.fragment = this._getFragment(null, true);
+                $location.replace(rootUrl + $location.search + '#' + fragment);
+                return true;
+            }
+            else if (hasPushState && atRoot && $location.hash) {
+                var fragment = this.fragment = this._getHash().replace(routeStripper, '');
+                $history.replaceState({}, DOM.title, rootUrl + fragment + $location.search);
+            }
+        }
+        if (!this.fragment) {
+            this.fragment = this._getFragment('');
+        }
+        this.linkHandler.activate(this);
+        if (!normalizedOptions.silent) {
+            return this._loadUrl('');
+        }
+    };
+    BrowserHistory.prototype.deactivate = function () {
+        var handler = this._checkUrlCallback;
+        PLATFORM.removeEventListener('popstate', handler);
+        PLATFORM.removeEventListener('hashchange', handler);
+        this._isActive = false;
+        this.linkHandler.deactivate();
+    };
+    BrowserHistory.prototype.getAbsoluteRoot = function () {
+        var $location = this.location;
+        var origin = createOrigin($location.protocol, $location.hostname, $location.port);
+        return "" + origin + this.root;
+    };
+    BrowserHistory.prototype.navigate = function (fragment, _a) {
+        var _b = _a === void 0 ? {} : _a, _c = _b.trigger, trigger = _c === void 0 ? true : _c, _d = _b.replace, replace = _d === void 0 ? false : _d;
+        var location = this.location;
+        if (fragment && absoluteUrl.test(fragment)) {
+            location.href = fragment;
+            return true;
+        }
+        if (!this._isActive) {
+            return false;
+        }
+        fragment = this._getFragment(fragment || '');
+        if (this.fragment === fragment && !replace) {
+            return false;
+        }
+        this.fragment = fragment;
+        var url = this.root + fragment;
+        if (fragment === '' && url !== '/') {
+            url = url.slice(0, -1);
+        }
+        if (this._hasPushState) {
+            url = url.replace('//', '/');
+            this.history[replace ? 'replaceState' : 'pushState']({}, DOM.title, url);
+        }
+        else if (this._wantsHashChange) {
+            updateHash(location, fragment, replace);
+        }
+        else {
+            location.assign(url);
+        }
+        if (trigger) {
+            return this._loadUrl(fragment);
+        }
+        return true;
+    };
+    BrowserHistory.prototype.navigateBack = function () {
+        this.history.back();
+    };
+    BrowserHistory.prototype.setTitle = function (title) {
+        DOM.title = title;
+    };
+    BrowserHistory.prototype.setState = function (key, value) {
+        var $history = this.history;
+        var state = Object.assign({}, $history.state);
+        var _a = this.location, pathname = _a.pathname, search = _a.search, hash = _a.hash;
+        state[key] = value;
+        $history.replaceState(state, null, "" + pathname + search + hash);
+    };
+    BrowserHistory.prototype.getState = function (key) {
+        var state = Object.assign({}, this.history.state);
+        return state[key];
+    };
+    BrowserHistory.prototype.getHistoryIndex = function () {
+        var historyIndex = this.getState('HistoryIndex');
+        if (historyIndex === undefined) {
+            historyIndex = this.history.length - 1;
+            this.setState('HistoryIndex', historyIndex);
+        }
+        return historyIndex;
+    };
+    BrowserHistory.prototype.go = function (movement) {
+        this.history.go(movement);
+    };
+    BrowserHistory.prototype._getHash = function () {
+        return this.location.hash.substr(1);
+    };
+    BrowserHistory.prototype._getFragment = function (fragment, forcePushState) {
+        var rootUrl;
+        if (!fragment) {
+            if (this._hasPushState || !this._wantsHashChange || forcePushState) {
+                var location_1 = this.location;
+                fragment = location_1.pathname + location_1.search;
+                rootUrl = this.root.replace(trailingSlash, '');
+                if (!fragment.indexOf(rootUrl)) {
+                    fragment = fragment.substr(rootUrl.length);
+                }
+            }
+            else {
+                fragment = this._getHash();
+            }
+        }
+        return '/' + fragment.replace(routeStripper, '');
+    };
+    BrowserHistory.prototype._checkUrl = function () {
+        var current = this._getFragment('');
+        if (current !== this.fragment) {
+            this._loadUrl('');
+        }
+    };
+    BrowserHistory.prototype._loadUrl = function (fragmentOverride) {
+        var fragment = this.fragment = this._getFragment(fragmentOverride);
+        return this.options.routeHandler ?
+            this.options.routeHandler(fragment) :
+            false;
+    };
+    BrowserHistory.inject = [LinkHandler];
+    return BrowserHistory;
+}(History));
 var routeStripper = /^#?\/*|\s+$/g;
-
 var rootStripper = /^\/+|\/+$/g;
-
 var trailingSlash = /\/$/;
-
 var absoluteUrl = /^([a-z][a-z0-9+\-.]*:)?\/\//i;
-
-function updateHash(location, fragment, replace) {
-  if (replace) {
-    var _href = location.href.replace(/(javascript:|#).*$/, '');
-    location.replace(_href + '#' + fragment);
-  } else {
-    location.hash = '#' + fragment;
-  }
+function updateHash($location, fragment, replace) {
+    if (replace) {
+        var href = $location.href.replace(/(javascript:|#).*$/, '');
+        $location.replace(href + '#' + fragment);
+    }
+    else {
+        $location.hash = '#' + fragment;
+    }
 }
-
 function createOrigin(protocol, hostname, port) {
-  return protocol + '//' + hostname + (port ? ':' + port : '');
+    return protocol + "//" + hostname + (port ? ':' + port : '');
 }
+
+function configure(config) {
+    var $config = config;
+    $config.singleton(History, BrowserHistory);
+    $config.transient(LinkHandler, DefaultLinkHandler);
+}
+
+export { BrowserHistory, DefaultLinkHandler, LinkHandler, configure };
+//# sourceMappingURL=aurelia-history-browser.js.map
