@@ -74,7 +74,7 @@ class BrowserHistory extends History {
     constructor(linkHandler) {
         super();
         this._isActive = false;
-        this._checkUrlCallback = this._checkUrl.bind(this);
+        this._checkUrl = this._checkUrl.bind(this);
         this.location = PLATFORM.location;
         this.history = PLATFORM.history;
         this.linkHandler = linkHandler;
@@ -97,7 +97,7 @@ class BrowserHistory extends History {
         else if (wantsHashChange) {
             eventName = 'hashchange';
         }
-        PLATFORM.addEventListener(eventName, this._checkUrlCallback);
+        PLATFORM.addEventListener(eventName, this._checkUrl);
         if (wantsHashChange && wantsPushState) {
             let $location = this.location;
             let atRoot = $location.pathname.replace(/[^\/]$/, '$&/') === rootUrl;
@@ -120,7 +120,7 @@ class BrowserHistory extends History {
         }
     }
     deactivate() {
-        const handler = this._checkUrlCallback;
+        const handler = this._checkUrl;
         PLATFORM.removeEventListener('popstate', handler);
         PLATFORM.removeEventListener('hashchange', handler);
         this._isActive = false;
@@ -210,7 +210,7 @@ class BrowserHistory extends History {
                 fragment = this._getHash();
             }
         }
-        return '/' + fragment.replace(routeStripper, '');
+        return decodeURIComponent('/' + fragment.replace(routeStripper, ''));
     }
     _checkUrl() {
         let current = this._getFragment('');

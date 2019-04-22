@@ -114,7 +114,7 @@ var BrowserHistory = (function (_super) {
     function BrowserHistory(linkHandler) {
         var _this = _super.call(this) || this;
         _this._isActive = false;
-        _this._checkUrlCallback = _this._checkUrl.bind(_this);
+        _this._checkUrl = _this._checkUrl.bind(_this);
         _this.location = aureliaPal.PLATFORM.location;
         _this.history = aureliaPal.PLATFORM.history;
         _this.linkHandler = linkHandler;
@@ -138,7 +138,7 @@ var BrowserHistory = (function (_super) {
         else if (wantsHashChange) {
             eventName = 'hashchange';
         }
-        aureliaPal.PLATFORM.addEventListener(eventName, this._checkUrlCallback);
+        aureliaPal.PLATFORM.addEventListener(eventName, this._checkUrl);
         if (wantsHashChange && wantsPushState) {
             var $location = this.location;
             var atRoot = $location.pathname.replace(/[^\/]$/, '$&/') === rootUrl;
@@ -161,7 +161,7 @@ var BrowserHistory = (function (_super) {
         }
     };
     BrowserHistory.prototype.deactivate = function () {
-        var handler = this._checkUrlCallback;
+        var handler = this._checkUrl;
         aureliaPal.PLATFORM.removeEventListener('popstate', handler);
         aureliaPal.PLATFORM.removeEventListener('hashchange', handler);
         this._isActive = false;
@@ -252,7 +252,7 @@ var BrowserHistory = (function (_super) {
                 fragment = this._getHash();
             }
         }
-        return '/' + fragment.replace(routeStripper, '');
+        return decodeURIComponent('/' + fragment.replace(routeStripper, ''));
     };
     BrowserHistory.prototype._checkUrl = function () {
         var current = this._getFragment('');
