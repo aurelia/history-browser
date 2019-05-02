@@ -1,3 +1,12 @@
+## [1.3.2](https://github.com/aurelia/history-browser/compare/1.3.1...1.3.2) (2019-04-22)
+
+
+### Bug Fixes
+
+* **browser-history:** decode fragment, add tests ([957532d](https://github.com/aurelia/history-browser/commit/957532d))
+
+
+
 ## [1.3.2](https://github.com/aurelia/history-browser/compare/1.3.1...1.3.2) (2019-04-20)
 
 
