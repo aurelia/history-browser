@@ -13,6 +13,8 @@ export class BrowserHistory extends History {
   _isActive: boolean;
 
   /**@internal*/
+  _checkUrlCallback: any;
+  /**@internal*/
   location: Location;
   /**@internal*/
   history: typeof PLATFORM['history'];
@@ -37,7 +39,7 @@ export class BrowserHistory extends History {
     super();
 
     this._isActive = false;
-    this._checkUrl = this._checkUrl.bind(this);
+    this._checkUrlCallback = this._checkUrl.bind(this);
 
     this.location = PLATFORM.location;
     this.history = PLATFORM.history;
@@ -74,7 +76,7 @@ export class BrowserHistory extends History {
       eventName = 'hashchange';
     }
 
-    PLATFORM.addEventListener(eventName, this._checkUrl);
+    PLATFORM.addEventListener(eventName, this._checkUrlCallback);
 
     // Determine if we need to change the base url, for a pushState link
     // opened by a non-pushState browser.
@@ -114,7 +116,7 @@ export class BrowserHistory extends History {
    * Deactivates the history object.
    */
   deactivate(): void {
-    const handler = this._checkUrl;
+    const handler = this._checkUrlCallback;
     PLATFORM.removeEventListener('popstate', handler);
     PLATFORM.removeEventListener('hashchange', handler);
     this._isActive = false;
@@ -155,8 +157,6 @@ export class BrowserHistory extends History {
       return false;
     }
 
-    // caching fragment value to prevent triggering load same URL twice
-    // as this could potentially trigger hashchange or pushstate
     this.fragment = fragment;
 
     let url = this.root + fragment;
@@ -271,9 +271,7 @@ export class BrowserHistory extends History {
       }
     }
 
-    // without decoding the fragment
-    // _loadUrl will be trigger twice if there are special character in the URL
-    return decodeURIComponent('/' + fragment.replace(routeStripper, ''));
+    return '/' + fragment.replace(routeStripper, '');
   }
 
   /**
@@ -283,8 +281,6 @@ export class BrowserHistory extends History {
    */
   _checkUrl(): void {
     let current = this._getFragment('');
-    // a guard to prevent triggering load same URL twice
-    // typically happens when calling navigate from router
     if (current !== this.fragment) {
       this._loadUrl('');
     }

@@ -34,34 +34,6 @@ describe('browser history', () => {
       expect(bh._getFragment('#/admin/user/123   ')).toBe(expected);
       expect(bh._getFragment('#///admin/user/123')).toBe(expected);
     });
-
-    const testCases = [
-      [encodeURIComponent('admin user 123'), '/admin user 123'],
-      [encodeURIComponent('ad"min user'), '/ad"min user'],
-      [encodeURIComponent('ad{min  '), '/ad{min  '],
-      ...['@', '!', '$', '%', '&', '^', '*', '(', ')', '[', ']', '\\', '|', '{', '}', ':', ';', '\'', ' ', '  ', '   ', '"', '<', '>', '~', '`',
-        ...[
-          '( ͡° ͜ʖ ͡°)',
-          'ʕ•ᴥ•ʔ',
-          '༼ つ ◕_◕ ༽つ',
-          '(ಥ﹏ಥ)',
-          'ლ(ಠ益ಠლ)',
-          '◉_◉',
-          'ಠ⌣ಠ',
-          'ಠ~ಠ'
-        ]
-      ]
-        .map(specialChar => {
-          return [encodeURIComponent(`ad${specialChar}min/ad${specialChar}min`), `/ad${specialChar}min/ad${specialChar}min`];
-        })
-    ];
-
-    testCases.forEach(([input, output]) => {
-      it(`should decode fragment "${input}" correctly`, async () => {
-        let bh = new BrowserHistory(null);
-        expect(bh._getFragment(input)).toBe(output);
-      });
-    });
   });
 
   describe('getAbsoluteRoot', () => {
