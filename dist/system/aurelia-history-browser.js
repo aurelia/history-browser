@@ -121,7 +121,7 @@ System.register(['aurelia-history', 'aurelia-pal'], function (exports, module) {
                 function BrowserHistory(linkHandler) {
                     var _this = _super.call(this) || this;
                     _this._isActive = false;
-                    _this._checkUrlCallback = _this._checkUrl.bind(_this);
+                    _this._checkUrl = _this._checkUrl.bind(_this);
                     _this.location = PLATFORM.location;
                     _this.history = PLATFORM.history;
                     _this.linkHandler = linkHandler;
@@ -145,7 +145,7 @@ System.register(['aurelia-history', 'aurelia-pal'], function (exports, module) {
                     else if (wantsHashChange) {
                         eventName = 'hashchange';
                     }
-                    PLATFORM.addEventListener(eventName, this._checkUrlCallback);
+                    PLATFORM.addEventListener(eventName, this._checkUrl);
                     if (wantsHashChange && wantsPushState) {
                         var $location = this.location;
                         var atRoot = $location.pathname.replace(/[^\/]$/, '$&/') === rootUrl;
@@ -168,7 +168,7 @@ System.register(['aurelia-history', 'aurelia-pal'], function (exports, module) {
                     }
                 };
                 BrowserHistory.prototype.deactivate = function () {
-                    var handler = this._checkUrlCallback;
+                    var handler = this._checkUrl;
                     PLATFORM.removeEventListener('popstate', handler);
                     PLATFORM.removeEventListener('hashchange', handler);
                     this._isActive = false;
@@ -259,7 +259,7 @@ System.register(['aurelia-history', 'aurelia-pal'], function (exports, module) {
                             fragment = this._getHash();
                         }
                     }
-                    return '/' + fragment.replace(routeStripper, '');
+                    return decodeURIComponent('/' + fragment.replace(routeStripper, ''));
                 };
                 BrowserHistory.prototype._checkUrl = function () {
                     var current = this._getFragment('');
