@@ -1,6 +1,7 @@
 import { DOM, PLATFORM } from 'aurelia-pal';
 import { LinkHandler } from './link-handler';
-import { History } from 'aurelia-history';
+import { History, NavigationResult } from 'aurelia-history';
+import { HistoryOptions } from './interfaces';
 
 /**
  * An implementation of the basic history API.
@@ -51,7 +52,7 @@ export class BrowserHistory extends History {
    * @param options The set of options to activate history with.
    * @returns Whether or not activation occurred.
    */
-  activate(options?: Object): boolean {
+  activate(options?: Partial<HistoryOptions>): Promise<boolean> {
     if (this._isActive) {
       throw new Error('History has already been activated.');
     }
@@ -91,7 +92,7 @@ export class BrowserHistory extends History {
         let fragment =  this.fragment = this._getFragment(null, true);
         $location.replace(rootUrl + $location.search + '#' + fragment);
         // Return immediately as browser will do redirect to new url
-        return true;
+        return Promise.resolve(true);
 
         // Or if we've started out with a hash-based route, but we're currently
         // in a browser where it could be `pushState`-based instead...
@@ -108,7 +109,8 @@ export class BrowserHistory extends History {
     this.linkHandler.activate(this);
 
     if (!normalizedOptions.silent) {
-      return this._loadUrl('');
+      return this._loadUrl('')
+        .then(result => result.completed);
     }
   }
 
@@ -140,21 +142,21 @@ export class BrowserHistory extends History {
    * @param options The set of options that specify how the navigation should occur.
    * @return Promise if triggering navigation, otherwise true/false indicating if navigation occurred.
    */
-  navigate(fragment?: string, {trigger = true, replace = false} = {}): boolean {
+  navigate(fragment?: string, {trigger = true, replace = false} = {}): Promise<NavigationResult> {
     let location = this.location;
     if (fragment && absoluteUrl.test(fragment)) {
       location.href = fragment;
-      return true;
+      return _asNavigationResult(true);
     }
 
     if (!this._isActive) {
-      return false;
+      return _asNavigationResult(false);
     }
 
     fragment = this._getFragment(fragment || '');
 
     if (this.fragment === fragment && !replace) {
-      return false;
+      return _asNavigationResult(false);
     }
 
     this.fragment = fragment;
@@ -184,7 +186,7 @@ export class BrowserHistory extends History {
       return this._loadUrl(fragment);
     }
 
-    return true;
+    return _asNavigationResult(true);
   }
 
   /**
@@ -290,12 +292,14 @@ export class BrowserHistory extends History {
    * invoke routeHandler
    * @internal
    */
-  _loadUrl(fragmentOverride: string): boolean {
+  _loadUrl(fragmentOverride: string): Promise<NavigationResult> {
     let fragment = this.fragment = this._getFragment(fragmentOverride);
 
-    return this.options.routeHandler ?
-      this.options.routeHandler(fragment) :
-      false;
+    return Promise.resolve(
+      this.options.routeHandler
+        ? this.options.routeHandler(fragment)
+        : { completed: false }
+    );
   }
 }
 
@@ -327,4 +331,14 @@ function updateHash($location: Location, fragment: string, replace: boolean) {
 
 function createOrigin(protocol: string, hostname: string, port: string) {
   return `${protocol}//${hostname}${port ? ':' + port : ''}`;
+}
+
+/**
+ * @internal
+ * Transforms a boolean into a Promise<NavigationResult>
+ * @param completed Whether the result is completed or not.
+ * @returns A resolved promise for the navigation result.
+ */
+function _asNavigationResult(completed: boolean): Promise<NavigationResult> {
+  return Promise.resolve({ completed });
 }
