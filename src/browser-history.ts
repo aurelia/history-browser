@@ -51,7 +51,7 @@ export class BrowserHistory extends History {
    * @param options The set of options to activate history with.
    * @returns Whether or not activation occurred.
    */
-  activate(options?: Object): boolean {
+  activate(options?: Object): boolean | Promise<any> {
     if (this._isActive) {
       throw new Error('History has already been activated.');
     }
@@ -140,7 +140,7 @@ export class BrowserHistory extends History {
    * @param options The set of options that specify how the navigation should occur.
    * @return Promise if triggering navigation, otherwise true/false indicating if navigation occurred.
    */
-  navigate(fragment?: string, {trigger = true, replace = false} = {}): boolean {
+  navigate(fragment?: string, {trigger = true, replace = false} = {}): boolean | Promise<any> {
     let location = this.location;
     if (fragment && absoluteUrl.test(fragment)) {
       location.href = fragment;
@@ -290,7 +290,7 @@ export class BrowserHistory extends History {
    * invoke routeHandler
    * @internal
    */
-  _loadUrl(fragmentOverride: string): boolean {
+  _loadUrl(fragmentOverride: string): false | Promise<any> {
     let fragment = this.fragment = this._getFragment(fragmentOverride);
 
     return this.options.routeHandler ?
