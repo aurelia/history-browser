@@ -65,14 +65,14 @@
     "karma-jasmine": "^2.0.1",
     "karma-mocha-reporter": "^2.2.5",
     "karma-sourcemap-loader": "^0.3.7",
-    "karma-webpack": "^3.0.5",
+    "karma-webpack": "^5.0.0",
     "rimraf": "^2.6.3",
     "rollup": "^1.10.0",
     "rollup-plugin-typescript2": "^0.20.1",
-    "ts-loader": "^5.3.3",
+    "ts-loader": "^9.4.2",
     "tslint": "^5.16.0",
     "typescript": "^3.3.4000",
-    "webpack": "^4.30.0",
+    "webpack": "^5.75.0",
     "yargs": "^4.8.1"
   }
 }
